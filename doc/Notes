@@ -1,0 +1,56 @@
+/*
+********************
+**** quel est le port pour irc ?
+********************
+
+Le port standard utilisé pour IRC (Internet Relay Chat) est le port 6667.
+Il s'agit du port le plus couramment utilisé pour les connexions IRC non sécurisées.
+Cependant, il convient de noter que le protocole IRC permet également l'utilisation 
+d'autres ports, notamment des ports sécurisés tels que 6697 pour les connexions IRC 
+chiffrées via SSL/TLS.
+
+Il est important de vérifier les spécifications du serveur IRC auquel vous souhaitez 
+vous connecter, car certains serveurs peuvent utiliser des ports non standard ou avoir 
+des configurations spécifiques en matière de ports.
+
+//////////////////////////////////////////////////////////////////////////////
+
+********************
+***** est-ce que le port 0 existe ? quel est le port maximum utilisable ?
+********************
+
+En informatique, le port 0 est réservé et est généralement utilisé comme un port spécial 
+appelé "port éphémère" ou "port réservé". Il n'est pas utilisé pour des communications 
+réelles entre applications. Le port 0 est souvent utilisé par le système d'exploitation 
+pour attribuer dynamiquement un port disponible lorsqu'une application demande une 
+connexion réseau.
+
+Quant au port maximum utilisable, il dépend du modèle utilisé pour la numérotation des ports. 
+Dans le modèle TCP/IP, qui est le protocole de communication le plus couramment utilisé 
+sur Internet, le numéro de port est un entier 16 bits, ce qui signifie qu'il peut avoir 
+une valeur comprise entre 0 et 65535 (2^16 - 1). Cependant, certains ports dans cette 
+plage sont réservés à des protocoles spécifiques ou sont utilisés par des applications 
+populaires.
+
+Il est important de noter que les ports numéros inférieurs à 1024, appelés "ports bien 
+connus" ou "ports réservés", sont généralement réservés aux services système et requièrent 
+des privilèges élevés pour être utilisés. Les ports numérotés de 1024 à 65535 sont 
+considérés comme des "ports éphémères" ou "ports privés" et peuvent être utilisés par les 
+applications utilisateur.
+
+//////////////////////////////////////////////////////////////////////////////
+
+********************
+***** est-ce que pour irc, le port peut étre plus important que 65535 ?
+********************
+
+Non, le port pour IRC ne peut pas être supérieur à 65535. Dans le modèle TCP/IP, le numéro de 
+port est un entier 16 bits, ce qui signifie qu'il est limité à une plage de 0 à 65535. 
+Tous les ports utilisés pour la communication réseau doivent respecter cette limite.
+
+Lorsqu'il s'agit de configurer un serveur IRC ou de se connecter à un serveur existant, 
+il est important de respecter cette limite et d'utiliser un numéro de port valide dans 
+la plage autorisée, comme le port standard 6667 ou d'autres ports spécifiquement configurés 
+pour IRC.
+
+*/
