@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:55:09 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 17:44:16 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void Server::receiveData( size_t cid ) {
   long nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ), 0 );
 
   if( nbytes <= 0 ) {
+    std::cout << "del connection" << std::endl;
     if( nbytes == 0 ) {
       std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
     } else {
@@ -159,6 +160,7 @@ void Server::setup() {
     exit( 1 );
   }
   pfd.fd = _listener.getSocket();
+ // std::cout << "pfd.fd: " << pfd.fd << std::endl;
   pfd.events = POLLIN;  // Report read to read on incoming connection
   pfd.revents = 0;      // Report read to read on incoming connection
   _pfds.push_back( pfd );
@@ -188,11 +190,19 @@ void Server::run() {
       return;
     }
     if( _pfds[0].revents & POLLIN ) {
+     // std::cout << "trying a new connection" << std::endl;
       addConnection();
     }
-    for( size_t cid = 0; cid < _pfds.size(); ++cid ) {
-      if( _pfds[cid].revents & POLLIN ) {
-        receiveData( cid );
+    else
+    {
+    //  std::cout << "rentre dans le else" << std::endl;
+      for( size_t cid = 1; cid < _pfds.size(); ++cid ) 
+      {
+      //  std::cout << "cid: " << cid << std::endl;
+        if( _pfds[cid].revents & POLLIN ) {
+      //    std::cout << "test received data" << std::endl;
+          receiveData( cid );
+        }
       }
     }
   }
