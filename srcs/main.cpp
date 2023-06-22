@@ -6,13 +6,15 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:29:49 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 18:28:39 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Socket.hpp"
+
+
 
 // /**
 //  * @brief       Forbidden inet_ntop implementation
@@ -101,10 +103,7 @@ int	main(int argc, char **argv)
 		std::size_t	port = std::atoi(argv[1]);
 		const char	*password = argv[2];
 
-		(void)password;
-		(void)port;
-		// Server server(port, password);
-		Server server;
+		Server server(port, password);
 		server.run();	
 	}
 	catch (const std::invalid_argument& ia)

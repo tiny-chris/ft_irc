@@ -18,6 +18,7 @@ SRCS		:=	\
 			Server.cpp \
 			Client.cpp \
 			Socket.cpp \
+			Utils.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs

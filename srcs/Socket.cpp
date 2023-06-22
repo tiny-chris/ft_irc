@@ -6,42 +6,13 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:12:09 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:29:38 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 18:28:52 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-
-/**
- * @brief       Forbidden gai_strerror implementation
- */
-
-std::string gaiStrerror( int errorCode ) {
-  switch( errorCode ) {
-    case 0:
-      return "Success";
-    case EAI_AGAIN:
-      return "Temporary failure in name resolution";
-    case EAI_BADFLAGS:
-      return "Invalid value for ai_flags";
-    case EAI_FAIL:
-      return "Non-recoverable failure in name resolution";
-    case EAI_FAMILY:
-      return "ai_family not supported";
-    case EAI_MEMORY:
-      return "Out of memory";
-    case EAI_NONAME:
-      return "Name or service not known";
-    case EAI_SERVICE:
-      return "Invalid value for service";
-    case EAI_SOCKTYPE:
-      return "ai_socktype not supported";
-    case EAI_SYSTEM:
-      return strerror( errno );
-    default:
-      return "Unknown error";
-  }
-}
+#include "Server.hpp"
+#include "Utils.hpp"
 
 void Socket::closeSocket( void ) {
   if( _sockfd != -1 ) {
@@ -50,7 +21,7 @@ void Socket::closeSocket( void ) {
   }
 }
 
-int Socket::createListenerSocket( void ) {
+int Socket::createListenerSocket( size_t port ) {
   int             yes = 1;  // For setsockopt() SO_REUSEADDR, below
   int             status;
   struct addrinfo hints, *res, *p;
@@ -59,7 +30,7 @@ int Socket::createListenerSocket( void ) {
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
-  status = getaddrinfo( NULL, PORT, &hints, &res );
+  status = getaddrinfo( NULL, intToString(port).c_str(), &hints, &res );
   if( status != 0 ) {
     std::cerr << "selectserver: " << gaiStrerror( status ) << "\n";
     exit( 1 );

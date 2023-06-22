@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:10:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 18:10:15 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Server {
 	
 	public:
 	
-		Server() { setup(); }
+		Server(size_t port, const char *password);
 		~Server() { shutdown(); }
 
 		void run();
@@ -53,6 +53,9 @@ class Server {
 		std::vector<pollfd> _pfds;      // Pollable file descriptors
 		std::vector<Client> _clients;   // Pollable file descriptors
 		Socket              _listener;  // Use Socket for managing the listener socket
+
+		size_t		_port;
+		const char	*_password;
 };
 
 #endif

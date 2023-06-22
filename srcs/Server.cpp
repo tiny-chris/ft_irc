@@ -6,21 +6,18 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 17:44:16 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 18:27:05 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Socket.hpp"
+#include "Utils.hpp"
 
-/**
- * @brief       Int to String
- */
-
-std::string intToString( int number ) {
-  std::ostringstream oss;
-  oss << number;
-  return oss.str();
+Server::Server(size_t port, const char *password) : _port(port), _password(password) { 
+  std::cout << _password << std::endl;
+  setup();
 }
 
 void Server::shutdown( void ) {
@@ -155,7 +152,7 @@ void Server::addConnection() {
 void Server::setup() {
   pollfd pfd;
 
-  if( _listener.createListenerSocket() == -1 ) {
+  if( _listener.createListenerSocket(this->_port) == -1 ) {
     std::cerr << "error creating listening socket\n";
     exit( 1 );
   }
@@ -190,7 +187,7 @@ void Server::run() {
       return;
     }
     if( _pfds[0].revents & POLLIN ) {
-     // std::cout << "trying a new connection" << std::endl;
+     // std::cout << "trying a new connection" << std::endl;     
       addConnection();
     }
     else
