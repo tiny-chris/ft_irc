@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Socket.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:10:53 by lmelard          ###   ########.fr       */
+/*   Created: 2023/06/22 15:09:52 by lmelard           #+#    #+#             */
+/*   Updated: 2023/06/22 15:26:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef SOCKET_HPP
+# define SOCKET_HPP
 
 # include <cerrno>    // errno
 # include <cstring>   // strerror
@@ -26,33 +26,26 @@
 # include <stdlib.h>  // exit
 # include <unistd.h>  // close
 
-# include "Client.hpp"
-# include "Socket.hpp"
+# define PORT "6667"
 
-class Server {
-	
+/**
+ * @brief       Socket
+ */
+
+class Socket {
 	public:
 	
-		Server() { setup(); }
-		~Server() { shutdown(); }
+		Socket() : _sockfd( -1 ) {}
+		~Socket() { closeSocket(); }
 
-		void run();
+		int createListenerSocket( void );
+		int getSocket( void ) { return _sockfd; }
 
 	private:
-
-		void shutdown( void );                              // close
-		void delConnection( size_t cid );                   // close
-		void broadcastMsg( std::string& msg, size_t cid );  // send
-		void parseData( const char* data, size_t cid );
-		void receiveData( size_t cid );  // recv, senb
-		void addConnection();            // accept
-		void setup();
-
-		// add a map of clients that contains their name, a struct of their
-		// socket and a struct of their status
-		std::vector<pollfd> _pfds;      // Pollable file descriptors
-		std::vector<Client> _clients;   // Pollable file descriptors
-		Socket              _listener;  // Use Socket for managing the listener socket
+	
+		void closeSocket( void );  // useless?
+		/* int accept( struct sockaddr* addr, socklen_t* addrlen ); */
+		int _sockfd;
 };
 
 #endif

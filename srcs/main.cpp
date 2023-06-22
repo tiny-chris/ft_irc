@@ -1,9 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
+/*   Updated: 2023/06/22 15:29:49 by lmelard          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Client.hpp"
 #include "Server.hpp"
+#include "Socket.hpp"
+
+// /**
+//  * @brief       Forbidden inet_ntop implementation
+//  */
+
+// std::string ntop( const struct sockaddr_storage& socket ) {
+//   std::stringstream ss;
+
+//   if( socket.ss_family == AF_INET ) {
+//     const struct sockaddr_in* sockaddr;
+//     const uint8_t*            addr;
+//     sockaddr = reinterpret_cast<const struct sockaddr_in*>( &socket );
+//     addr = reinterpret_cast<const uint8_t*>( &sockaddr->sin_addr.s_addr );
+//     ss << static_cast<int>( addr[0] ) << ".";
+//     ss << static_cast<int>( addr[1] ) << ".";
+//     ss << static_cast<int>( addr[2] ) << ".";
+//     ss << static_cast<int>( addr[3] ) << ".";
+//     return ss.str();
+//   } else if( socket.ss_family == AF_INET6 ) {
+//     const struct sockaddr_in6* sockaddr;
+//     const uint8_t*             addr;
+//     sockaddr = reinterpret_cast<const struct sockaddr_in6*>( &socket );
+//     addr = sockaddr->sin6_addr.s6_addr;
+//     for( int i = 0; i < 16; ++i ) {
+//       if( i > 0 && i % 2 == 0 ) {
+//         ss << "::";
+//       }
+//       ss << static_cast<int>( addr[i] );
+//     }
+//     return ss.str();
+//   } else {
+//     return std::string( "UNKN_ADDR" );
+//   }
+// }
 
 #include <cstdlib>		// std::atoi() 
 #include <iostream>		// std::cout
 #include <stdexcept>	// std::invalid_argument, std::runtime_error...
-
 
 void	checkArgs(int argc, char **argv)
 {
@@ -34,6 +81,13 @@ void	checkArgs(int argc, char **argv)
 	return ;
 }
 
+// int main( void ) 
+// {
+//   Server server;
+//   server.run();
+//   return 0;
+// }
+
 int	main(int argc, char **argv) 
 {
 	try
@@ -47,7 +101,10 @@ int	main(int argc, char **argv)
 		std::size_t	port = std::atoi(argv[1]);
 		const char	*password = argv[2];
 
-		Server server(port, password);
+		(void)password;
+		(void)port;
+		// Server server(port, password);
+		Server server;
 		server.run();	
 	}
 	catch (const std::invalid_argument& ia)

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:10:53 by lmelard          ###   ########.fr       */
+/*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
+/*   Updated: 2023/06/22 15:15:36 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef CLIENT_HPP
+# define CLIENT_HPP
 
 # include <cerrno>    // errno
 # include <cstring>   // strerror
@@ -26,33 +26,19 @@
 # include <stdlib.h>  // exit
 # include <unistd.h>  // close
 
-# include "Client.hpp"
-# include "Socket.hpp"
+class Client {
 
-class Server {
-	
 	public:
 	
-		Server() { setup(); }
-		~Server() { shutdown(); }
+		Client( std::string name );
+		~Client( void );
 
-		void run();
+		void         setName( std::string const& name );
+		std::string& getName( void );
 
 	private:
-
-		void shutdown( void );                              // close
-		void delConnection( size_t cid );                   // close
-		void broadcastMsg( std::string& msg, size_t cid );  // send
-		void parseData( const char* data, size_t cid );
-		void receiveData( size_t cid );  // recv, senb
-		void addConnection();            // accept
-		void setup();
-
-		// add a map of clients that contains their name, a struct of their
-		// socket and a struct of their status
-		std::vector<pollfd> _pfds;      // Pollable file descriptors
-		std::vector<Client> _clients;   // Pollable file descriptors
-		Socket              _listener;  // Use Socket for managing the listener socket
+	
+		std::string _name;
 };
 
 #endif

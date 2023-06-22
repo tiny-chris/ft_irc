@@ -16,8 +16,6 @@ DIR_DUP		= mkdir -p $(@D)
 SRCS		:=	\
 			main.cpp \
 			Server.cpp \
-			Client.cpp \
-			Socket.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
