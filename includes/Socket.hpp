@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:09:52 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:04:32 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/22 18:30:59 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 # include <poll.h>   // pollfd, poll
 # include <stdlib.h>  // exit
 # include <unistd.h>  // close
-
-# define PORT "6667"
 
 /**
  * @brief       Socket
