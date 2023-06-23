@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:27:05 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/23 20:21:20 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,24 @@
 #include "Socket.hpp"
 #include "Utils.hpp"
 
-Server::Server(size_t port, const char *password) : _port(port), _password(password) { 
+/* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
+
+Server::Server( size_t port, const char *password ) : _port(port), _password(password) { 
   std::cout << _password << std::endl;
   setup();
 }
+
+Server::~Server( void ) { shutdown(); }
+
+/* ---------------------- MEMBER FUNCTIONS: ACCESSORS ----------------------- */
+
+size_t      Server::getPort( void ) const { return _port; }
+std::string Server::getPassword( void ) const { return _password; }
+
+void        Server::setPort( size_t& port ) { _port = port; }
+void        Server::setPassword( std::string& password ) { _password = password; }
+
+/* -------------------- MEMBER FUNCTIONS: TO BE DEFINED --------------------- */
 
 void Server::shutdown( void ) {
   std::cout << "Server shutting down...\n";
@@ -71,19 +85,91 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
   std::cout << msg;
 }
 
-void Server::parseData( const char* data, size_t cid ) {
-  std::string msg( data );
+// void Server::parseData( const char* data, size_t cid ) {
+//   std::string msg( data );
 
-  if( msg == "/shutdown" ) {
-    shutdown();
-  } else if( msg == "/quit" ) {
-    delConnection( cid );
-  } else if( msg.substr( 0, 6 ) == "/name " ) {
-    std::cout << "<" << _clients[cid].getName();
-    _clients[cid].setName( msg.substr( 6 ) );
-    std::cout << " became " << _clients[cid].getName() << ">\n";
-  } else {
-    broadcastMsg( msg, cid );
+//   if( msg == "/shutdown" ) {
+//     shutdown();
+//   } else if( msg == "/quit" ) {
+//     delConnection( cid );
+//   } else if( msg.substr( 0, 6 ) == "/name " ) {
+//     std::cout << "<" << _clients[cid].getName();
+//     _clients[cid].setName( msg.substr( 6 ) );
+//     std::cout << " became " << _clients[cid].getName() << ">\n";
+//   } else {
+//     broadcastMsg( msg, cid );
+//   }
+// }
+
+/**
+ * @brief       Handle request by identifying command and parameters
+ * 
+ *      A REVOIR CAR BOUCLE PAS CONSEILLEE (plutot while (std::getline(iss, line))...)
+ *      MAIS PAS PROTEGE CORRECTEMENT... A PREVOIR !!!!!!!    
+ */
+// void  Server::handleRequest( Client& client, char *buffer )
+void  Server::handleRequest( size_t cid, char *buffer )
+{
+  // int                 clientFdSocket = _clients[cid].getCfd();
+  std::string         msg(buffer);//code de Clem pour la fin
+  std::istringstream  iss(buffer);
+
+  while (!iss.eof())//
+  {
+    size_t      splitter;
+    std::string line;
+    std::string command;
+    std::string parameters = "";
+
+    std::getline(iss, line);
+    if (line.empty())
+      continue;
+    splitter = line.find(' ', 0);
+    if (splitter == std::string::npos)
+      command = line;
+    else
+    {
+      command = line.substr(0, splitter);
+      parameters = line.substr(splitter + 1, std::string::npos);
+    }
+    
+    /* TODO:  prévoir le cas où le client est a été déconnecté et breaker */
+
+    /* TODO: faire un check sur le nom de la commande : 
+              --> voir si elle fait partie de la liste des commandes */
+
+    /* TODO:  il faut que PASS soit la premiere commande prise en compte !
+              --> passer (continue;) si la commande indiquee n'est pas PASS 
+                  ET si le mot de passe n'est pas valide
+        "de-commenter" le code deja pret mais non pertinent sans la fonction handlePASS */
+    // if (command != "PASS" && !_clients[cid].getPassStatus())
+    //   continue;
+
+    /*  TODO: verifier s'il s'agit d'une des commandes d'authentification (PASS, NICK, USER)
+              et si NON, s'assurer que les 3 commandes precedentes ont bien ete completees
+                avant de prendre en compte d'autres commande... */
+    // if (client.getIfResgistered() || command == "NICK" || command == "PASS" || command == "")
+    //    "rentrer dans les differentes commandes"
+    if (command == "PASS")
+      std::cout << "mettre la fonction pour PASS" << std::endl;
+      //handlePASS(client, parameters, _password);
+    
+    /*  Reprise du code de Clement afin de pouvoir quitter et faire qqs manip... */
+    else
+    {
+      if ( command == "/shutdown" ) {
+        shutdown();
+      } else if ( command == "/quit" ) {
+        delConnection( cid );
+      } else if (command == "/name") {
+        std::cout << "<" << _clients[cid].getName();
+        _clients[cid].setName( msg.substr( 6 ) );
+        std::cout << " became " << _clients[cid].getName() << ">\n";
+      } else {
+        broadcastMsg( msg, cid );
+      }
+      // std::cout << "si pas PASS: on n'a pas encore gere les autres commandes" << std::endl;
+    }
   }
 }
 
@@ -102,8 +188,10 @@ void Server::receiveData( size_t cid ) {
     return;
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
+  std::cout << "display buffer content (with potential \r\n) : " << buf << std::endl;
   buf[nbytes - 2] = '\0';
-  parseData( buf, cid );
+  // parseData( buf, cid );
+  handleRequest( cid, buf );
 }
 
 void Server::addConnection() {
@@ -133,10 +221,11 @@ void Server::addConnection() {
   pfd.revents = 0;      // prevent conditional jump in run()
   _pfds.push_back( pfd );
 
+  // If there is no client --> create a first client "NONE" to start the client counting at 1
   if( _clients.size() == 0 ) {
-    _clients.push_back( Client( "NONE" ) );
+    _clients.push_back( Client( "NONE", -1 ) );
   }
-  _clients.push_back( Client( "Anon_0" + intToString( newsocket ) ) );
+  _clients.push_back( Client( "Anon_0" + intToString( newsocket ), newsocket ) );
 
   std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
   /* std::cout << "pollserver: new connection from "; */
@@ -197,7 +286,7 @@ void Server::run() {
       {
       //  std::cout << "cid: " << cid << std::endl;
         if( _pfds[cid].revents & POLLIN ) {
-      //    std::cout << "test received data" << std::endl;
+          // std::cout << "test received data" << std::endl;
           receiveData( cid );
         }
       }

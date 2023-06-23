@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:10:15 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/23 19:47:12 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,26 @@ class Server {
 	
 	public:
 	
-		Server(size_t port, const char *password);
-		~Server() { shutdown(); }
+		Server( size_t port, const char *password );
+		~Server( void );
 
-		void run();
+		size_t		getPort( void ) const;
+		std::string	getPassword( void ) const;
+
+		void		setPort( size_t& port );
+		void		setPassword( std::string& password );
+
+		void		run();
+
+		// void		handleRequest( Client& client, char *buffer );
+		void		handleRequest( size_t cid, char *buffer );
 
 	private:
 
 		void shutdown( void );                              // close
 		void delConnection( size_t cid );                   // close
 		void broadcastMsg( std::string& msg, size_t cid );  // send
-		void parseData( const char* data, size_t cid );
+		// void parseData( const char* data, size_t cid );
 		void receiveData( size_t cid );  // recv, senb
 		void addConnection();            // accept
 		void setup();
@@ -55,7 +64,7 @@ class Server {
 		Socket              _listener;  // Use Socket for managing the listener socket
 
 		size_t		_port;
-		const char	*_password;
+		std::string	_password;
 };
 
 #endif
