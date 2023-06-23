@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 15:15:36 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/23 15:33:26 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,21 @@ class Client {
 		Client( std::string name );
 		~Client( void );
 
-		void         setName( std::string const& name );
-		std::string& getName( void );
+		// getters
+		std::string&	getName( void );
+		int&			getCid( void );
+		bool&			getPassStatus( void );
+
+		// setters
+		void			setName( std::string const& name );
+		void			setCid( int cid );
+		void			setPassStatus( bool const& passwordStatus );
 
 	private:
 	
 		std::string _name;
+		int			_cid;
+		bool		_passStatus;
 };
 
 #endif
