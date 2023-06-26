@@ -19,6 +19,7 @@ SRCS		:=	\
 			Client.cpp \
 			Socket.cpp \
 			Utils.cpp \
+			Commands/pass.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs

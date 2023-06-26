@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/23 20:21:20 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/26 17:48:34 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Client.hpp"
 #include "Socket.hpp"
 #include "Utils.hpp"
+#include "Commands.hpp"
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
@@ -151,8 +152,10 @@ void  Server::handleRequest( size_t cid, char *buffer )
     // if (client.getIfResgistered() || command == "NICK" || command == "PASS" || command == "")
     //    "rentrer dans les differentes commandes"
     if (command == "PASS")
+    {
       std::cout << "mettre la fonction pour PASS" << std::endl;
-      //handlePASS(client, parameters, _password);
+      handlePass(_clients[cid], parameters, _password);
+    }
     
     /*  Reprise du code de Clement afin de pouvoir quitter et faire qqs manip... */
     else
