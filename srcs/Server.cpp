@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/26 17:48:34 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 11:44:16 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
 Server::Server( size_t port, const char *password ) : _port(port), _password(password) { 
-  std::cout << _password << std::endl;
+ // std::cout << _password << std::endl;
   setup();
 }
 
@@ -178,21 +178,32 @@ void  Server::handleRequest( size_t cid, char *buffer )
 
 void Server::receiveData( size_t cid ) {
   char buf[256];  // Buffer for client data
-  long nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ), 0 );
-
-  if( nbytes <= 0 ) {
-    std::cout << "del connection" << std::endl;
-    if( nbytes == 0 ) {
-      std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
-    } else {
-      std::cerr << "recv: " << strerror( errno ) << "\n";
+  memset(buf, 0, sizeof(buf));
+  long nbytes = 0;
+  while (1)
+  {
+    memset(buf, 0, sizeof(buf));
+    nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
+    if( nbytes <= 0 ) {
+      std::cout << "del connection" << std::endl;
+      if( nbytes == 0 ) {
+        std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
+      } else {
+        std::cerr << "recv: " << strerror( errno ) << "\n";
+      }
+      delConnection( cid );
+      return;
     }
-    delConnection( cid );
-    return;
+    // Turn "^M\n" into "\0" TODO OS compatibility
+    //faire un pour verifier que ca finit bien par un 
+    if (nbytes >= 2 && buf[nbytes - 2] == '\r' && buf[nbytes - 1] == '\n')
+    {
+      buf[nbytes - 2] = '\0';
+      buf[nbytes - 1] = '\0';
+      break;
+    }
   }
-  // Turn "^M\n" into "\0" TODO OS compatibility
-  std::cout << "display buffer content (with potential \r\n) : " << buf << std::endl;
-  buf[nbytes - 2] = '\0';
+  std::cout << "display buffer content (with potential \\r\\n) : " << buf << std::endl;
   // parseData( buf, cid );
   handleRequest( cid, buf );
 }

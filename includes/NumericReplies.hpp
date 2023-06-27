@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/26 18:03:09 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 11:14:54 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@
 // ":Your host isn't among the privileged"
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
-# define  ERR_PASSWDMISMATCH ":Password incorrect"
+# define  ERR_PASSWDMISMATCH ":Password incorrect\r\n"
 // 464
 // ":Password incorrect"
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
