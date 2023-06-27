@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:12:09 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:28:52 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 19:55:35 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 #include "Server.hpp"
-#include "Utils.hpp"
+#include "utils.hpp"
 
 void Socket::closeSocket( void ) {
   if( _sockfd != -1 ) {

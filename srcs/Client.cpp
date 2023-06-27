@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/23 19:01:42 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/27 19:04:47 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ std::string	Client::getName( void ) const {	return _name; }
 std::string	Client::getUsername( void ) const { return _username; }
 std::string	Client::getNickname( void ) const {	return _nickname; }
 bool		Client::getPassStatus( void ) const { return _passStatus; }
-bool 		Client::getIfResgistered( void ) const { return _isRegistered; }
+bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setName( std::string const& name ) { _name = name; }

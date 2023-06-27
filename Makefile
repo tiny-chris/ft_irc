@@ -15,10 +15,10 @@ DIR_DUP		= mkdir -p $(@D)
 
 SRCS		:=	\
 			main.cpp \
-			Server.cpp \
 			Client.cpp \
+			Server.cpp \
 			Socket.cpp \
-			Utils.cpp \
+			utils.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs

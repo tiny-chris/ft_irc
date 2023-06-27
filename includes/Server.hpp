@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 15:10:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 19:42:58 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sstream>   // stringstream
 # include <string>    // string
 # include <vector>    // vector
+# include <map>			// map
 
 # include <arpa/inet.h>  // inet_ntoa
 # include <netdb.h>  // recv, send, sockaddr, accept, addrinfo, getaddrinfo, socket, setsockopt, bind, freeaddrinfo, listen
@@ -44,8 +45,8 @@ class Server {
 
 		void		run();
 
-		// void		handleRequest( Client& client, char *buffer );
-		void		handleRequest( size_t cid, std::string buffer );
+		void		initCommands( void );
+		void		handleRequest( size_t cid, std::string request );
 
 		/*** COMMANDS ***/
 		void		handlePass( size_t cid, std::string param );
@@ -65,6 +66,8 @@ class Server {
 		std::vector<pollfd> _pfds;      // Pollable file descriptors
 		std::vector<Client> _clients;   // Pollable file descriptors
 		Socket              _listener;  // Use Socket for managing the listener socket
+
+		std::map<int,std::string>	_mapCommands;
 
 		size_t		_port;
 		std::string	_password;

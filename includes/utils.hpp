@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                          :+:      :+:    :+:   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:27:40 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 19:58:30 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,37 @@
 # include <poll.h>   // pollfd, poll
 # include <stdlib.h>  // exit
 # include <unistd.h>  // close
+
+enum commands {
+	UNDEFINED = 0,
+	
+	PASS = 100,
+	NICK = 101,
+	USER = 102,
+	JOIN = 103,
+	PRIVMSG = 104,
+
+	ZZ_SHUTDOWN = 1000,
+	ZZ_QUIT = 1001,
+	ZZ_NAME = 1002,
+	ZZ_MSG = 1003,
+};
+// 	// PART,
+// 	// NOTICE,
+// 	// NAMES,
+// 	// LIST,
+// 	// INVITE,
+// 	// PING,
+// 	// PONG,
+// 	// MODE,
+// 	// WHO,
+// 	// WHOIS,
+// 	// WHOWAS,
+// 	// QUIT,
+// 	// KICK,
+// 	// TOPIC,
+// 	// OPER,
+// 	// KILL
 
 std::string intToString( int number );
 std::string gaiStrerror( int errorCode );

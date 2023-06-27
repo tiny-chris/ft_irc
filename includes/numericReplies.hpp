@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 15:06:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 18:56:59 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@
 
 /*********************************************/
 
-# define  ERR_UNKNOWNCOMMAND 421
+# define  ERR_UNKNOWNCOMMAND(command) (std::string(command) + " :Unknown command\r\n")
+// 421
 //"<commande> :Unknown command"
 //Renvoyé à un client enregistré pour indiquer que la commande envoyée est inconnue du serveur.
 
@@ -122,7 +123,8 @@
 // ":USERS has been disabled"
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
-# define  ERR_NOTREGISTERED 451
+# define  ERR_NOTREGISTERED(nickname) (std::string(nickname) + " :You have not registered\r\n") 
+// 451
 // ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 

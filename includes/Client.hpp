@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/23 19:01:48 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/27 19:02:48 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Client {
 		std::string		getUsername( void ) const;
 		std::string		getNickname( void ) const;
 		bool			getPassStatus( void ) const;
-		bool			getIfResgistered( void ) const;
+		bool			getIfRegistered( void ) const;
 
 		void			setCfd( int& clientFd );
 		void			setName( std::string const& name );

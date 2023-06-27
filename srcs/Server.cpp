@@ -3,29 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 15:10:09 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 20:15:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Socket.hpp"
-#include "Utils.hpp"
+#include "utils.hpp"
+#include "defines.hpp"
 #include "Commands.hpp"
-#include "NumericReplies.hpp"
-
-
-#define MAXCONNECTION 128 // to del
-#define MAXCHARBUF    512 // to del
+#include "numericReplies.hpp"
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
 Server::Server( size_t port, const char *password ) : _port(port), _password(password) { 
  // std::cout << _password << std::endl;
   setup();
+  initCommands();
 }
 
 Server::~Server( void ) { shutdown(); }
@@ -91,6 +89,26 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
   std::cout << msg;
 }
 
+/**
+ * @brief       Initialize the commands to be handled in IRC into a map
+ */
+
+void	Server::initCommands( void )
+{
+  _mapCommands.insert(std::make_pair(0, "UNDEFINED"));
+  _mapCommands.insert(std::make_pair(100, "PASS"));
+  _mapCommands.insert(std::make_pair(101, "NICK"));
+  _mapCommands.insert(std::make_pair(102, "USER"));
+  _mapCommands.insert(std::make_pair(103, "JOIN"));
+  _mapCommands.insert(std::make_pair(104, "PRIVMSG"));
+
+  _mapCommands.insert(std::make_pair(1000, "/shutdown"));
+  _mapCommands.insert(std::make_pair(1001, "/quit"));
+  _mapCommands.insert(std::make_pair(1002, "/name"));
+  _mapCommands.insert(std::make_pair(1003, "/msg"));
+
+}
+
 // void Server::parseData( const char* data, size_t cid ) {
 //   std::string msg( data );
 
@@ -109,81 +127,133 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
 
 /**
  * @brief       Handle request by identifying command and parameters
- * 
- *      A REVOIR CAR BOUCLE PAS CONSEILLEE (plutot while (std::getline(iss, line))...)
- *      MAIS PAS PROTEGE CORRECTEMENT... A PREVOIR !!!!!!!    
  */
-// void  Server::handleRequest( Client& client, char *buffer )
-void  Server::handleRequest( size_t cid, std::string buffer )
+
+void  Server::handleRequest( size_t cid, std::string request )
 {
-  // int                 clientFdSocket = _clients[cid].getCfd();
-  std::string         msg = buffer;//code de Clem pour la fin
-  std::istringstream  iss(buffer);
+  std::string command;
+  std::string parameters = "";
+  std::string reply;
+  size_t      splitter;
+  int         commandKey = 0; 
 
-  while (!iss.eof())//
+  splitter = request.find(' ', 0);
+
+  /* ********************************* */
+  /* ACTION 1   - get command & params */
+  /* ********************************* */
+  // if <request> has no space --> command is request string
+  //    should also take into account the empty message (initially only '\r\n' and empty after receiveData())
+  // else --> split command & parameters
+  if (splitter == std::string::npos)
+      command = request;
+  else
   {
-    size_t      splitter;
-    std::string line;
-    std::string command;
-    std::string parameters = "";
+    command = request.substr(0, splitter);
+    parameters = request.substr(splitter + 1, std::string::npos);
+  }
 
-    std::getline(iss, line);
-    if (line.empty())
-      continue;
-    splitter = line.find(' ', 0);
-    if (splitter == std::string::npos)
-      command = line;
-    else
+  /* ********************************* */
+  /* ACTION 2   - check the case when the client is disconnected and return */
+  /* ********************************* */
+  //   /* TODO:  prévoir le cas où le client est a été déconnecté et breaker */
+
+
+  /* ********************************* */
+  /* ACTION 3   - check if 'command' is part of the _mapCommands and get the command key */
+  /* ********************************* */
+  for (std::map<int, std::string>::const_iterator it = _mapCommands.begin(); it != _mapCommands.end(); ++it) 
+  {
+    if (command == it->second)
+      commandKey = it->first;
+  }
+
+  // // display to check:
+  // std::cout << "command = " << command << std::endl;
+  // std::cout << "param = " << parameters << std::endl;
+  // std::cout << "commandKey = " << commandKey << std::endl;
+
+  /* ********************************* */
+  /* ACTION 4   - if 'command' is in _mapCommands */
+  /* ********************************* */
+  //  
+  //  SUB-ACTION 4.1   - 'PASS' must be the first command entered, if not --> return (numeric_reply ??)
+  //  SUB-ACTION 4.2   - if command is NOT an authentifier (PASS, NICK, USER) or QUIT and if client is not registered yet --> ERR_NOTREGISTERED
+  //
+  //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem pour potentiel shutdown
+  //  
+  if (commandKey != UNDEFINED)
+  {
+    if (command != "PASS" && _clients[cid].getPassStatus() == false )
+      return;
+
+    if (!_clients[cid].getIfRegistered()
+      && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
-      command = line.substr(0, splitter);
-      parameters = line.substr(splitter + 1, std::string::npos);
+      reply = ERR_NOTREGISTERED( _clients[cid].getNickname() );
+      std::cout << "print reply: " << reply << std::endl; // to del 
+      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+      return;
     }
+  }
+
+  /* ********************************* */
+  /* ACTION 5   - handle command */
+  /* ********************************* */
+  switch(commandKey)
+  {
+    case PASS:        handlePass( cid, parameters ); break;
+    // case PASS: {
+    //   std::cout << "commandKey PASS = " << commandKey << std::endl;
+    //   std::cout << "_password = '" << _password << "'" << std::endl;
+    //   std::cout << "password param = '" << parameters << "'" << std::endl;
+    //   std::cout << "param size = " << parameters.size() << " vs. pwd size = " << _password.size() << std::endl;
+    //   handlePass( cid, parameters );
+    // } break;
+    case NICK:        {// temp function
+                        std::cout << "put function to handle NICK command with " << parameters << std::endl; 
+                        _clients[cid].setNickname(parameters);
+                      } break;
+    case USER:        {// temp function
+                        std::cout << "put function to handle USER command with " << parameters << std::endl; 
+                        _clients[cid].setUsername(parameters);
+                        if (_clients[cid].getPassStatus() == true 
+                          && !_clients[cid].getNickname().empty() && !_clients[cid].getUsername().empty())
+                        {
+                          _clients[cid].setIfRegistered(true);
+                          std::cout << "client " << _clients[cid].getNickname() << " is registered" << std::endl;
+                        }
+                      } break;
+                      std::cout << "put function to handle USER command" << std::endl; break;
+    case JOIN:        std::cout << "put function to handle JOIN command" << std::endl; break;
+    case PRIVMSG:     std::cout << "put function to handle PRIVMSG command" << std::endl; break;
     
-    /* TODO:  prévoir le cas où le client est a été déconnecté et breaker */
 
-    /* TODO: faire un check sur le nom de la commande : 
-              --> voir si elle fait partie de la liste des commandes */
+    // keeping Clement's initial commands just in case... - START
+    case ZZ_SHUTDOWN: shutdown(); break;                          // ' /shutdown '
+    case ZZ_QUIT:     delConnection( cid ); break;                // ' /quit '
+    case ZZ_NAME:     {                                           // ' /name <new_name>'
+                        std::cout << "<" << _clients[cid].getName();
+                        _clients[cid].setName( parameters );
+                        std::cout << " became " << _clients[cid].getName() << ">\n";
+                      } break;
+    case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
+    // keeping Clement's initial commands just in case... - END
 
-    /* TODO:  il faut que PASS soit la premiere commande prise en compte !
-              --> passer (continue;) si la commande indiquee n'est pas PASS 
-                  ET si le mot de passe n'est pas valide
-        "de-commenter" le code deja pret mais non pertinent sans la fonction handlePASS */
-    // if (command != "PASS" && !_clients[cid].getPassStatus())
-    //   continue;
-
-    /*  TODO: verifier s'il s'agit d'une des commandes d'authentification (PASS, NICK, USER)
-              et si NON, s'assurer que les 3 commandes precedentes ont bien ete completees
-                avant de prendre en compte d'autres commande... */
-    // if (client.getIfResgistered() || command == "NICK" || command == "PASS" || command == "")
-    //    "rentrer dans les differentes commandes"
-    if (command == "PASS")
-    {
-      std::cout << "mettre la fonction pour PASS" << std::endl;
-      handlePass(cid, parameters);
-      // handlePass(_clients[cid], parameters, _password);
-    }
-    
-    /*  Reprise du code de Clement afin de pouvoir quitter et faire qqs manip... */
-    else
-    {
-      if ( command == "/shutdown" ) {
-        shutdown();
-      } else if ( command == "/quit" ) {
-        delConnection( cid );
-      } else if (command == "/name") {
-        std::cout << "<" << _clients[cid].getName();
-        _clients[cid].setName( msg.substr( 6 ) );
-        std::cout << " became " << _clients[cid].getName() << ">\n";
-      } else {
-        broadcastMsg( msg, cid );
-      }
-      // std::cout << "si pas PASS: on n'a pas encore gere les autres commandes" << std::endl;
-    }
+    default:        	{
+                        reply = ERR_UNKNOWNCOMMAND( command );
+                        std::cout << "print reply: " << reply << std::endl; // to del 
+                        send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+                        return;
+                      } break;
   }
 }
 
+
+/*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
+
 void Server::receiveData( size_t cid ) {
-  char buf[MAXCHARBUF];  // Buffer for client data
+  char buf[MAXBUFLEN];  // Buffer for client data
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
@@ -207,14 +277,17 @@ void Server::receiveData( size_t cid ) {
     int size = bufs[cid].size();
     if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
     {
-      bufs[cid][size - 2] = '\0';
-      bufs[cid][size - 1] = '\0';
+      // std::cout << "display bufs[cid] before deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
+      // bufs[cid][size - 2] = '\0';
+      // bufs[cid][size - 1] = '\0';
+      bufs[cid].erase(size - 1, 1);
+      bufs[cid].erase(size - 2, 1);
+      // std::cout << "display bufs[cid] after deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
       handleRequest( cid, bufs[cid] );
       bufs[cid].clear();
       // break;
     }
   //}
-  std::cout << "display buffer content (with potential \\r\\n) : " << buf << std::endl;
   // parseData( buf, cid );
 }
 
@@ -251,7 +324,8 @@ void Server::addConnection() {
   }
   _clients.push_back( Client( "Anon_0" + intToString( newsocket ), newsocket ) );
 
-  std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
+  std::cout << "<Anon_0" << newsocket << " is connectedl>\n";//new/
+  // std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
   /* std::cout << "pollserver: new connection from "; */
   /* std::cout << ntop( remoteAddr ); */
   /* std::cout << " on socket " << newsocket << "\n"; */
@@ -318,13 +392,15 @@ void Server::run() {
   }
 }
 
+/* Peut etre mettre des comments dans le serveur (pour indiquer par exemple que le mot de passe est correct....)*/
+
 void	Server::handlePass( size_t cid, std::string param )
 {
 	std::string	reply; 
 	// checking if the Client is already registered
 	// meaning checking if PASS, NICK, USER are already set
 	// if not ERR_ALREADYREGISTERED numeric reply is sent
-	if (_clients[cid].getIfResgistered() == true)
+	if (_clients[cid].getIfRegistered() == true)
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
 		reply = ERR_ALREADYREGISTRED;
