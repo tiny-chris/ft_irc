@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/23 19:47:12 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:10:53 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,11 @@ class Server {
 		void		run();
 
 		// void		handleRequest( Client& client, char *buffer );
-		void		handleRequest( size_t cid, char *buffer );
+		void		handleRequest( size_t cid, std::string buffer );
 
+		/*** COMMANDS ***/
+		void		handlePass( size_t cid, std::string param );
+	
 	private:
 
 		void shutdown( void );                              // close
