@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 11:14:54 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 15:06:53 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,5 +313,7 @@
 # define RPL_NOUSERS 395
 // ":Nobody logged in"
 // Si le message USERS est géré par un serveur, les réponses RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS et RPL_NOUSERS sont utilisées. RPL_USERSSTART doit être envoyé en premier, suivi par soit une séquence de RPL_USERS soit un unique RPL_NOUSER. Enfin, vient un RPL_ENDOFUSERS.
+
+# define KILL_MSG "KILL :client was killed\r\n"
 
 #endif

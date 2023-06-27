@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 11:44:16 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/27 15:10:09 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 #include "Socket.hpp"
 #include "Utils.hpp"
 #include "Commands.hpp"
+#include "NumericReplies.hpp"
+
+
+#define MAXCONNECTION 128 // to del
+#define MAXCHARBUF    512 // to del
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
@@ -109,10 +114,10 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
  *      MAIS PAS PROTEGE CORRECTEMENT... A PREVOIR !!!!!!!    
  */
 // void  Server::handleRequest( Client& client, char *buffer )
-void  Server::handleRequest( size_t cid, char *buffer )
+void  Server::handleRequest( size_t cid, std::string buffer )
 {
   // int                 clientFdSocket = _clients[cid].getCfd();
-  std::string         msg(buffer);//code de Clem pour la fin
+  std::string         msg = buffer;//code de Clem pour la fin
   std::istringstream  iss(buffer);
 
   while (!iss.eof())//
@@ -154,7 +159,8 @@ void  Server::handleRequest( size_t cid, char *buffer )
     if (command == "PASS")
     {
       std::cout << "mettre la fonction pour PASS" << std::endl;
-      handlePass(_clients[cid], parameters, _password);
+      handlePass(cid, parameters);
+      // handlePass(_clients[cid], parameters, _password);
     }
     
     /*  Reprise du code de Clement afin de pouvoir quitter et faire qqs manip... */
@@ -177,12 +183,13 @@ void  Server::handleRequest( size_t cid, char *buffer )
 }
 
 void Server::receiveData( size_t cid ) {
-  char buf[256];  // Buffer for client data
+  char buf[MAXCHARBUF];  // Buffer for client data
+  static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
-  while (1)
-  {
-    memset(buf, 0, sizeof(buf));
+  // while (1)
+  // {
+  //   memset(buf, 0, sizeof(buf));
     nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
     if( nbytes <= 0 ) {
       std::cout << "del connection" << std::endl;
@@ -196,16 +203,19 @@ void Server::receiveData( size_t cid ) {
     }
     // Turn "^M\n" into "\0" TODO OS compatibility
     //faire un pour verifier que ca finit bien par un 
-    if (nbytes >= 2 && buf[nbytes - 2] == '\r' && buf[nbytes - 1] == '\n')
+    bufs[cid] += buf;
+    int size = bufs[cid].size();
+    if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
     {
-      buf[nbytes - 2] = '\0';
-      buf[nbytes - 1] = '\0';
-      break;
+      bufs[cid][size - 2] = '\0';
+      bufs[cid][size - 1] = '\0';
+      handleRequest( cid, bufs[cid] );
+      bufs[cid].clear();
+      // break;
     }
-  }
+  //}
   std::cout << "display buffer content (with potential \\r\\n) : " << buf << std::endl;
   // parseData( buf, cid );
-  handleRequest( cid, buf );
 }
 
 void Server::addConnection() {
@@ -306,4 +316,46 @@ void Server::run() {
       }
     }
   }
+}
+
+void	Server::handlePass( size_t cid, std::string param )
+{
+	std::string	reply; 
+	// checking if the Client is already registered
+	// meaning checking if PASS, NICK, USER are already set
+	// if not ERR_ALREADYREGISTERED numeric reply is sent
+	if (_clients[cid].getIfResgistered() == true)
+	{
+		// ERR_ALREADYREGISTERED numeric reply is sent
+		reply = ERR_ALREADYREGISTRED;
+		std::cout << "print reply: " << reply << std::endl; // to del 
+		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+	}
+	// else if there is no param to the PASS command 
+	// ERR_NEEDMOREPARAMS numeric reply is sent
+	else if (param.compare("") == 0)
+	{
+		// ERR_NEEDMOREPARAMS numeric reply is sent
+		std::string command = "pass";
+		reply = ERR_NEEDMOREPARAMS (command);
+		std::cout << "print reply: " << reply << std::endl; // to del
+		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+	}
+	// else if Pass command's param is different from the password set for the Server
+	// then ERR_PASSDMISMATCH error is sent and 
+	else if (param.compare(_password) != 0 || param.size() != _password.size())
+	{
+		// wrong password numeric reply is sent ERR_PASSWRDMISMATCH
+		reply = ERR_PASSWDMISMATCH;
+		std::cout << "print reply: " << reply << std::endl; // to del
+		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+		reply = KILL_MSG;
+    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+   	this->delConnection( cid );
+    
+	}
+	// else if it's the right password, the client is not yet registered then setPassStatus to true
+	else 
+		_clients[cid].setPassStatus(true);
+	return ;
 }
