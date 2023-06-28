@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/28 16:23:19 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/28 16:56:11 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Server {
 
 		/*** COMMANDS ***/
 		void		handlePass( size_t cid, std::string param );
+		void		handleNick( size_t cid, std::string param );
 	
 	private:
 

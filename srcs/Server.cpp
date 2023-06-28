@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/28 16:44:59 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/28 17:52:47 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,3 +431,11 @@ void	Server::handlePass( size_t cid, std::string param )
 		_clients[cid].setPassStatus(true);
 	return ;
 }
+
+
+// void		Server::handleNick( size_t cid, std::string param )
+// {
+//   std::string reply;
+  
+//   return ;
+// }
