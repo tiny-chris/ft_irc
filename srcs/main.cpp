@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/22 18:28:39 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/28 16:33:01 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	main(int argc, char **argv)
 		std::size_t	port = std::atoi(argv[1]);
 		const char	*password = argv[2];
 
-		Server server(port, password);
+		Server server(port, password, "tiny_server");
 		server.run();	
 	}
 	catch (const std::invalid_argument& ia)

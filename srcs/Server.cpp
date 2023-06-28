@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 20:15:02 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/28 16:44:59 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password ) : _port(port), _password(password) { 
+Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) { 
  // std::cout << _password << std::endl;
   setup();
   initCommands();
@@ -190,7 +190,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     if (!_clients[cid].getIfRegistered()
       && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
-      reply = ERR_NOTREGISTERED( _clients[cid].getNickname() );
+      reply = ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() );
       std::cout << "print reply: " << reply << std::endl; // to del 
       send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
       return;
@@ -241,14 +241,13 @@ void  Server::handleRequest( size_t cid, std::string request )
     // keeping Clement's initial commands just in case... - END
 
     default:        	{
-                        reply = ERR_UNKNOWNCOMMAND( command );
+                        reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getName(), command );
                         std::cout << "print reply: " << reply << std::endl; // to del 
                         send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
                         return;
                       } break;
   }
 }
-
 
 /*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
 
@@ -257,36 +256,33 @@ void Server::receiveData( size_t cid ) {
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
-  // while (1)
-  // {
-  //   memset(buf, 0, sizeof(buf));
-    nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
-    if( nbytes <= 0 ) {
-      std::cout << "del connection" << std::endl;
-      if( nbytes == 0 ) {
-        std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
-      } else {
-        std::cerr << "recv: " << strerror( errno ) << "\n";
-      }
-      delConnection( cid );
-      return;
+  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
+  if( nbytes <= 0 ) {
+    std::cout << "del connection" << std::endl;
+    if( nbytes == 0 ) {
+      std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
+    } else {
+      std::cerr << "recv: " << strerror( errno ) << "\n";
     }
-    // Turn "^M\n" into "\0" TODO OS compatibility
-    //faire un pour verifier que ca finit bien par un 
-    bufs[cid] += buf;
-    int size = bufs[cid].size();
-    if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
-    {
-      // std::cout << "display bufs[cid] before deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
-      // bufs[cid][size - 2] = '\0';
-      // bufs[cid][size - 1] = '\0';
-      bufs[cid].erase(size - 1, 1);
-      bufs[cid].erase(size - 2, 1);
-      // std::cout << "display bufs[cid] after deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
-      handleRequest( cid, bufs[cid] );
-      bufs[cid].clear();
-      // break;
-    }
+    delConnection( cid );
+    return;
+  }
+  // Turn "^M\n" into "\0" TODO OS compatibility
+  //faire un pour verifier que ca finit bien par un 
+  bufs[cid] += buf;
+  int size = bufs[cid].size();
+  if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
+  {
+    // std::cout << "display bufs[cid] before deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
+    // bufs[cid][size - 2] = '\0';
+    // bufs[cid][size - 1] = '\0';
+    bufs[cid].erase(size - 1, 1);
+    bufs[cid].erase(size - 2, 1);
+    // std::cout << "display bufs[cid] after deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
+    handleRequest( cid, bufs[cid] );
+    bufs[cid].clear();
+    // break;
+  }
   //}
   // parseData( buf, cid );
 }
@@ -403,7 +399,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	if (_clients[cid].getIfRegistered() == true)
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
-		reply = ERR_ALREADYREGISTRED;
+		reply = ERR_ALREADYREGISTRED(_serverName, );
 		std::cout << "print reply: " << reply << std::endl; // to del 
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -413,7 +409,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	{
 		// ERR_NEEDMOREPARAMS numeric reply is sent
 		std::string command = "pass";
-		reply = ERR_NEEDMOREPARAMS (command);
+		reply = ERR_NEEDMOREPARAMS (command, _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -422,10 +418,10 @@ void	Server::handlePass( size_t cid, std::string param )
 	else if (param.compare(_password) != 0 || param.size() != _password.size())
 	{
 		// wrong password numeric reply is sent ERR_PASSWRDMISMATCH
-		reply = ERR_PASSWDMISMATCH;
+		reply = ERR_PASSWDMISMATCH(_serverName, _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-		reply = KILL_MSG;
+		reply = KILL_MSG(_serverName, _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
    	this->delConnection( cid );
     

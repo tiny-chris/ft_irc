@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NumericReplies.hpp                                 :+:      :+:    :+:   */
+/*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 18:56:59 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/28 16:21:02 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 /* No message delivered error messages */
 
-# define ERR_NOSUCHNICK(nickname) (std::string nickname + " :No such nick/channel\r\n") 
+# define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
 // 401 Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
 # define ERR_NOSUCHSERVER 402
@@ -66,7 +66,7 @@
 
 /*********************************************/
 
-# define  ERR_UNKNOWNCOMMAND(command) (std::string(command) + " :Unknown command\r\n")
+# define  ERR_UNKNOWNCOMMAND(server, nickname, command) (std::string(":") + server + " 421 " + nickname + " " + command + " :Unknown command\r\n")
 // 421
 //"<commande> :Unknown command"
 //Renvoyé à un client enregistré pour indiquer que la commande envoyée est inconnue du serveur.
@@ -123,17 +123,17 @@
 // ":USERS has been disabled"
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
-# define  ERR_NOTREGISTERED(nickname) (std::string(nickname) + " :You have not registered\r\n") 
+# define  ERR_NOTREGISTERED(server, nickname) (std::string(":") + server + " 451 " + nickname + " :You have not registered\r\n") 
 // 451
 // ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 
-# define  ERR_NEEDMOREPARAMS(command) (std::string(command) + ": Not enough parameters\r\n")
+# define  ERR_NEEDMOREPARAMS(server, nickname, command) (std::string(":") + server + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 // 461
 // "<commande> :Not enough parameters"
 // Renvoyé par un serveur par de nombreuses commandes, afin d'indiquer que le client n'a pas fourni assez de paramètres.
 
-# define  ERR_ALREADYREGISTRED ":You may not reregister\r\n"
+# define  ERR_ALREADYREGISTRED(server, nickname) (std::string(":") + server + " 462 " + nickname + " :You may not reregister\r\n")
 // 462
 // ":You may not reregister"
 // Retourné par le serveur à tout lien qui tente de changer les détails enregistrés (tels que mot de passe et détails utilisateur du second message USER)
@@ -142,7 +142,7 @@
 // ":Your host isn't among the privileged"
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
-# define  ERR_PASSWDMISMATCH ":Password incorrect\r\n"
+# define  ERR_PASSWDMISMATCH(server, nickname) (std::string(":") + server + " 464 " + nickname + " :Password incorrect\r\n")
 // 464
 // ":Password incorrect"
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
@@ -316,6 +316,6 @@
 // ":Nobody logged in"
 // Si le message USERS est géré par un serveur, les réponses RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS et RPL_NOUSERS sont utilisées. RPL_USERSSTART doit être envoyé en premier, suivi par soit une séquence de RPL_USERS soit un unique RPL_NOUSER. Enfin, vient un RPL_ENDOFUSERS.
 
-# define KILL_MSG "KILL :client was killed\r\n"
+# define KILL_MSG(server, nickname) (std::string(":") + server + " KILL " + nickname + " :" + server + "\r\n")
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 19:42:58 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/28 16:23:19 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Server {
 	
 	public:
 	
-		Server( size_t port, const char *password );
+		Server( size_t port, const char *password, std::string serverName );
 		~Server( void );
 
 		size_t		getPort( void ) const;
@@ -71,6 +71,7 @@ class Server {
 
 		size_t		_port;
 		std::string	_password;
+		std::string	_serverName;
 };
 
 #endif
