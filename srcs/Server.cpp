@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 16:04:17 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/29 18:47:43 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,8 +211,9 @@ void  Server::handleRequest( size_t cid, std::string request )
     //   handlePass( cid, parameters );
     // } break;
     case NICK:        {// temp function
-                        std::cout << "put function to handle NICK command with " << parameters << std::endl; 
-                        _clients[cid].setNickname(parameters);
+                        // std::cout << "put function to handle NICK command with " << parameters << std::endl; 
+                        // _clients[cid].setNickname(parameters);
+                        handleNick( cid, parameters );
                       } break;
     case USER:        {// temp function
                         std::cout << "put function to handle USER command with " << parameters << std::endl; 
@@ -399,7 +400,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	if (_clients[cid].getIfRegistered() == true)
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
-		reply = ERR_ALREADYREGISTRED(_serverName, );
+		reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del 
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -407,24 +408,21 @@ void	Server::handlePass( size_t cid, std::string param )
 	// ERR_NEEDMOREPARAMS numeric reply is sent
 	else if (param.compare("") == 0)
 	{
-		// ERR_NEEDMOREPARAMS numeric reply is sent
 		std::string command = "pass";
 		reply = ERR_NEEDMOREPARAMS (command, _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
 	// else if Pass command's param is different from the password set for the Server
-	// then ERR_PASSDMISMATCH error is sent and 
+	// then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
 	else if (param.compare(_password) != 0 || param.size() != _password.size())
 	{
-		// wrong password numeric reply is sent ERR_PASSWRDMISMATCH
 		reply = ERR_PASSWDMISMATCH(_serverName, _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 		reply = KILL_MSG(_serverName, _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
    	this->delConnection( cid );
-    
 	}
 	// else if it's the right password, the client is not yet registered then setPassStatus to true
 	else 
@@ -432,11 +430,56 @@ void	Server::handlePass( size_t cid, std::string param )
 	return ;
 }
 
+//faire une fonction isValidChar() en +
 
-// void		Server::handleNick( size_t cid, std::string param )
-// {
-//   std::string reply;
-//   std::cout <<
-  
-//   return ;
-// }
+void		Server::handleNick( size_t cid, std::string param )
+{
+  std::string reply;
+  if (param.compare("") == 0)
+  {
+    reply = ERR_NONICKNAMEGIVEN(_serverName, _clients[cid].getNickname());
+    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  }
+  else if (isValidNick(param) == false)
+  {
+    reply = ERR_ERRONEUSNICKNAME(_serverName, _clients[cid].getNickname(), param);
+    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  }
+  else if (existingNick(param) == true)
+  {
+    reply = ERR_NICKCOLLISION(_serverName, _clients[cid].getNickname(), param);
+    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    this->delConnection( cid );
+  }
+  else
+  {
+    reply = ":" + _clients[cid].getNickname() + " NICK " + param + "\r\n";
+    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    _clients[cid].setValidNick(true);
+    _clients[cid].setNickname(param);
+  }
+  return ;
+}
+
+bool		Server::isValidNick(std::string param)
+{
+  for (size_t i = 0; i < param.size(); i++)
+  {
+    char c = param[i];
+    if (!(isalnum(c) || c == '[' || c == ']' || c == '{' \
+      || c == '}' || c == '\\' || c == '|'))
+      return false;
+  }
+  return true;
+}
+
+
+bool  Server::existingNick(std::string param)
+{
+  for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+  {
+    if (it->getNickname().compare(param) == 0 && it->getNickname().size() == param.size())
+      return true;
+  }
+  return false;
+}

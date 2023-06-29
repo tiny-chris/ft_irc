@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/28 16:56:11 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/29 17:49:55 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,9 @@ class Server {
 		size_t		_port;
 		std::string	_password;
 		std::string	_serverName;
+
+		bool		isValidNick(std::string param);
+		bool		existingNick(std::string param);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/28 16:21:02 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/29 18:00:52 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,13 @@
 //":File error doing <opération> on <fichier>"
 //Message d'erreur générique utilisé pour rapporter un échec d'opération de fichier durant le traitement d'un message.
 
-# define  ERR_NONICKNAMEGIVEN 431
+# define  ERR_NONICKNAMEGIVEN(server, nickname) (std::string(":") + server + " 431 " + nickname + " :No nickname given\r\n")
+// 431
 //":No nickname given"
 //Renvoyé quand un paramètre pseudonyme attendu pour une commande n'est pas fourni.
 
-# define  ERR_ERRONEUSNICKNAME 432
+# define  ERR_ERRONEUSNICKNAME(server, clientNickname, nickname) (std::string(":") + server + " 432 " + clientNickname + " :Erroneus nickname\r\n")
+// 432
 // "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
 
@@ -95,7 +97,8 @@
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
-# define  ERR_NICKCOLLISION 436
+# define  ERR_NICKCOLLISION(server, clientNickname, nickname) (std::string(":") + server + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
+// 436
 // "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
 
