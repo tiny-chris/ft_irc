@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/27 19:04:47 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/29 16:04:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Client::Client( std::string name, int socket ) :
 			_nickname( "" ),
 			_passStatus( false ),
 			_isRegistered( false )
+			// _validNick( false )
 {}
 
 Client::~Client( void ) {}
