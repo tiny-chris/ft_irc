@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 16:04:30 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 11:17:13 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ Client::Client( std::string name, int socket ) :
 			_username( "" ),
 			_nickname( "" ),
 			_passStatus( false ),
+			_nickStatus( false ),
 			_isRegistered( false )
-			// _validNick( false )
 {}
 
 Client::~Client( void ) {}
@@ -37,11 +37,13 @@ std::string	Client::getName( void ) const {	return _name; }
 std::string	Client::getUsername( void ) const { return _username; }
 std::string	Client::getNickname( void ) const {	return _nickname; }
 bool		Client::getPassStatus( void ) const { return _passStatus; }
+bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setName( std::string const& name ) { _name = name; }
 void		Client::setUsername( std::string const& name ) { _username = name; }
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
-void		Client::setPassStatus( bool const& pwdStatus ) { _passStatus = pwdStatus; }
-void		Client::setIfRegistered( bool const& regStatus ) { _isRegistered = regStatus; }
+void		Client::setPassStatus( bool const& status ) { _passStatus = status; }
+void		Client::setNickStatus( bool const& status ) { _passStatus = status; }
+void		Client::setIfRegistered( bool const& status ) { _isRegistered = status; }

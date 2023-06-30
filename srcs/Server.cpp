@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 16:04:17 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 11:40:30 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ void  Server::handleRequest( size_t cid, std::string request )
 /*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
 
 void Server::receiveData( size_t cid ) {
-  char buf[MAXBUFLEN];  // Buffer for client data
+  char buf[BUFMAXLEN];  // Buffer for client data
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
@@ -399,7 +399,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	if (_clients[cid].getIfRegistered() == true)
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
-		reply = ERR_ALREADYREGISTRED(_serverName, );
+		reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del 
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -440,3 +440,73 @@ void	Server::handlePass( size_t cid, std::string param )
   
 //   return ;
 // }
+
+/**
+ * @brief       USER command used at the beginning of a connection to specify the username and realname of a new user
+ *
+ *              spécification IRC (RFC 2812)
+ *              http://abcdrfc.free.fr/rfc-vf/rfc2812.html
+ *              https://modern.ircdocs.horse/#connection-setup
+ *
+ *              1. PASS must be correct --> already a check in handleRequest
+ *              2. NICK must be correct (not empty and valid - no duplicate)
+ *              3. respect specific format (params):
+ *                  old = USER <username> <mode> <realname> :<description>  --> version désuète (RFC 1459)
+ *                  new = USER <username> <mode> <not_used> :<realname>     --> as of RFC 2812 spec for IRC
+ *
+ *                  with
+ *                  - <username>  = un identifiant unique ou une chaîne arbitraire (pas d'espace: mais '-' ou '_')
+ *                                  --> on peut imposer des restrictions sur le contenu du nom (que a-z A-Z et '-' '_')
+ *                  - <mode>      = mode de connexion souhaité avec '0' comme valeur par défaut recommandée (absence de mode spécifique)
+ *                                  /!\ La spécification RFC 2812 ne définit pas de modes spécifiques pour le champ <mode> de la commande "USER".
+ *                                  Les modes d'utilisateur spécifiques sont généralement définis dans le contexte des canaux (channels) dans IRC,
+ *                                  plutôt que dans la commande "USER". Ainsi, pour la commande "USER", il est courant d'utiliser la valeur "0"
+ *                                  dans le champ <mode> pour indiquer qu'aucun mode spécifique n'est appliqué à l'utilisateur.
+ *                                --> on ne va garder que ce mode par défaut
+ *                  - <not_used>  = présent pour raison historique
+ *                  - <realname>  = nom réel de l'utilisateur (ou tout autre nom qu'il souhaite utiliser)
+ *                                   /!\ il peut y avoir des espaces si on le souhaite et dans ce cas, on utilise des quotes (' ou ")
+ *                                   --> A NOUS DE VOIR CE QUE NOUS VOULONS
+ */
+
+void		Server::handleUser( size_t cid, std::string param )
+{
+  std::string	reply;
+  // checking if the Client is already registered (i.e. PASS, NICK, USER are already set)
+	// if so, cannot use the USER command again
+  // and send ERR_ALREADYREGISTERED numeric reply
+  if (_clients[cid].getIfRegistered() == true)
+  {
+    reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
+		std::cout << "print reply: " << reply << std::endl; // to del
+		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  }
+
+  ( void ) param;
+
+  // if ( _clients[cid].getPassStatus() == true && _clients[cid].getIfValidNickname() == true)
+
+  // check PASS is true
+
+  // check NICK is valid
+
+  // if already REGISTERED --> ERR_ALREADYREGISTERED and nothing else
+
+  // else : split params
+  /*  before space1 :<username>
+        - check length (min 1, max USERLEN)
+            if < min --> ERR_NEEDMOREPARAMS (even empty parameter), e.g. directly a space
+        - check content
+            a-z, A-Z, '_', '-'
+      before space2 : <0>
+        - nothing else
+      before space3 : <*>
+        - nothing else
+      last parameter : <real name>
+        - SHOULD be preceeded by ':'
+        - take it to the end (even if other spaces)
+
+      find numeric replies (ERRORS) if incorrect
+
+  */
+}

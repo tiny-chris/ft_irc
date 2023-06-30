@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 16:04:07 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 11:17:14 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,16 @@ class Client {
 		std::string		getUsername( void ) const;
 		std::string		getNickname( void ) const;
 		bool			getPassStatus( void ) const;
+		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
 
 		void			setCfd( int& clientFd );
 		void			setName( std::string const& name );
-		void			setUsername( std::string const& username );
-		void			setNickname( std::string const& nickname );
-		void			setPassStatus( bool const& passwordStatus );
-		void			setIfRegistered( bool const& RegistrationStatus );
+		void			setUsername( std::string const& name );
+		void			setNickname( std::string const& name );
+		void			setPassStatus( bool const& status );
+		void			setNickStatus( bool const& status );
+		void			setIfRegistered( bool const& status );
 
 	private:
 	
@@ -56,8 +58,8 @@ class Client {
 		std::string	_nickname;
 
 		bool		_passStatus;
+		bool		_nickStatus;
 		bool		_isRegistered;
-		// bool		_validNick;
 
 		// penser a :
 		/* 
