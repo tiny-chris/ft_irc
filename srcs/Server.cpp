@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 18:47:43 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 14:29:26 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	else if (param.compare("") == 0)
 	{
 		std::string command = "pass";
-		reply = ERR_NEEDMOREPARAMS (command, _clients[cid].getNickname(), command);
+		reply = ERR_NEEDMOREPARAMS (_serverName, _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -430,32 +430,48 @@ void	Server::handlePass( size_t cid, std::string param )
 	return ;
 }
 
-//faire une fonction isValidChar() en +
-
 void		Server::handleNick( size_t cid, std::string param )
 {
   std::string reply;
+  // if no param to a nick command -> No nickname given error
   if (param.compare("") == 0)
   {
     reply = ERR_NONICKNAMEGIVEN(_serverName, _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   }
+  // else if there are invalid char in the nickname, an erroneus nickname message is sent
   else if (isValidNick(param) == false)
   {
     reply = ERR_ERRONEUSNICKNAME(_serverName, _clients[cid].getNickname(), param);
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   }
+  // else if the nickname is the same nickname as another client
   else if (existingNick(param) == true)
   {
-    reply = ERR_NICKCOLLISION(_serverName, _clients[cid].getNickname(), param);
-    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-    this->delConnection( cid );
+    // and if our client is not yet registered then an nick collision occurs and the client is killed
+    if (_clients[cid].getIfRegistered() == false)
+    {
+      reply = ERR_NICKCOLLISION(_serverName, _clients[cid].getNickname(), param);
+      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+      reply = KILL_MSG(_serverName, _clients[cid].getNickname());
+      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+      this->delConnection( cid );
+    }
+    // but if our client is already registered then a nickname in use error occurs
+    // the client keeps its nickname
+    else
+    {
+      reply = ERR_NICKNAMEINUSE(_serverName, _clients[cid].getNickname(), param);
+      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    }
   }
+  // else meaning if the nickname given is valid and does not already exist
+  // nickname is set to param value and nickstatus set to true
   else
   {
     reply = ":" + _clients[cid].getNickname() + " NICK " + param + "\r\n";
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-    _clients[cid].setValidNick(true);
+    _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
   }
   return ;
@@ -472,7 +488,6 @@ bool		Server::isValidNick(std::string param)
   }
   return true;
 }
-
 
 bool  Server::existingNick(std::string param)
 {

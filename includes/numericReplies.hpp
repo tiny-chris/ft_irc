@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 18:00:52 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 14:13:55 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@
 // "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
 
-# define  ERR_NICKNAMEINUSE 433
+# define  ERR_NICKNAMEINUSE(server, clientNickname, nickname)(std::string(":") + server + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
+// 433
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
@@ -318,6 +319,10 @@
 # define RPL_NOUSERS 395
 // ":Nobody logged in"
 // Si le message USERS est géré par un serveur, les réponses RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS et RPL_NOUSERS sont utilisées. RPL_USERSSTART doit être envoyé en premier, suivi par soit une séquence de RPL_USERS soit un unique RPL_NOUSER. Enfin, vient un RPL_ENDOFUSERS.
+
+/* ***************************************** */
+/*            NICK ERROR MESSAGES            */
+/* ***************************************** */
 
 # define KILL_MSG(server, nickname) (std::string(":") + server + " KILL " + nickname + " :" + server + "\r\n")
 
