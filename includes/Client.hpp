@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 11:17:14 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/06/30 15:39:58 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,17 @@ class Client {
 		~Client( void );
 
 		int				getCfd( void ) const;
-		std::string		getName( void ) const;
-		std::string		getUsername( void ) const;
 		std::string		getNickname( void ) const;
+		std::string		getUsername( void ) const;
+		std::string		getRealname( void ) const;
 		bool			getPassStatus( void ) const;
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
 
 		void			setCfd( int& clientFd );
-		void			setName( std::string const& name );
-		void			setUsername( std::string const& name );
 		void			setNickname( std::string const& name );
+		void			setUsername( std::string const& name );
+		void			setRealname( std::string const& name );
 		void			setPassStatus( bool const& status );
 		void			setNickStatus( bool const& status );
 		void			setIfRegistered( bool const& status );
@@ -53,9 +53,9 @@ class Client {
 	
 		int			_fd;
 		
-		std::string _name;// remplacer par realname
-		std::string	_username;
 		std::string	_nickname;
+		std::string	_username;
+		std::string _realname;
 
 		bool		_passStatus;
 		bool		_nickStatus;
