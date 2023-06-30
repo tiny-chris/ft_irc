@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 17:49:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 16:59:43 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@ class Server {
 
 		size_t		getPort( void ) const;
 		std::string	getPassword( void ) const;
+		// std::string getSource( void ) const;
 
 		void		setPort( size_t& port );
 		void		setPassword( std::string& password );
+		// void		setSource( std::string nickname, std::string username );
 
 		void		run();
 
@@ -72,7 +74,8 @@ class Server {
 
 		size_t		_port;
 		std::string	_password;
-		std::string	_serverName;
+		std::string	_serverName; // a supprimer peut etre remplce par _source
+		// std::string _source;
 
 		bool		isValidNick(std::string param);
 		bool		existingNick(std::string param);

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 14:29:26 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 17:39:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) { 
  // std::cout << _password << std::endl;
+  // setSource("", "");
   setup();
   initCommands();
 }
@@ -32,9 +33,17 @@ Server::~Server( void ) { shutdown(); }
 
 size_t      Server::getPort( void ) const { return _port; }
 std::string Server::getPassword( void ) const { return _password; }
+// std::string Server::getSource( void ) const { return _source; }
 
 void        Server::setPort( size_t& port ) { _port = port; }
 void        Server::setPassword( std::string& password ) { _password = password; }
+// void        Server::setSource ( std::string nickname, std::string username ) {
+//   _source.erase();
+//   if (nickname.compare("") != 0 && username.compare("") != 0)
+//     _source = ":" + nickname + "!" + username + "@localhost";
+//   // else
+//   //   _source = ":";
+// }
 
 /* -------------------- MEMBER FUNCTIONS: TO BE DEFINED --------------------- */
 
@@ -222,6 +231,7 @@ void  Server::handleRequest( size_t cid, std::string request )
                           && !_clients[cid].getNickname().empty() && !_clients[cid].getUsername().empty())
                         {
                           _clients[cid].setIfRegistered(true);
+                          _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
                           std::cout << "client " << _clients[cid].getNickname() << " is registered" << std::endl;
                         }
                       } break;
@@ -400,7 +410,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	if (_clients[cid].getIfRegistered() == true)
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
-		reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
+		reply = ERR_ALREADYREGISTRED(_clients[cid].getSource(), _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del 
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -409,7 +419,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	else if (param.compare("") == 0)
 	{
 		std::string command = "pass";
-		reply = ERR_NEEDMOREPARAMS (_serverName, _clients[cid].getNickname(), command);
+		reply = ERR_NEEDMOREPARAMS (_clients[cid].getSource(), _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -417,10 +427,10 @@ void	Server::handlePass( size_t cid, std::string param )
 	// then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
 	else if (param.compare(_password) != 0 || param.size() != _password.size())
 	{
-		reply = ERR_PASSWDMISMATCH(_serverName, _clients[cid].getNickname());
+		reply = ERR_PASSWDMISMATCH(_clients[cid].getSource(), _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-		reply = KILL_MSG(_serverName, _clients[cid].getNickname());
+		reply = KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
    	this->delConnection( cid );
 	}
@@ -436,13 +446,14 @@ void		Server::handleNick( size_t cid, std::string param )
   // if no param to a nick command -> No nickname given error
   if (param.compare("") == 0)
   {
-    reply = ERR_NONICKNAMEGIVEN(_serverName, _clients[cid].getNickname());
+    reply = ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname());
+    // reply = ERR_NOSUCHNICK(SOURCE(_clients[cid].getNickname(), _clients[cid].getUsername()), _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   }
   // else if there are invalid char in the nickname, an erroneus nickname message is sent
   else if (isValidNick(param) == false)
   {
-    reply = ERR_ERRONEUSNICKNAME(_serverName, _clients[cid].getNickname(), param);
+    reply = ERR_ERRONEUSNICKNAME(_clients[cid].getSource(), _clients[cid].getNickname(), param);
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   }
   // else if the nickname is the same nickname as another client
@@ -451,9 +462,9 @@ void		Server::handleNick( size_t cid, std::string param )
     // and if our client is not yet registered then an nick collision occurs and the client is killed
     if (_clients[cid].getIfRegistered() == false)
     {
-      reply = ERR_NICKCOLLISION(_serverName, _clients[cid].getNickname(), param);
+      reply = ERR_NICKCOLLISION(_clients[cid].getSource(), _clients[cid].getNickname(), param);
       send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-      reply = KILL_MSG(_serverName, _clients[cid].getNickname());
+      reply = KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname());
       send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
       this->delConnection( cid );
     }
@@ -461,7 +472,7 @@ void		Server::handleNick( size_t cid, std::string param )
     // the client keeps its nickname
     else
     {
-      reply = ERR_NICKNAMEINUSE(_serverName, _clients[cid].getNickname(), param);
+      reply = ERR_NICKNAMEINUSE(_clients[cid].getSource(), _clients[cid].getNickname(), param);
       send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
     }
   }
@@ -469,10 +480,12 @@ void		Server::handleNick( size_t cid, std::string param )
   // nickname is set to param value and nickstatus set to true
   else
   {
-    reply = ":" + _clients[cid].getNickname() + " NICK " + param + "\r\n";
+    reply = _clients[cid].getSource() + _clients[cid].getNickname() + " NICK " + param + "\r\n";
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
     _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
+    if (_clients[cid].getIfRegistered() == true)
+      _clients[cid].setSource( param, _clients[cid].getUsername());
   }
   return ;
 }

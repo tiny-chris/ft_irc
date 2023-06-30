@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 11:52:19 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 17:05:24 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Client {
 		bool			getPassStatus( void ) const;
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
+		std::string		getSource( void ) const;
 
 		void			setCfd( int& clientFd );
 		void			setName( std::string const& name );
@@ -48,6 +49,7 @@ class Client {
 		void			setPassStatus( bool const& passwordStatus );
 		void			setIfRegistered( bool const& RegistrationStatus );
 		void			setNickStatus( bool const&  nickStatus );
+		void			setSource( std::string nickname, std::string username );
 
 	private:
 	
@@ -56,6 +58,8 @@ class Client {
 		std::string _name;// remplacer par realname
 		std::string	_username;
 		std::string	_nickname;
+
+		std::string	_source;
 
 		bool		_passStatus;
 		bool		_nickStatus;

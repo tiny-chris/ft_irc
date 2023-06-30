@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 14:13:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 17:26:01 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@
 
 /* No message delivered error messages */
 
-# define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
+# define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
+
+# define ERR_NOSUCHNICK(source, nickname) (std::string(source) + " " + nickname + " :No such nick/channel\r\n")
+// # define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
 // 401 Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
 # define ERR_NOSUCHSERVER 402
@@ -83,12 +86,12 @@
 //":File error doing <opération> on <fichier>"
 //Message d'erreur générique utilisé pour rapporter un échec d'opération de fichier durant le traitement d'un message.
 
-# define  ERR_NONICKNAMEGIVEN(server, nickname) (std::string(":") + server + " 431 " + nickname + " :No nickname given\r\n")
+# define  ERR_NONICKNAMEGIVEN(source, nickname) (std::string(source)+ " 431 " + nickname + " :No nickname given\r\n")
 // 431
 //":No nickname given"
 //Renvoyé quand un paramètre pseudonyme attendu pour une commande n'est pas fourni.
 
-# define  ERR_ERRONEUSNICKNAME(server, clientNickname, nickname) (std::string(":") + server + " 432 " + clientNickname + " :Erroneus nickname\r\n")
+# define  ERR_ERRONEUSNICKNAME(source, clientNickname, nickname) (std::string(source) + " 432 " + clientNickname + " :Erroneus nickname\r\n")
 // 432
 // "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
@@ -98,7 +101,7 @@
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
-# define  ERR_NICKCOLLISION(server, clientNickname, nickname) (std::string(":") + server + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
+# define  ERR_NICKCOLLISION(server, clientNickname, nickname) (std::string(server) + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
 // 436
 // "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
@@ -137,7 +140,7 @@
 // "<commande> :Not enough parameters"
 // Renvoyé par un serveur par de nombreuses commandes, afin d'indiquer que le client n'a pas fourni assez de paramètres.
 
-# define  ERR_ALREADYREGISTRED(server, nickname) (std::string(":") + server + " 462 " + nickname + " :You may not reregister\r\n")
+# define  ERR_ALREADYREGISTRED(source, nickname) (std::string(source) + " 462 " + nickname + " :You may not reregister\r\n")
 // 462
 // ":You may not reregister"
 // Retourné par le serveur à tout lien qui tente de changer les détails enregistrés (tels que mot de passe et détails utilisateur du second message USER)
@@ -146,7 +149,7 @@
 // ":Your host isn't among the privileged"
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
-# define  ERR_PASSWDMISMATCH(server, nickname) (std::string(":") + server + " 464 " + nickname + " :Password incorrect\r\n")
+# define  ERR_PASSWDMISMATCH(source, nickname) (std::string(source) + " 464 " + nickname + " :Password incorrect\r\n")
 // 464
 // ":Password incorrect"
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
@@ -324,6 +327,6 @@
 /*            NICK ERROR MESSAGES            */
 /* ***************************************** */
 
-# define KILL_MSG(server, nickname) (std::string(":") + server + " KILL " + nickname + " :" + server + "\r\n")
+# define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 
 #endif
