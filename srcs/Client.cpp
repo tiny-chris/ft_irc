@@ -39,7 +39,6 @@ std::string	Client::getRealname( void ) const {	return _realname; }
 bool		Client::getPassStatus( void ) const { return _passStatus; }
 bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
-bool		Client::getNickStatus( void ) const { return _nickStatus; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setNickname( std::string const& name ) { _nickname = name; }

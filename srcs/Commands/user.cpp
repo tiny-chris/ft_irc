@@ -54,7 +54,7 @@ void		Server::handleUser( size_t cid, std::string param )
   std::string realname;
   size_t      colon;
 
-  std::cout << "client " << _clients[cid].getNickname() << " - param = <" << param << ">" << std::endl;
+  std::cout << "client " << _clients[cid].getNickname() << " - param full content is <" << param << ">" << std::endl;
 
   // *** **************************** ***
   // *** CHECK 1 - ALREADY REGISTERED ***
@@ -106,7 +106,7 @@ void		Server::handleUser( size_t cid, std::string param )
   if (colon <= param.length())
   {
     realname = param.substr(colon + 1, param.length() - (colon + 1));
-    std::cout << "client " << _clients[cid].getNickname() << " - realname is <" << realname << ">" << std::endl;
+    std::cout << "client " << _clients[cid].getNickname() << " - last param content 'realname' is <" << realname << ">" << std::endl;
   }
   if (colon == std::string::npos || realname.empty())
   {
@@ -117,7 +117,7 @@ void		Server::handleUser( size_t cid, std::string param )
     return ;
   }
   _clients[cid].setRealname(realname);
-  std::cout << "client " << _clients[cid].getNickname() << " - param content before ':' <" << param.substr(0, colon) << ">" << std::endl;
+  std::cout << "client " << _clients[cid].getNickname() << " - param content before ':' is <" << param.substr(0, colon) << ">" << std::endl;
 
   // *** **************************** ***
   // *** CHECK 5 - PARAMETERS before ':' ***
@@ -126,7 +126,7 @@ void		Server::handleUser( size_t cid, std::string param )
   // STEP 5.1 : check number of spaces
   // if there are not 3 spaces before ':' --> incorrect number of parameters (ERR_NEEDMOREPARAMS or just return)
   size_t nbSpaces = findCharTimes(param.substr(0, colon), ' ');
-  std::cout << "client " << _clients[cid].getNickname() << " - number of spaces before ':' " << nbSpaces << std::endl;
+  std::cout << "client " << _clients[cid].getNickname() << " - number of spaces before ':' is " << nbSpaces << std::endl;
   if ( nbSpaces != 3)
   {
     if (nbSpaces < 3)
@@ -148,7 +148,7 @@ void		Server::handleUser( size_t cid, std::string param )
   {
     tokens.push_back(token);
   }
-  std::cout << "client " << _clients[cid].getNickname() << " - number of params before ':' " << tokens.size() << std::endl;
+  std::cout << "client " << _clients[cid].getNickname() << " - number of params before ':' is " << tokens.size() << std::endl;
   for (size_t i = 0; i < tokens.size(); ++i)
   {
     std::cout << "client " << _clients[cid].getNickname() << " - param[" << i << "] is <" << tokens[i] << ">" << std::endl;
@@ -175,7 +175,7 @@ void		Server::handleUser( size_t cid, std::string param )
     return ;
   }
   _clients[cid].setUsername(tokens[0]);
-  std::cout << "client " << _clients[cid].getNickname() << " - username is : <" << _clients[cid].getRealname() << ">" << std::endl;
+  std::cout << "client " << _clients[cid].getNickname() << " - username is : <" << _clients[cid].getUsername() << ">" << std::endl;
 
   // *** **************************** ***
   // *** CHECK 6 - CLIENT IS NOW REGISTERED ***
