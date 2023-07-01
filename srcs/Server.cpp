@@ -15,7 +15,6 @@
 #include "Socket.hpp"
 #include "utils.hpp"
 #include "defines.hpp"
-#include "Commands.hpp"
 #include "numericReplies.hpp"
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
@@ -203,11 +202,9 @@ void  Server::handleRequest( size_t cid, std::string request )
   switch(commandKey)
   {
     // case PASS:        handlePass( cid, parameters ); break;
+    // case NICK:        handleNick( cid, parameters ); break;
+    // case PASS:        handleUser( cid, parameters ); break;
     case PASS:        {
-                        // std::cout << "commandKey PASS = " << commandKey << std::endl;
-                        // std::cout << "_password = '" << _password << "'" << std::endl;
-                        // std::cout << "password param = '" << parameters << "'" << std::endl;
-                        // std::cout << "param size = " << parameters.size() << " vs. pwd size = " << _password.size() << std::endl;
                         std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
                         handlePass( cid, parameters );
                       } break;
@@ -381,6 +378,11 @@ void Server::run() {
     }
   }
 }
+
+
+/*  ******************************************************************** */
+/*  ***** following functions should be put in the Commands folder ***** */
+/*  ******************************************************************** */
 
 /* Peut etre mettre des comments dans le serveur (pour indiquer par exemple que le mot de passe est correct....)*/
 
