@@ -11,18 +11,20 @@
 # define CRLF std::string("\r\n")
 
 
+// Maximum length of username (WITH OU WITHOUT CRLF ????? )
+# define USERLEN 15
 
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
-# define MAXPASSLEN 100
+# define PASSMAXLEN 100
 
 // Buffer maximun length (incl. '\r\n', CR-LN)
-# define MAXBUFLEN 512
+# define BUFMAXLEN 512
 
 // Max number of clients connected (such as max fds 'openable')
-# define MAXCONNECTION 128
+# define MAXCONNECTION 128// ou CLIMAXCONNECTION
 
 // Max number of clients on a channel --> TO BE CONFIRMED
-# define MAXCHANCONNECTION 10
+# define MAXONCHANNEL 10// ou CLIMAXONCHANNEL
 
 
 // # define CHANNAMELEN 100

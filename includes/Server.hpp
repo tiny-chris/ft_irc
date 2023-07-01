@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/29 17:49:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 11:36:27 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@
 # include "Socket.hpp"
 
 class Server {
-	
+
 	public:
-	
+
 		Server( size_t port, const char *password, std::string serverName );
 		~Server( void );
 
@@ -51,7 +51,8 @@ class Server {
 		/*** COMMANDS ***/
 		void		handlePass( size_t cid, std::string param );
 		void		handleNick( size_t cid, std::string param );
-	
+		void		handleUser( size_t cid, std::string param );
+
 	private:
 
 		void shutdown( void );                              // close

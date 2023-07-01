@@ -16,6 +16,7 @@ DIR_DUP		= mkdir -p $(@D)
 SRCS		:=	\
 			main.cpp \
 			Client.cpp \
+			Commands/user.cpp \
 			Server.cpp \
 			Socket.cpp \
 			utils.cpp \

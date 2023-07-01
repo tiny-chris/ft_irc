@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 14:29:26 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/06/30 18:15:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) { 
+Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) {
  // std::cout << _password << std::endl;
   setup();
   initCommands();
@@ -67,7 +67,7 @@ void Server::delConnection( size_t cid ) {
   _clients[cid] = _clients.back();
   _clients.pop_back();
 
-  std::cout << "<" << _clients[cid].getName() << " left the channel>\n";
+  std::cout << "<" << _clients[cid].getRealname() << " left the channel>\n";
 }
 
 /**
@@ -77,7 +77,7 @@ void Server::delConnection( size_t cid ) {
 void Server::broadcastMsg( std::string& msg, size_t cid ) {
   int dest;
 
-  msg = _clients[cid].getName() + ": " + msg + "\n";
+  msg = _clients[cid].getRealname() + ": " + msg + "\n";
   for( size_t i = 0; i < _pfds.size(); ++i ) {
     dest = _pfds[i].fd;
     if( dest != _listener.getSocket() && dest != _pfds[cid].fd ) {
@@ -135,7 +135,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   std::string parameters = "";
   std::string reply;
   size_t      splitter;
-  int         commandKey = 0; 
+  int         commandKey = 0;
 
   splitter = request.find(' ', 0);
 
@@ -162,7 +162,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   /* ACTION 3   - check if 'command' is part of the _mapCommands and get the command key */
   /* ********************************* */
-  for (std::map<int, std::string>::const_iterator it = _mapCommands.begin(); it != _mapCommands.end(); ++it) 
+  for (std::map<int, std::string>::const_iterator it = _mapCommands.begin(); it != _mapCommands.end(); ++it)
   {
     if (command == it->second)
       commandKey = it->first;
@@ -176,12 +176,12 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   /* ACTION 4   - if 'command' is in _mapCommands */
   /* ********************************* */
-  //  
+  //
   //  SUB-ACTION 4.1   - 'PASS' must be the first command entered, if not --> return (numeric_reply ??)
   //  SUB-ACTION 4.2   - if command is NOT an authentifier (PASS, NICK, USER) or QUIT and if client is not registered yet --> ERR_NOTREGISTERED
   //
   //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem pour potentiel shutdown
-  //  
+  //
   if (commandKey != UNDEFINED)
   {
     if (command != "PASS" && _clients[cid].getPassStatus() == false )
@@ -191,7 +191,7 @@ void  Server::handleRequest( size_t cid, std::string request )
       && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
       reply = ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() );
-      std::cout << "print reply: " << reply << std::endl; // to del 
+      std::cout << "print reply: " << reply << std::endl; // to del
       send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
       return;
     }
@@ -202,48 +202,41 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   switch(commandKey)
   {
-    case PASS:        handlePass( cid, parameters ); break;
-    // case PASS: {
-    //   std::cout << "commandKey PASS = " << commandKey << std::endl;
-    //   std::cout << "_password = '" << _password << "'" << std::endl;
-    //   std::cout << "password param = '" << parameters << "'" << std::endl;
-    //   std::cout << "param size = " << parameters.size() << " vs. pwd size = " << _password.size() << std::endl;
-    //   handlePass( cid, parameters );
-    // } break;
-    case NICK:        {// temp function
-                        // std::cout << "put function to handle NICK command with " << parameters << std::endl; 
-                        // _clients[cid].setNickname(parameters);
+    // case PASS:        handlePass( cid, parameters ); break;
+    case PASS:        {
+                        // std::cout << "commandKey PASS = " << commandKey << std::endl;
+                        // std::cout << "_password = '" << _password << "'" << std::endl;
+                        // std::cout << "password param = '" << parameters << "'" << std::endl;
+                        // std::cout << "param size = " << parameters.size() << " vs. pwd size = " << _password.size() << std::endl;
+                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
+                        handlePass( cid, parameters );
+                      } break;
+    case NICK:        {
+                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle NICK command with " << parameters << std::endl;
                         handleNick( cid, parameters );
                       } break;
-    case USER:        {// temp function
-                        std::cout << "put function to handle USER command with " << parameters << std::endl; 
-                        _clients[cid].setUsername(parameters);
-                        if (_clients[cid].getPassStatus() == true 
-                          && !_clients[cid].getNickname().empty() && !_clients[cid].getUsername().empty())
-                        {
-                          _clients[cid].setIfRegistered(true);
-                          std::cout << "client " << _clients[cid].getNickname() << " is registered" << std::endl;
-                        }
+    case USER:        {
+                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle USER command" << std::endl;
+                        handleUser( cid, parameters );
                       } break;
-                      std::cout << "put function to handle USER command" << std::endl; break;
-    case JOIN:        std::cout << "put function to handle JOIN command" << std::endl; break;
-    case PRIVMSG:     std::cout << "put function to handle PRIVMSG command" << std::endl; break;
-    
+    case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
+    case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+
 
     // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: shutdown(); break;                          // ' /shutdown '
     case ZZ_QUIT:     delConnection( cid ); break;                // ' /quit '
     case ZZ_NAME:     {                                           // ' /name <new_name>'
-                        std::cout << "<" << _clients[cid].getName();
-                        _clients[cid].setName( parameters );
-                        std::cout << " became " << _clients[cid].getName() << ">\n";
+                        std::cout << "<" << _clients[cid].getRealname();
+                        _clients[cid].setRealname( parameters );
+                        std::cout << " became " << _clients[cid].getRealname() << ">\n";
                       } break;
     case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
     // keeping Clement's initial commands just in case... - END
 
     default:        	{
-                        reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getName(), command );
-                        std::cout << "print reply: " << reply << std::endl; // to del 
+                        reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
+                        std::cout << "print reply: " << reply << std::endl; // to del
                         send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
                         return;
                       } break;
@@ -253,7 +246,7 @@ void  Server::handleRequest( size_t cid, std::string request )
 /*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
 
 void Server::receiveData( size_t cid ) {
-  char buf[MAXBUFLEN];  // Buffer for client data
+  char buf[BUFMAXLEN];  // Buffer for client data
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
@@ -269,7 +262,7 @@ void Server::receiveData( size_t cid ) {
     return;
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
-  //faire un pour verifier que ca finit bien par un 
+  //faire un pour verifier que ca finit bien par un
   bufs[cid] += buf;
   int size = bufs[cid].size();
   if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
@@ -371,13 +364,13 @@ void Server::run() {
       return;
     }
     if( _pfds[0].revents & POLLIN ) {
-     // std::cout << "trying a new connection" << std::endl;     
+     // std::cout << "trying a new connection" << std::endl;
       addConnection();
     }
     else
     {
     //  std::cout << "rentre dans le else" << std::endl;
-      for( size_t cid = 1; cid < _pfds.size(); ++cid ) 
+      for( size_t cid = 1; cid < _pfds.size(); ++cid )
       {
       //  std::cout << "cid: " << cid << std::endl;
         if( _pfds[cid].revents & POLLIN ) {
@@ -393,7 +386,7 @@ void Server::run() {
 
 void	Server::handlePass( size_t cid, std::string param )
 {
-	std::string	reply; 
+	std::string	reply;
 	// checking if the Client is already registered
 	// meaning checking if PASS, NICK, USER are already set
 	// if not ERR_ALREADYREGISTERED numeric reply is sent
@@ -401,15 +394,15 @@ void	Server::handlePass( size_t cid, std::string param )
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
 		reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
-		std::cout << "print reply: " << reply << std::endl; // to del 
+		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
-	// else if there is no param to the PASS command 
+	// else if there is no param to the PASS command
 	// ERR_NEEDMOREPARAMS numeric reply is sent
 	else if (param.compare("") == 0)
 	{
 		std::string command = "pass";
-		reply = ERR_NEEDMOREPARAMS (_serverName, _clients[cid].getNickname(), command);
+		reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 	}
@@ -425,7 +418,7 @@ void	Server::handlePass( size_t cid, std::string param )
    	this->delConnection( cid );
 	}
 	// else if it's the right password, the client is not yet registered then setPassStatus to true
-	else 
+	else
 		_clients[cid].setPassStatus(true);
 	return ;
 }
