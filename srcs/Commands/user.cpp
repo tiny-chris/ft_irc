@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/03 15:04:30 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 18:26:21 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@
  *
  */
 
-static size_t  findCharTimes(std::string str, char c)
-{
-  size_t nbChar = 0;
+// static size_t  findCharTimes(std::string str, char c)
+// {
+//   size_t nbChar = 0;
 
-  for (size_t i = 0; i < str.length(); ++i)
-  {
-    if (str[i] == c)
-      nbChar++;
-  }
-  return (nbChar);
-}
+//   for (size_t i = 0; i < str.length(); ++i)
+//   {
+//     if (str[i] == c)
+//       nbChar++;
+//   }
+//   return (nbChar);
+// }
 
 static bool		isValidUser(std::string name)
 {
@@ -51,7 +51,7 @@ static bool		isValidUser(std::string name)
 void		Server::handleUser( size_t cid, std::string param )
 {
   std::string	reply;
-  std::string realname;
+  std::string realname = "";
   size_t      colon;
 
   std::cout << "client " << _clients[cid].getNickname() << " - param full content is <" << param << ">" << std::endl;
@@ -85,30 +85,25 @@ void		Server::handleUser( size_t cid, std::string param )
   // *** **************************** ***
   // check if param is not empty (min param = 1)
   // if so, cannot use the USER command and send ERR_NEEDMOREPARAMS numeric reply
-  if (param.empty())
-  {
-    reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-		// reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
-		std::cout << "print reply: " << reply << std::endl; // to del
-		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-    return ;
-  }
+  // if (param.empty())
+  // {
+  //   reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
+	// 	// reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
+	// 	std::cout << "print reply: " << reply << std::endl; // to del
+	// 	send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  //   return ;
+  // }
 
   // *** **************************** ***
-  // *** CHECK 4 - LAST PARAMETER 'realname' ***
+  // *** CHECK 4 - LAST PARAMETER 'realname' + PARAM CONTENT MUST NOT BE EMPTY ***
   // *** **************************** ***
   // check if ':' exists to split the last parameter 'realname' (after ':') from the others
   // if ':' does not exist or if realname is empty --> send a ERR_NEEDMOREPARAMS reply
   // otherwise --> fill the '_realname' with content after ':' (space is allowed inside)
   colon = param.find(':', 0);
   std::cout << "client " << _clients[cid].getNickname() << " - colon ':' on index <" << colon << ">" << std::endl;
-
-  if (colon <= param.length())
-  {
-    realname = param.substr(colon + 1, param.length() - (colon + 1));
-    std::cout << "client " << _clients[cid].getNickname() << " - last param content 'realname' is <" << realname << ">" << std::endl;
-  }
-  if (colon == std::string::npos || realname.empty())
+  std::cout << "client " << _clients[cid].getNickname() << " - param length is <" << param.length() << ">" << std::endl;
+  if (param.empty() || colon == std::string::npos || colon == param.length() - 1)
   {
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
     // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
@@ -116,6 +111,10 @@ void		Server::handleUser( size_t cid, std::string param )
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
     return ;
   }
+  realname = param.substr(colon, param.length() - colon);
+  std::cout << "client " << _clients[cid].getNickname() << " - last param content 'realname' with ':' is <" << realname << ">" << std::endl;
+  realname.erase(0, 1);
+  std::cout << "client " << _clients[cid].getNickname() << " - last param content 'realname' is <" << realname << ">" << std::endl;
   _clients[cid].setRealname(realname);
   std::cout << "client " << _clients[cid].getNickname() << " - param content before ':' is <" << param.substr(0, colon) << ">" << std::endl;
 
@@ -125,21 +124,33 @@ void		Server::handleUser( size_t cid, std::string param )
 
   // STEP 5.1 : check number of spaces
   // if there are not 3 spaces before ':' --> incorrect number of parameters (ERR_NEEDMOREPARAMS or just return)
-  size_t nbSpaces = findCharTimes(param.substr(0, colon), ' ');
-  std::cout << "client " << _clients[cid].getNickname() << " - number of spaces before ':' is " << nbSpaces << std::endl;
-  if ( nbSpaces != 3)
-  {
-    if (nbSpaces < 3)
-    {
-      reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-      // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
-      std::cout << "print reply: " << reply << std::endl; // to del
-      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-    }
-    return ;
-  }
+  // size_t nbSpaces = findCharTimes(param.substr(0, colon), ' ');
+  // std::cout << "client " << _clients[cid].getNickname() << " - number of spaces before ':' is " << nbSpaces << std::endl;
+  // if ( nbSpaces != 3)
+  // {
+  //   if (nbSpaces < 3)
+  //   {
+  //     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
+  //     // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
+  //     std::cout << "print reply: " << reply << std::endl; // to del
+  //     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  //   }
+  //   return ;
+  // }
 
   // STEP 5.2 : split param until ':' with ' ' delimiter and send each substring into a std::vector<std::string>
+  // check number of substrings (must be 3) and check each substring
+  // if there are less than 3 substrings or if the 1st substring has less than 1 char (cannot be empty)
+  // --> ERR_NEEDMOREPARAMS
+  // if the 1st substring contains invalid char or if there are more than 3 substrings
+  // or if 2nd substring is different from default "0" or the 3rd substring is different from default "*"
+  // --> return
+  // otherwise --> fill the '_username' with content of 1st substring
+
+  /*
+  The second and third parameters of this command SHOULD be sent as one zero ('0', 0x30) and one asterisk character ('*', 0x2A) 
+  by the client, as the meaning of these two parameters varies between different versions of the IRC protocol.
+  */
   std::vector<std::string>  tokens;
   std::istringstream        iss(param.substr(0, colon));
   std::string               token;
@@ -153,14 +164,6 @@ void		Server::handleUser( size_t cid, std::string param )
   {
     std::cout << "client " << _clients[cid].getNickname() << " - param[" << i << "] is <" << tokens[i] << ">" << std::endl;
   }
-
-  // STEP 5.3 : check number of substrings and check each substring
-  // if there are less than 3 substrings or if the 1st substring has less than 1 char (cannot be empty)
-  // --> ERR_NEEDMOREPARAMS
-  // if the 1st substring contains invalid char or if there are more than 3 substrings
-  // or if 2nd substring is different from default "0" or the 3rd substring is different from default "*"
-  // --> return
-  // otherwise --> fill the '_username' with content of 1st substring
   if (tokens.size() < 3 || tokens[0].length() < 1)
   {
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
@@ -169,13 +172,13 @@ void		Server::handleUser( size_t cid, std::string param )
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
     return ;
   }
-  else if (isValidUser(tokens[0]) == false || (tokens.size() >= 3 && (tokens[1].compare("0") != 0 || tokens[2].compare("*") != 0)))
+  else if (tokens.size() > 3 || isValidUser(tokens[0]) == false)
   {
     std::cout << "client " << _clients[cid].getNickname() << " - wrong param" << std::endl;
     return ;
   }
-  _clients[cid].setUsername(tokens[0]);
-  std::cout << "client " << _clients[cid].getNickname() << " - username is : <" << _clients[cid].getUsername() << ">" << std::endl;
+  _clients[cid].setUsername(tokens[0].substr(0, USERLEN));
+  std::cout << "client " << _clients[cid].getNickname() << " - username is <" << _clients[cid].getUsername() << ">" << std::endl;
 
   // *** **************************** ***
   // *** CHECK 6 - CLIENT IS NOW REGISTERED ***

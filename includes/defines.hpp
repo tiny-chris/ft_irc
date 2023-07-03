@@ -12,7 +12,11 @@
 
 
 // Maximum length of username (WITH OU WITHOUT CRLF ????? )
-# define USERLEN 15
+// The USERLEN parameter indicates the maximum length that a username may be on the server. 
+// Networks SHOULD be consistent with this value across different servers. 
+// As noted in the USER message, the tilde prefix ("~"), if it exists, contributes to the length of the username and would be included in this parameter.
+// The value MUST be specified and MUST be a positive integer.
+# define USERLEN 18
 
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 # define PASSMAXLEN 100

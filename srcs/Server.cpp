@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 15:00:08 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 17:52:34 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
 void	Server::initCommands( void )
 {
   _mapCommands.insert(std::make_pair(0, "UNDEFINED"));
+  _mapCommands.insert(std::make_pair(99, "CAP"));
   _mapCommands.insert(std::make_pair(100, "PASS"));
   _mapCommands.insert(std::make_pair(101, "NICK"));
   _mapCommands.insert(std::make_pair(102, "USER"));
@@ -162,6 +163,12 @@ void  Server::handleRequest( size_t cid, std::string request )
   }
 
   /* ********************************* */
+  /* SUBACTION  - turn command content into capital letters */
+  /* ********************************* */
+  for (size_t i = 0; i < command.length(); ++i)
+    command[i] = std::toupper(command[i]);
+
+  /* ********************************* */
   /* ACTION 2   - check the case when the client is disconnected and return */
   /* ********************************* */
   //   /* TODO:  prévoir le cas où le client est a été déconnecté et breaker */
@@ -213,6 +220,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     // case PASS:        handlePass( cid, parameters ); break;
     // case NICK:        handleNick( cid, parameters ); break;
     // case PASS:        handleUser( cid, parameters ); break;
+    case CAP:         break;
     case PASS:        {
                         std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
                         handlePass( cid, parameters );
@@ -240,6 +248,8 @@ void  Server::handleRequest( size_t cid, std::string request )
     case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
     // keeping Clement's initial commands just in case... - END
 
+    // This message is not required for a server implementation to work, but SHOULD be implemented. 
+    // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
     default:        	{
                         reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
                         std::cout << "print reply: " << reply << std::endl; // to del
