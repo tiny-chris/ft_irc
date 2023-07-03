@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 15:39:58 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/03 14:57:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Client {
 		bool			getPassStatus( void ) const;
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
+		std::string		getSource( void ) const;
 
 		void			setCfd( int& clientFd );
 		void			setNickname( std::string const& name );
@@ -48,6 +49,7 @@ class Client {
 		void			setPassStatus( bool const& status );
 		void			setNickStatus( bool const& status );
 		void			setIfRegistered( bool const& status );
+		void			setSource( std::string nickname, std::string username );
 
 	private:
 
@@ -56,6 +58,8 @@ class Client {
 		std::string	_nickname;
 		std::string	_username;
 		std::string _realname;
+
+		std::string	_source;
 
 		bool		_passStatus;
 		bool		_nickStatus;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 16:17:17 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/03 15:01:13 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Client::Client( std::string name, int socket ) :
 			_nickname( "" ),
 			_username( "" ),
 			_realname( name ),
+			_source( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false )
@@ -39,6 +40,7 @@ std::string	Client::getRealname( void ) const {	return _realname; }
 bool		Client::getPassStatus( void ) const { return _passStatus; }
 bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
+std::string	Client::getSource( void ) const { return _source; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
@@ -47,3 +49,6 @@ void		Client::setRealname( std::string const& name ) { _realname = name; }
 void		Client::setPassStatus( bool const& status ) { _passStatus = status; }
 void		Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void		Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
+void		Client::setSource( std::string nickname, std::string username ) {
+	_source = ":" + nickname + "!" + username + "@localhost";
+}
