@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/06/30 18:31:06 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/03 15:04:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void		Server::handleUser( size_t cid, std::string param )
   if (_clients[cid].getPassStatus() == true && _clients[cid].getNickStatus() == true && !_clients[cid].getUsername().empty())
   {
     _clients[cid].setIfRegistered(true);
+    _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
     std::cout << "client " << _clients[cid].getNickname() << " --> is registered" << std::endl;
   }
 }
