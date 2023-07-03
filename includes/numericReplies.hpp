@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 17:26:01 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 14:33:27 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 /* No message delivered error messages */
 
-# define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
+// # define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
 
 # define ERR_NOSUCHNICK(source, nickname) (std::string(source) + " " + nickname + " :No such nick/channel\r\n")
 // # define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
@@ -69,7 +69,7 @@
 
 /*********************************************/
 
-# define  ERR_UNKNOWNCOMMAND(server, nickname, command) (std::string(":") + server + " 421 " + nickname + " " + command + " :Unknown command\r\n")
+# define  ERR_UNKNOWNCOMMAND(source, nickname, command) (std::string(source) + " 421 " + nickname + " " + command + " :Unknown command\r\n")
 // 421
 //"<commande> :Unknown command"
 //Renvoyé à un client enregistré pour indiquer que la commande envoyée est inconnue du serveur.
@@ -96,12 +96,12 @@
 // "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
 
-# define  ERR_NICKNAMEINUSE(server, clientNickname, nickname)(std::string(":") + server + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
+# define  ERR_NICKNAMEINUSE(source, clientNickname, nickname)(std::string(source) + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
 // 433
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
-# define  ERR_NICKCOLLISION(server, clientNickname, nickname) (std::string(server) + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
+# define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(source) + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
 // 436
 // "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
@@ -130,12 +130,12 @@
 // ":USERS has been disabled"
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
-# define  ERR_NOTREGISTERED(server, nickname) (std::string(":") + server + " 451 " + nickname + " :You have not registered\r\n") 
+# define  ERR_NOTREGISTERED(source, nickname) (std::string(source) + " 451 " + nickname + " :You have not registered\r\n") 
 // 451
 // ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 
-# define  ERR_NEEDMOREPARAMS(server, nickname, command) (std::string(":") + server + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
+# define  ERR_NEEDMOREPARAMS(source, nickname, command) (std::string(source) + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 // 461
 // "<commande> :Not enough parameters"
 // Renvoyé par un serveur par de nombreuses commandes, afin d'indiquer que le client n'a pas fourni assez de paramètres.

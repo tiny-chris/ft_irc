@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/30 17:37:06 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 14:39:09 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Client::Client( std::string name, int socket ) :
 			_name( name ),
 			_username( "" ),
 			_nickname( "" ),
-			_source( ":" ),
+			_source( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false )
