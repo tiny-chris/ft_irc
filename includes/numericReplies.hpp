@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 14:33:27 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 17:56:51 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 // # define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
 
-# define ERR_NOSUCHNICK(source, nickname) (std::string(source) + " " + nickname + " :No such nick/channel\r\n")
+# define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " " + nickname + " :No such nick/channel\r\n")
 // # define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
 // 401 Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
@@ -69,7 +69,7 @@
 
 /*********************************************/
 
-# define  ERR_UNKNOWNCOMMAND(source, nickname, command) (std::string(source) + " 421 " + nickname + " " + command + " :Unknown command\r\n")
+# define  ERR_UNKNOWNCOMMAND(source, nickname, command) (std::string(":") + source + " 421 " + nickname + " " + command + " :Unknown command\r\n")
 // 421
 //"<commande> :Unknown command"
 //Renvoyé à un client enregistré pour indiquer que la commande envoyée est inconnue du serveur.
@@ -86,22 +86,22 @@
 //":File error doing <opération> on <fichier>"
 //Message d'erreur générique utilisé pour rapporter un échec d'opération de fichier durant le traitement d'un message.
 
-# define  ERR_NONICKNAMEGIVEN(source, nickname) (std::string(source)+ " 431 " + nickname + " :No nickname given\r\n")
+# define  ERR_NONICKNAMEGIVEN(source, nickname) (std::string(":") + source + " 431 " + nickname + " :No nickname given\r\n")
 // 431
 //":No nickname given"
 //Renvoyé quand un paramètre pseudonyme attendu pour une commande n'est pas fourni.
 
-# define  ERR_ERRONEUSNICKNAME(source, clientNickname, nickname) (std::string(source) + " 432 " + clientNickname + " :Erroneus nickname\r\n")
+# define  ERR_ERRONEUSNICKNAME(source, clientNickname, nickname) (std::string(":") + source + " 432 " + clientNickname + " :Erroneus nickname\r\n")
 // 432
 // "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
 
-# define  ERR_NICKNAMEINUSE(source, clientNickname, nickname)(std::string(source) + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
+# define  ERR_NICKNAMEINUSE(source, clientNickname, nickname)(std::string(":") + source + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
 // 433
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
-# define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(source) + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
+# define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(":") + source + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
 // 436
 // "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
@@ -130,17 +130,17 @@
 // ":USERS has been disabled"
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
-# define  ERR_NOTREGISTERED(source, nickname) (std::string(source) + " 451 " + nickname + " :You have not registered\r\n") 
+# define  ERR_NOTREGISTERED(source, nickname) (std::string(":") + source + " 451 " + nickname + " :You have not registered\r\n") 
 // 451
 // ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 
-# define  ERR_NEEDMOREPARAMS(source, nickname, command) (std::string(source) + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
+# define  ERR_NEEDMOREPARAMS(source, nickname, command) (std::string(":") + source + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 // 461
 // "<commande> :Not enough parameters"
 // Renvoyé par un serveur par de nombreuses commandes, afin d'indiquer que le client n'a pas fourni assez de paramètres.
 
-# define  ERR_ALREADYREGISTRED(source, nickname) (std::string(source) + " 462 " + nickname + " :You may not reregister\r\n")
+# define  ERR_ALREADYREGISTRED(source, nickname) (std::string(":") + source + " 462 " + nickname + " :You may not reregister\r\n")
 // 462
 // ":You may not reregister"
 // Retourné par le serveur à tout lien qui tente de changer les détails enregistrés (tels que mot de passe et détails utilisateur du second message USER)
@@ -149,7 +149,7 @@
 // ":Your host isn't among the privileged"
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
-# define  ERR_PASSWDMISMATCH(source, nickname) (std::string(source) + " 464 " + nickname + " :Password incorrect\r\n")
+# define  ERR_PASSWDMISMATCH(source, nickname) (std::string(":") + source + " 464 " + nickname + " :Password incorrect\r\n")
 // 464
 // ":Password incorrect"
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
@@ -207,7 +207,36 @@
 // Erreur envoyée à tout utilisateur qui essaie de voir ou de modifier le mode utilisateur d'un autre client.
 
 
-/******		COMMAND REPLIES		******/
+/******		REGISTRATION REPLIES		******/
+
+/* ***************************************** */
+/*    COMMAND REPLIES                        */
+/* ***************************************** */
+
+/******		REGISTRATION REPLIES		******/
+
+# define RPL_WELCOME(source, nickname) (std::string(":") + source + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + source + "\r\n") 
+// 001
+// "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
+// The first message sent after client registration, this message introduces the client to the network. The text used in the last param of this message varies wildly.
+
+# define RPL_YOURHOST(source, nickname) (std::string(":") + source + " 002 " + nickname + " :Your host is localhost, running version 1.69" + "\r\n")
+// 002
+// "<client> :Your host is <servername>, running version <version>"
+// Part of the post-registration greeting, this numeric returns the name and software/version of the server the client is currently connected to. The text used in the last param of this message varies wildly.
+
+# define RPL_CREATED(source, nickname, date) (std::string(":") + source + " 003 " + nickname + " :This server was created " + date + "\r\n")
+// (003) 
+// "<client> :This server was created <datetime>"
+// Part of the post-registration greeting, this numeric returns a human-readable date/time that the server was started or created. The text used in the last param of this message varies wildly.
+
+# define RPL_MYINFO(source, nickname, servername, userModes, channelModes) (std::string(":") + source + " 004 " + nickname + " " + servername + " 1.69 " + userModes + " " + channelModes)
+// (004) 
+// "<client> <servername> <version> <available user modes>
+// <available channel modes> [<channel modes with a parameter>]"
+// Part of the post-registration greeting. Clients SHOULD discover available features using RPL_ISUPPORT tokens rather than the mode letters listed in this reply.
+
+# define RPL_ISUPPORT 005
 
 # define RPL_NONE 300
 // Numéro de réponse bidon. Inutilisé.
@@ -324,9 +353,10 @@
 // Si le message USERS est géré par un serveur, les réponses RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS et RPL_NOUSERS sont utilisées. RPL_USERSSTART doit être envoyé en premier, suivi par soit une séquence de RPL_USERS soit un unique RPL_NOUSER. Enfin, vient un RPL_ENDOFUSERS.
 
 /* ***************************************** */
-/*            NICK ERROR MESSAGES            */
+/*    CUSTOM MESSAGES NO NUMERIC REPLIES     */
 /* ***************************************** */
 
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
+# define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 
 #endif

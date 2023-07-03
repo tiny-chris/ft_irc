@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 15:01:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/03 16:23:33 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,5 @@ void		Client::setPassStatus( bool const& status ) { _passStatus = status; }
 void		Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void		Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
 void		Client::setSource( std::string nickname, std::string username ) {
-	_source = ":" + nickname + "!" + username + "@localhost";
+	_source = nickname + "!" + username + "@localhost";
 }
