@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/04 16:19:32 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/04 16:56:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,14 @@ void  Server::sendLusersMsg( size_t cid ) const
 
   nbrClients << _clients.size();
 
+  reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_LUSEROP(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getOpsNbr()
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_LUSERUNKNOWN(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A Modifier getUnknownStateUsers()
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_LUSERCHANNELS(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getChannelNbr();
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
   send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 }

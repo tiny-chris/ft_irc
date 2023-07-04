@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 16:10:10 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/04 16:51:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,34 +224,37 @@
 /******		REGISTRATION REPLIES		******/
 
 # define RPL_WELCOME(source, nickname) (std::string(":") + source + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + source + "\r\n") 
-// 001
-// "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
 // The first message sent after client registration, this message introduces the client to the network. The text used in the last param of this message varies wildly.
 
 # define RPL_YOURHOST(source, nickname) (std::string(":") + source + " 002 " + nickname + " :Your host is " + SERVERNAME + " running version " + VERSION + "\r\n")
-// 002
-// "<client> :Your host is <servername>, running version <version>"
 // Part of the post-registration greeting, this numeric returns the name and software/version of the server the client is currently connected to. The text used in the last param of this message varies wildly.
 
 # define RPL_CREATED(source, nickname, date) (std::string(":") + source + " 003 " + nickname + " :This server was created " + date + "\r\n")
-// 003
-// "<client> :This server was created <datetime>"
 // Part of the post-registration greeting, this numeric returns a human-readable date/time that the server was started or created. The text used in the last param of this message varies wildly.
 
 # define RPL_MYINFO(source, nickname) (std::string(":") + source + " 004 " + nickname + " " + SERVERNAME + " " + VERSION + " " + USERMODES + " " + CHANNELMODES + " " + CHANNELMODESPARAM + "\r\n")
-// 004
-// "<client> <servername> <version> <available user modes>
-// <available channel modes> [<channel modes with a parameter>]"
 // Part of the post-registration greeting. Clients SHOULD discover available features using RPL_ISUPPORT tokens rather than the mode letters listed in this reply.
 
 # define RPL_ISUPPORT(source, nickname, token) (std::string(":") + source + " 005 " + token + " :are supported by this server\r\n") 
-//005
 // Part of the post-registration greeting. Clients SHOULD discover available features using RPL_ISUPPORT tokens rather than the mode letters listed in this reply.
 
+/******		  LUSERS REPLIES		  ******/
+
 # define RPL_LUSERCLIENT(source, nickname, totalusers) (std::string(":") + source + " 251 " + nickname + " :There are " + totalusers + " users and 0 invisible on 1 servers\r\n")
-// 251
-// "<client> :There are <u> users and <i> invisible on <s> servers"
-// Sent as a reply to the LUSERS command. <u>, <i>, and <s> are non-negative integers, and represent the number of total users, invisible users, and other servers connected to this server.
+// <u>, <i>, and <s> are non-negative integers, and represent the number of total users, invisible users, and other servers connected to this server.
+
+# define RPL_LUSEROP(source, nickname, ops) (std::string(":") + source + " 252 " + nickname + " " + ops + " :operator(s) online\r\n")
+// <ops> is a positive integer and represents the number of IRC operators connected to this server. The text used in the last param of this message may vary.
+
+# define RPL_LUSERUNKNOWN(source, nickname, connections) (std::string(":") + source + " 253 " + nickname + " " + connections + " :unknown connection(s)\r\n")
+// <connections> is a positive integer and represents the number of connections to this server that are currently in an unknown state. The text used in the last param of this message may vary.
+
+# define RPL_LUSERCHANNELS(source, nickname, channels) (std::string(":") + source + " 254 " + nickname + " " + channels + " :channels formed\r\n")
+// <channels> is a positive integer and represents the number of channels that currently exist on this server. The text used in the last param of this message may vary.
+
+# define RPL_LUSERME(source, nickname, clientsnbr) (std::string(":") + source + " 255 " + nickname + " :I have " + clientsnbr + " 0 servers\r\n")
+// <c> and <s> are non-negative integers and represent the number of clients and other servers connected to this server, respectively.
+
 
 # define RPL_NONE 300
 // Numéro de réponse bidon. Inutilisé.
