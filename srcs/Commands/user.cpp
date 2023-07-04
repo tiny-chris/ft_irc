@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/03 18:26:21 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/04 16:19:32 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,5 +188,58 @@ void		Server::handleUser( size_t cid, std::string param )
     _clients[cid].setIfRegistered(true);
     _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
     std::cout << "client " << _clients[cid].getNickname() << " --> is registered" << std::endl;
+    // DISPLAY WELCOME MESSAGES
+    sendWelcomeMsg( cid );
+    // EQUIVALENT OF LUSERS received 
+    sendLusersMsg( cid );
   }
+}
+
+void		Server::sendWelcomeMsg( size_t cid ) const
+{
+  std::string reply;
+  std::time_t	t = std::time(0);
+	std::tm* local = std::localtime(&t);
+	
+  char formattedDate[30];
+  std::strftime(formattedDate, sizeof(formattedDate), "%a %b %d %H:%M:%S %Y", local);
+  std::string date(formattedDate);
+  
+  reply = RPL_WELCOME(_clients[cid].getSource(), _clients[cid].getNickname());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_YOURHOST(_clients[cid].getSource(), _clients[cid].getNickname());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_CREATED(_clients[cid].getSource(), _clients[cid].getNickname(), date);
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_MYINFO(_clients[cid].getSource(), _clients[cid].getNickname());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  reply = RPL_ISUPPORT(_clients[cid].getSource(), _clients[cid].getNickname(), getSupportToken());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+}
+
+std::string Server::getSupportToken() const
+{  
+  std::stringstream token;
+  token << " CHANLIMIT=#:" << CHANLIMIT << " ";
+  token << " CHANMODE=" << CHANMODES << " ";
+  token << " CHANNELLEN=" << CHANNELLEN << " ";
+  token << " CHANTYPES=" << CHANTYPES << " ";
+  token << " HOSTLEN=" << HOSTLEN << " ";
+  token << " KICKLEN=" << KICKLEN << " ";
+  token << " NICKLEN=" << NICKLEN << " ";
+  token << " PREFIX=" << PREFIX << " ";
+  token << " STATUSMSG=" << STATUSMSG << " ";
+  token << " TOPICLEN=" << TOPICLEN << " ";
+  return (token.str());
+} 
+
+void  Server::sendLusersMsg( size_t cid ) const
+{
+  std::string reply;
+  std::stringstream nbrClients;
+
+  nbrClients << _clients.size();
+
+  reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
+  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
 }

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 14:58:07 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/04 15:43:26 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <poll.h>   // pollfd, poll
 # include <stdlib.h>  // exit
 # include <unistd.h>  // close
+# include <ctime>
 
 # include "Client.hpp"
 # include "Socket.hpp"
@@ -80,6 +81,11 @@ class Server {
 
 		bool		isValidNick(std::string param);
 		bool		existingNick(std::string param);
+
+		void		sendWelcomeMsg( size_t cid ) const;
+		void		sendLusersMsg( size_t cid ) const;
+
+		std::string getSupportToken() const;
 };
 
 #endif
