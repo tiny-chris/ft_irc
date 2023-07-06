@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 13:39:59 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/06 14:47:36 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) {
+Server::Server( size_t port, const char *password, std::string serverName ) : 
+    _port(port), _password(password), _serverName(serverName)
+{
  // std::cout << _password << std::endl;
   // setSource("", "");
   setup();
@@ -328,11 +330,11 @@ void Server::addConnection() {
 
   // If there is no client --> create a first client "NONE" to start the client counting at 1
   if( _clients.size() == 0 ) {
-    _clients.push_back( Client( "NONE", -1 ) );
+    _clients.push_back( Client( -1 ) );
   }
-  _clients.push_back( Client( "Anon_0" + intToString( newsocket ), newsocket ) );
+  _clients.push_back( Client( newsocket ) );
 
-  std::cout << "<Anon_0" << newsocket << " is connectedl>\n";//new/
+  std::cout << "New connection accepted for client <tbd> on the socket fd " << newsocket << std::endl;
   // std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
   /* std::cout << "pollserver: new connection from "; */
   /* std::cout << ntop( remoteAddr ); */

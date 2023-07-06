@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 13:57:23 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/06 14:32:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Client {
 
 	public:
 
-		Client( std::string name, int socket );
+		Client( int socket );
 		~Client( void );
 
 		Client&			operator=(const Client& other);
@@ -44,7 +44,7 @@ class Client {
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
 
-		// void			setFd( int& clientFd );
+		// void			setFd( int& clientFd );//not used as _fd is const
 		void			setNickname( std::string const& name );
 		void			setUsername( std::string const& name );
 		void			setRealname( std::string const& name );

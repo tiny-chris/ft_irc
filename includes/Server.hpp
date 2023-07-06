@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 15:43:26 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 14:45:36 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,15 @@ class Server {
 
 		// add a map of clients that contains their name, a struct of their
 		// socket and a struct of their status
-		std::vector<pollfd> _pfds;      // Pollable file descriptors
-		std::vector<Client> _clients;   // Pollable file descriptors
-		Socket              _listener;  // Use Socket for managing the listener socket
+		std::vector<pollfd>			_pfds;      // Pollable file descriptors
+		std::vector<Client> 		_clients;   // Pollable file descriptors
+		Socket              		_listener;  // Use Socket for managing the listener socket
 
 		std::map<int,std::string>	_mapCommands;
 
-		size_t		_port;
-		std::string	_password;
-		std::string	_serverName; // a supprimer peut etre remplce par _source
+		size_t						_port;
+		std::string					_password;
+		std::string					_serverName; // a supprimer peut etre remplce par _source
 		// std::string _source;
 
 		bool		isValidNick(std::string param);

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 14:03:05 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/06 14:31:52 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Client::Client( std::string name, int socket ) :
+Client::Client( int socket ) :
 			_fd( socket ),
 			_nickname( "" ),
 			_username( "" ),
-			_realname( name ),
+			_realname( "" ),
 			_source( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
@@ -57,7 +57,7 @@ bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 std::string	Client::getSource( void ) const { return _source; }
 
-// void		Client::setFd( int& clientFd ) { _fd = clientFd; }
+// void		Client::setFd( int& clientFd ) { _fd = clientFd; }//not used as _fd is const
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
 void		Client::setUsername( std::string const& name ) { _username = name; }
 void		Client::setRealname( std::string const& name ) { _realname = name; }
