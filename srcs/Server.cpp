@@ -147,6 +147,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   int         commandKey = 0;
 
   splitter = request.find(' ', 0);
+  
 
   /* ********************************* */
   /* ACTION 1   - get command & params */
@@ -262,6 +263,7 @@ void  Server::handleRequest( size_t cid, std::string request )
 /*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
 
 void Server::receiveData( size_t cid ) {
+  int checkClear = 0;
   char buf[BUFMAXLEN];  // Buffer for client data
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
@@ -280,19 +282,19 @@ void Server::receiveData( size_t cid ) {
   // Turn "^M\n" into "\0" TODO OS compatibility
   //faire un pour verifier que ca finit bien par un
   bufs[cid] += buf;
-  int size = bufs[cid].size();
-  if (size >= 2 && bufs[cid][size - 2] == '\r' && bufs[cid][size - 1] == '\n')
-  {
-    // std::cout << "display bufs[cid] before deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
-    // bufs[cid][size - 2] = '\0';
-    // bufs[cid][size - 1] = '\0';
-    bufs[cid].erase(size - 1, 1);
-    bufs[cid].erase(size - 2, 1);
-    // std::cout << "display bufs[cid] after deleting \\r\\n : '" << bufs[cid] << "'" << std::endl;
-    handleRequest( cid, bufs[cid] );
-    bufs[cid].clear();
-    // break;
+  std::cout << "intial buf: " << bufs[cid] << std::endl;
+  while (bufs[cid].size() >= 2 && bufs[cid].find(CRLF) != std::string::npos)
+  { 
+    checkClear = 1;
+    std::string tmp;
+    tmp = bufs[cid].substr(0, bufs[cid].find(CRLF));
+    std::cout << "tmp: " << tmp << std::endl;
+    handleRequest( cid, tmp );
+    bufs[cid].erase(0, bufs[cid].find(CRLF) + 2);
+    std::cout << "new bufs: " <<  bufs[cid] << std::endl;
   }
+  if (checkClear == 1)
+    bufs[cid].clear();
   //}
   // parseData( buf, cid );
 }
