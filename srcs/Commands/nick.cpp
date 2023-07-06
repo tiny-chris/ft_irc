@@ -21,6 +21,9 @@ void		Server::handleNick( size_t cid, std::string param )
 {
   std::string reply;
   // if no param to a nick command -> No nickname given error
+  //OPTION ON TRUNC LE PARAM SI TROP LONG
+  if (param.size() > NICKLEN)
+    param.erase(NICKLEN, param.size() - NICKLEN);
   if (param.compare("") == 0)
   {
     reply = ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname());
