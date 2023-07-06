@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 16:19:04 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 13:39:59 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     {
       reply = ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() );
       std::cout << "print reply: " << reply << std::endl; // to del
-      send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+      send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       return;
     }
   }
@@ -254,7 +254,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     default:        	{
                         reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
                         std::cout << "print reply: " << reply << std::endl; // to del
-                        send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+                        send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
                         return;
                       } break;
   }

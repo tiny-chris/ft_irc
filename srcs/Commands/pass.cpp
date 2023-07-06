@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:32 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 15:19:31 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 13:40:26 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	Server::handlePass( size_t cid, std::string param )
 		// ERR_ALREADYREGISTERED numeric reply is sent
 		reply = ERR_ALREADYREGISTRED(_clients[cid].getSource(), _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del 
-		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 	}
 	// else if there is no param to the PASS command
 	// ERR_NEEDMOREPARAMS numeric reply is sent
@@ -43,7 +43,7 @@ void	Server::handlePass( size_t cid, std::string param )
 		std::string command = "pass";
 		reply = ERR_NEEDMOREPARAMS (_clients[cid].getSource(), _clients[cid].getNickname(), command);
 		std::cout << "print reply: " << reply << std::endl; // to del
-		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 	}
 	// else if Pass command's param is different from the password set for the Server
 	// then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
@@ -51,9 +51,9 @@ void	Server::handlePass( size_t cid, std::string param )
 	{
 		reply = ERR_PASSWDMISMATCH(_clients[cid].getSource(), _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del
-		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 		reply = KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname());
-    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
    	this->delConnection( cid );
 	}
 	// else if it's the right password, the client is not yet registered then setPassStatus to true

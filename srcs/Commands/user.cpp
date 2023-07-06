@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/04 16:56:25 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 13:41:06 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void		Server::handleUser( size_t cid, std::string param )
   {
     reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
 		std::cout << "print reply: " << reply << std::endl; // to del
-		send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
 
@@ -90,7 +90,7 @@ void		Server::handleUser( size_t cid, std::string param )
   //   reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
 	// 	// reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
 	// 	std::cout << "print reply: " << reply << std::endl; // to del
-	// 	send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+	// 	send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   //   return ;
   // }
 
@@ -108,7 +108,7 @@ void		Server::handleUser( size_t cid, std::string param )
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
     // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
     std::cout << "print reply: " << reply << std::endl; // to del
-    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
   realname = param.substr(colon, param.length() - colon);
@@ -133,7 +133,7 @@ void		Server::handleUser( size_t cid, std::string param )
   //     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
   //     // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
   //     std::cout << "print reply: " << reply << std::endl; // to del
-  //     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  //     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   //   }
   //   return ;
   // }
@@ -169,7 +169,7 @@ void		Server::handleUser( size_t cid, std::string param )
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
     // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), command);
     std::cout << "print reply: " << reply << std::endl; // to del
-    send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
   else if (tokens.size() > 3 || isValidUser(tokens[0]) == false)
@@ -206,15 +206,15 @@ void		Server::sendWelcomeMsg( size_t cid ) const
   std::string date(formattedDate);
   
   reply = RPL_WELCOME(_clients[cid].getSource(), _clients[cid].getNickname());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_YOURHOST(_clients[cid].getSource(), _clients[cid].getNickname());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_CREATED(_clients[cid].getSource(), _clients[cid].getNickname(), date);
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_MYINFO(_clients[cid].getSource(), _clients[cid].getNickname());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_ISUPPORT(_clients[cid].getSource(), _clients[cid].getNickname(), getSupportToken());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 }
 
 std::string Server::getSupportToken() const
@@ -241,13 +241,13 @@ void  Server::sendLusersMsg( size_t cid ) const
   nbrClients << _clients.size();
 
   reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_LUSEROP(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getOpsNbr()
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_LUSERUNKNOWN(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A Modifier getUnknownStateUsers()
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_LUSERCHANNELS(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getChannelNbr();
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
-  send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 }

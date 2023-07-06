@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 12:35:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 13:57:23 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ class Client {
 		Client( std::string name, int socket );
 		~Client( void );
 
-		int				getCfd( void ) const;
+		Client&			operator=(const Client& other);
+
+		int				getFd( void ) const;
 		std::string		getNickname( void ) const;
 		std::string		getUsername( void ) const;
 		std::string		getRealname( void ) const;
@@ -42,7 +44,7 @@ class Client {
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
 
-		void			setCfd( int& clientFd );
+		// void			setFd( int& clientFd );
 		void			setNickname( std::string const& name );
 		void			setUsername( std::string const& name );
 		void			setRealname( std::string const& name );
@@ -53,7 +55,7 @@ class Client {
 
 	private:
 
-		int			_fd;
+		const int	_fd;
 
 		std::string	_nickname;
 		std::string	_username;
