@@ -19,7 +19,7 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) : 
+Server::Server( size_t port, const char *password, std::string serverName ) :
     _port(port), _password(password), _serverName(serverName)
 {
  // std::cout << _password << std::endl;
@@ -149,7 +149,9 @@ void  Server::handleRequest( size_t cid, std::string request )
   int         commandKey = 0;
 
   splitter = request.find(' ', 0);
-  
+
+  std::cout << "-----client [" << cid << " " << _clients[cid].getNickname() << "]-----\n" ;
+  std::cout << "request content = <" << request << ">" << std::endl;
 
   /* ********************************* */
   /* ACTION 1   - get command & params */
@@ -165,11 +167,11 @@ void  Server::handleRequest( size_t cid, std::string request )
     parameters = request.substr(splitter + 1, std::string::npos);
   }
 
-  /* ********************************* */
-  /* SUBACTION  - turn command content into capital letters */
-  /* ********************************* */
-  for (size_t i = 0; i < command.length(); ++i)
-    command[i] = std::toupper(command[i]);
+  // /* ********************************* */
+  // /* SUBACTION  - turn command content into capital letters */
+  // /* ********************************* */
+  // for (size_t i = 0; i < command.length(); ++i)
+  //   command[i] = std::toupper(command[i]);
 
   /* ********************************* */
   /* ACTION 2   - check the case when the client is disconnected and return */
@@ -200,10 +202,13 @@ void  Server::handleRequest( size_t cid, std::string request )
   //
   //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem pour potentiel shutdown
   //
-  if (commandKey != UNDEFINED)
+  if (commandKey != UNDEFINED && commandKey != CAP)
   {
     if (command != "PASS" && _clients[cid].getPassStatus() == false )
+    {
+      std::cout << "Error: must set PASS command first" << std::endl;
       return;
+    }
 
     if (!_clients[cid].getIfRegistered()
       && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
@@ -220,22 +225,22 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   switch(commandKey)
   {
-    // case PASS:        handlePass( cid, parameters ); break;
-    // case NICK:        handleNick( cid, parameters ); break;
-    // case PASS:        handleUser( cid, parameters ); break;
     case CAP:         break;
-    case PASS:        {
-                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
-                        handlePass( cid, parameters );
-                      } break;
-    case NICK:        {
-                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle NICK command with " << parameters << std::endl;
-                        handleNick( cid, parameters );
-                      } break;
-    case USER:        {
-                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle USER command" << std::endl;
-                        handleUser( cid, parameters );
-                      } break;
+    case PASS:        handlePass( cid, parameters ); break;
+    case NICK:        handleNick( cid, parameters ); break;
+    case USER:        handleUser( cid, parameters ); break;
+    // case PASS:        {
+    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
+    //                     handlePass( cid, parameters );
+    //                   } break;
+    // case NICK:        {
+    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle NICK command with " << parameters << std::endl;
+    //                     handleNick( cid, parameters );
+    //                   } break;
+    // case USER:        {
+    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle USER command" << std::endl;
+    //                     handleUser( cid, parameters );
+    //                   } break;
     case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
     case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 
@@ -251,7 +256,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
     // keeping Clement's initial commands just in case... - END
 
-    // This message is not required for a server implementation to work, but SHOULD be implemented. 
+    // This message is not required for a server implementation to work, but SHOULD be implemented.
     // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
     default:        	{
                         reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
@@ -284,16 +289,17 @@ void Server::receiveData( size_t cid ) {
   // Turn "^M\n" into "\0" TODO OS compatibility
   //faire un pour verifier que ca finit bien par un
   bufs[cid] += buf;
-  std::cout << "intial buf: " << bufs[cid] << std::endl;
+  std::cout << "|INFO| initial buf: " << bufs[cid] << std::endl;
   while (bufs[cid].size() >= 2 && bufs[cid].find(CRLF) != std::string::npos)
-  { 
+  {
     checkClear = 1;
-    std::string tmp;
-    tmp = bufs[cid].substr(0, bufs[cid].find(CRLF));
-    std::cout << "tmp: " << tmp << std::endl;
-    handleRequest( cid, tmp );
+    // std::string tmp;
+    // tmp = bufs[cid].substr(0, bufs[cid].find(CRLF));
+    // std::cout << "tmp: " << tmp << std::endl;
+    // handleRequest( cid, tmp );
+    handleRequest( cid, bufs[cid].substr(0, bufs[cid].find(CRLF)) );
     bufs[cid].erase(0, bufs[cid].find(CRLF) + 2);
-    std::cout << "new bufs: " <<  bufs[cid] << std::endl;
+    // std::cout << "new bufs: " <<  bufs[cid] << std::endl;
   }
   if (checkClear == 1)
     bufs[cid].clear();

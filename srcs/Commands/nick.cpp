@@ -25,12 +25,14 @@ void		Server::handleNick( size_t cid, std::string param )
   {
     reply = ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname());
     // reply = ERR_NOSUCHNICK(SOURCE(_clients[cid].getNickname(), _clients[cid].getUsername()), _clients[cid].getNickname());
+    std::cout << "print reply: " << reply << std::endl; // to del
     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   }
   // else if there are invalid char in the nickname, an erroneus nickname message is sent
   else if (isValidNick(param) == false)
   {
     reply = ERR_ERRONEUSNICKNAME(_clients[cid].getSource(), _clients[cid].getNickname(), param);
+    std::cout << "print reply: " << reply << std::endl; // to del
     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   }
   // else if the nickname is the same nickname as another client
@@ -40,8 +42,10 @@ void		Server::handleNick( size_t cid, std::string param )
     if (_clients[cid].getIfRegistered() == false)
     {
       reply = ERR_NICKCOLLISION(_clients[cid].getSource(), _clients[cid].getNickname(), param);
+      std::cout << "print reply: " << reply << std::endl; // to del
       send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       reply = KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname());
+      std::cout << "print reply: " << reply << std::endl; // to del
       send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       this->delConnection( cid );
     }
@@ -57,7 +61,8 @@ void		Server::handleNick( size_t cid, std::string param )
   // nickname is set to param value and nickstatus set to true
   else
   {
-	reply = RPL_NICK(_clients[cid].getNickname(), param);
+	  reply = RPL_NICK(_clients[cid].getNickname(), param);
+    std::cout << "print reply: " << reply << std::endl; // to del
     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
@@ -73,7 +78,7 @@ bool		Server::isValidNick(std::string param)
   {
     char c = param[i];
     if (!(isalnum(c) || c == '[' || c == ']' || c == '{' \
-      || c == '}' || c == '\\' || c == '|'))
+      || c == '}' || c == '\\' || c == '|' || c == '_'))
       return false;
   }
   return true;

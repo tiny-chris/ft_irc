@@ -33,7 +33,7 @@ void	Server::handlePass( size_t cid, std::string param )
 	{
 		// ERR_ALREADYREGISTERED numeric reply is sent
 		reply = ERR_ALREADYREGISTRED(_clients[cid].getSource(), _clients[cid].getNickname());
-		std::cout << "print reply: " << reply << std::endl; // to del 
+		std::cout << "print reply: " << reply << std::endl; // to del
 		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 	}
 	// else if there is no param to the PASS command
@@ -58,6 +58,9 @@ void	Server::handlePass( size_t cid, std::string param )
 	}
 	// else if it's the right password, the client is not yet registered then setPassStatus to true
 	else
+	{
 		_clients[cid].setPassStatus(true);
+		std::cout << "OK: valid Password provided!" << std::endl;
+	}
 	return ;
 }
