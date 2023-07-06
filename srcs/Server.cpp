@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 16:19:04 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 16:50:43 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,9 @@ void	Server::initCommands( void )
   _mapCommands.insert(std::make_pair(100, "PASS"));
   _mapCommands.insert(std::make_pair(101, "NICK"));
   _mapCommands.insert(std::make_pair(102, "USER"));
-  _mapCommands.insert(std::make_pair(103, "JOIN"));
-  _mapCommands.insert(std::make_pair(104, "PRIVMSG"));
+  _mapCommands.insert(std::make_pair(103, "MODE"));
+  _mapCommands.insert(std::make_pair(104, "JOIN"));
+  _mapCommands.insert(std::make_pair(105, "PRIVMSG"));
 
   _mapCommands.insert(std::make_pair(1000, "/shutdown"));
   _mapCommands.insert(std::make_pair(1001, "/quit"));
@@ -183,7 +184,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     if (command == it->second)
       commandKey = it->first;
   }
-
+ 
   // // display to check:
   // std::cout << "command = " << command << std::endl;
   // std::cout << "param = " << parameters << std::endl;
@@ -233,6 +234,10 @@ void  Server::handleRequest( size_t cid, std::string request )
     case USER:        {
                         std::cout << "client " << _clients[cid].getNickname() << " - use function to handle USER command" << std::endl;
                         handleUser( cid, parameters );
+                      } break;
+    case MODE:        {
+                        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle MODE command with " << parameters << std::endl;
+                        handleMode(cid, parameters );
                       } break;
     case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
     case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;

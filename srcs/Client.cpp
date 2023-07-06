@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 16:23:33 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 22:22:17 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Client::Client( std::string name, int socket ) :
 			_username( "" ),
 			_realname( name ),
 			_source( "" ),
+			_userModes ( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false )
@@ -41,6 +42,7 @@ bool		Client::getPassStatus( void ) const { return _passStatus; }
 bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 std::string	Client::getSource( void ) const { return _source; }
+std::string	Client::getUserModes ( void ) const { return _userModes; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
@@ -51,4 +53,21 @@ void		Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void		Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
 void		Client::setSource( std::string nickname, std::string username ) {
 	_source = nickname + "!" + username + "@localhost";
+}
+bool		Client::setUserModes( std::string const& mode ) {
+	if ( mode.find("+i") != std::string::npos && _userModes.find('i') == std::string::npos)
+	{
+		_userModes = "i";
+		if (mode.size() != 2)
+			return false;
+		return true;
+	}
+	else if ( mode.find("-i") != std::string::npos )
+	{
+		_userModes.erase();
+		if (mode.size() != 2)
+			return false;
+		return true;
+	}
+	return false;
 }

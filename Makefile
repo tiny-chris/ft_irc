@@ -19,6 +19,7 @@ SRCS		:=	\
 			Commands/user.cpp \
 			Commands/nick.cpp \
 			Commands/pass.cpp \
+			Commands/mode.cpp \
 			Server.cpp \
 			Socket.cpp \
 			utils.cpp \

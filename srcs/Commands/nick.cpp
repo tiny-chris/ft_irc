@@ -21,13 +21,12 @@ void		Server::handleNick( size_t cid, std::string param )
 {
   std::string reply;
   // if no param to a nick command -> No nickname given error
-  //OPTION ON TRUNC LE PARAM SI TROP LONG
+  // OPTION WE TRUNC PARAM IF ITS TOO LONG
   if (param.size() > NICKLEN)
     param.erase(NICKLEN, param.size() - NICKLEN);
   if (param.compare("") == 0)
   {
     reply = ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname());
-    // reply = ERR_NOSUCHNICK(SOURCE(_clients[cid].getNickname(), _clients[cid].getUsername()), _clients[cid].getNickname());
     send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
   }
   // else if there are invalid char in the nickname, an erroneus nickname message is sent

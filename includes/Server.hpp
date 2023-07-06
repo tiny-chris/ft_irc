@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 15:43:26 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 16:07:07 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class Server {
 		void		handlePass( size_t cid, std::string param );
 		void		handleNick( size_t cid, std::string param );
 		void		handleUser( size_t cid, std::string param );
+		void		handleMode( size_t cid, std::string param );
 
 	private:
 

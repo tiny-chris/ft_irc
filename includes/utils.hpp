@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 15:25:59 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/06 16:52:44 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ enum commands {
 	PASS = 100,
 	NICK = 101,
 	USER = 102,
-	JOIN = 103,
-	PRIVMSG = 104,
+	MODE = 103,
+	JOIN = 104,
+	PRIVMSG = 105,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,

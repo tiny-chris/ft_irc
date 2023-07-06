@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 16:51:35 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 22:08:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,12 +206,12 @@
 // ":No O-lines for your host"
 // Si un client envoie un message OPER et que le serveur n'a pas été configuré pour autoriser les connexions d'opérateurs de cet hôte, cette erreur doit être retournée.
 
-# define ERR_UMODEUNKNOWNFLAG 501
+# define ERR_UMODEUNKNOWNFLAG(source, nickname) (std::string(":") + source + " 501 " + nickname + " :Unknown MODE flag\r\n")
+//501
 // ":Unknown MODE flag"
 // Renvoyé par un serveur pour indiquer que le message MODE a été envoyé avec un pseudonyme et que le mode spécifié n'a pas été identifié.
 
-# define ERR_USERSDONTMATCH 502
-// ":Cant change mode for other users"
+# define ERR_USERSDONTMATCH(source, nickname) (std::string(":") + source + " 502 " + nickname + " :Cant change mode for other users\r\n")
 // Erreur envoyée à tout utilisateur qui essaie de voir ou de modifier le mode utilisateur d'un autre client.
 
 
@@ -254,6 +254,10 @@
 
 # define RPL_LUSERME(source, nickname, clientsnbr) (std::string(":") + source + " 255 " + nickname + " :I have " + clientsnbr + " 0 servers\r\n")
 // <c> and <s> are non-negative integers and represent the number of clients and other servers connected to this server, respectively.
+
+
+# define RPL_UMODEIS(source, nickname, usermodes) (std::string(":") + source + " 221 " + nickname + " " + usermodes + "\r\n")
+// Sent to a client to inform that client of their currently-set user modes.
 
 
 # define RPL_NONE 300

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 12:35:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/06 22:16:38 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Client {
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
+		std::string		getUserModes ( void ) const;
 
 		void			setCfd( int& clientFd );
 		void			setNickname( std::string const& name );
@@ -50,6 +51,7 @@ class Client {
 		void			setNickStatus( bool const& status );
 		void			setIfRegistered( bool const& status );
 		void			setSource( std::string nickname, std::string username );
+		bool			setUserModes( std::string const& mode );
 
 	private:
 
@@ -60,6 +62,7 @@ class Client {
 		std::string _realname;
 
 		std::string	_source;
+		std::string	_userModes;
 
 		bool		_passStatus;
 		bool		_nickStatus;
