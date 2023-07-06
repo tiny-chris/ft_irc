@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/03 15:25:59 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/06 14:17:35 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ enum commands {
 // 	// OPER,
 // 	// KILL
 
-std::string intToString( int number );
-std::string gaiStrerror( int errorCode );
+std::string					intToString( int number );
+std::string					gaiStrerror( int errorCode );
+
+std::vector<std::string>	splitString(std::string params, char splitter);
 
 #endif
