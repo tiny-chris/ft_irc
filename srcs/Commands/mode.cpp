@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 14:30:53 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 16:16:38 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,12 @@ void		Server::handleMode( size_t cid, std::string param )
     }
 }
 
-
 bool		Server::existingChannel(std::string param)
 {
-    
+    for (std::vector<Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+    {
+        if (it->getChannelName().compare(param) == 0 && it->getChannelName().size() == param.size())
+        return true;
+    }
+    return false;
 }

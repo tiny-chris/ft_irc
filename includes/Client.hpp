@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 16:05:49 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 16:33:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ class Client {
 	public:
 
 		Client( std::string name, int socket );
+		Client( Client const & src );
 		~Client( void );
+	
+		Client &   operator=( Client const& rhs );
 
 		int				getCfd( void ) const;
 		std::string		getNickname( void ) const;

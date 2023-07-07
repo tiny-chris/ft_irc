@@ -6,13 +6,15 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 16:07:19 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 16:15:55 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
 Channel::Channel() {}
+
+Channel::Channel(std::string name) : _channelName(name) {}
 
 Channel::~Channel() {}
 
@@ -29,3 +31,5 @@ Channel &    Channel::operator=( Channel const& rhs ){
 	return (*this);
 }
 
+std::string Channel::getChannelName( void ) const { return ( _channelName ); }
+void		Channel::setChannelName( std::string& name ) { _channelName = name; }

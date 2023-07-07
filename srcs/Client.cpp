@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 11:59:31 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 16:38:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,28 @@ Client::Client( std::string name, int socket ) :
 			_nickStatus( false ),
 			_isRegistered( false )
 {}
+
+Client::Client( Client const & src ) {
+	*this = src;
+	return ;
+}
+
+Client &    Client::operator=( Client const& rhs ){
+    if (this != &rhs)
+	{
+		_fd = rhs.getCfd();
+		_nickname = rhs.getNickname();
+		_username = rhs.getUsername();
+		_realname = rhs.getRealname();
+		_source = rhs.getSource();
+		_userModes = rhs.getUserModes();
+		_channelModes = rhs.getChannelModes();
+		_passStatus = getPassStatus();
+		_nickStatus = getNickStatus();
+		_isRegistered = getIfRegistered();
+	}
+	return (*this);
+}
 
 Client::~Client( void ) {}
 

@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 16:06:11 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 16:27:33 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,18 @@ class Channel
 {
     public:
         Channel();
+        Channel(std::string name);
         Channel(Channel const& src);
         ~Channel();
 
         Channel & operator=(Channel const & rhs);
+
+        std::string getChannelName( void ) const;
+        void		setChannelName( std::string& name );
         
     private:
-        std::vector<Client> _connectedClients; 
+        std::map<std::string, Client> _connectedClients; 
+        std::string _channelName;
 };
 
 #endif
