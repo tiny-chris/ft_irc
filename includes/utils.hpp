@@ -33,8 +33,9 @@ enum commands {
 	PASS = 100,
 	NICK = 101,
 	USER = 102,
-	JOIN = 103,
-	PRIVMSG = 104,
+	PING = 103,
+	JOIN = 110,
+	PRIVMSG = 111,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,

@@ -55,6 +55,7 @@ class Server {
 		void		handlePass( size_t cid, std::string param );
 		void		handleNick( size_t cid, std::string param );
 		void		handleUser( size_t cid, std::string param );
+		void		handlePing( size_t cid, std::string param );
 
 	private:
 

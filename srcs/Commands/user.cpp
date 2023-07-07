@@ -77,7 +77,7 @@ void				Server::handleUser( size_t cid, std::string param )
   if (_clients[cid].getIfRegistered() == true)
   {
     reply = ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname());
-		std::cout << "print reply: " << reply << std::endl; // to del
+		std::cout << "reply:\t " << reply << std::endl;
 		send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
@@ -88,7 +88,7 @@ void				Server::handleUser( size_t cid, std::string param )
   // check if PASS and NICK are set... otherwise, return (no numeric_reply)
   if (!_clients[cid].getPassStatus() || !_clients[cid].getNickStatus())
   {
-    std::cout << "Error: PASS or NICK are not set yet" << std::endl;
+    std::cout << "error:\t PASS or NICK are not set yet" << std::endl;
     return ;
   }
 
@@ -102,7 +102,7 @@ void				Server::handleUser( size_t cid, std::string param )
   if (param.empty() || colon == std::string::npos || colon == 0 || colon == param.length() - 1)
   {
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-    std::cout << "print reply: " << reply << std::endl;
+    std::cout << "reply:\t " << reply << std::endl;
     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
@@ -125,14 +125,14 @@ void				Server::handleUser( size_t cid, std::string param )
   if (tokens.size() < 3 || tokens[0].length() < 1)
   {
     reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-    std::cout << "print reply: " << reply << std::endl;
+    std::cout << "reply:\t " << reply << std::endl;
     send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
   else if (tokens.size() > 3 || isValidUser(tokens[0]) == false
       || !isValidParam(tokens[1]) || !isValidParam(tokens[2]) || (colon > 0 && param[colon - 1] != ' '))
   {
-    std::cout << "Error: wrong parameters with USER command" << std::endl;
+    std::cout << "error:\t wrong parameters with USER command\n" << std::endl;
     return ;
   }
   _clients[cid].setUsername(tokens[0].substr(0, USERLEN));
@@ -144,7 +144,7 @@ void				Server::handleUser( size_t cid, std::string param )
   {
     _clients[cid].setIfRegistered(true);
     _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
-    std::cout << _clients[cid].getNickname() << " is now registered!" << std::endl;
+    std::cout << "info:\t " << _clients[cid].getNickname() << " is now registered!\n" << std::endl;
     // DISPLAY WELCOME MESSAGES
     sendWelcomeMsg( cid );
     // EQUIVALENT OF LUSERS received

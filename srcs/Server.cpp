@@ -110,8 +110,9 @@ void	Server::initCommands( void )
   _mapCommands.insert(std::make_pair(100, "PASS"));
   _mapCommands.insert(std::make_pair(101, "NICK"));
   _mapCommands.insert(std::make_pair(102, "USER"));
-  _mapCommands.insert(std::make_pair(103, "JOIN"));
-  _mapCommands.insert(std::make_pair(104, "PRIVMSG"));
+  _mapCommands.insert(std::make_pair(103, "PING"));
+  _mapCommands.insert(std::make_pair(110, "JOIN"));
+  _mapCommands.insert(std::make_pair(111, "PRIVMSG"));
 
   _mapCommands.insert(std::make_pair(1000, "/shutdown"));
   _mapCommands.insert(std::make_pair(1001, "/quit"));
@@ -151,7 +152,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   splitter = request.find(' ', 0);
 
   std::cout << "-----client [" << cid << " " << _clients[cid].getNickname() << "]-----\n" ;
-  std::cout << "request content = <" << request << ">" << std::endl;
+  std::cout << "request: <" << request << ">" << std::endl;
 
   /* ********************************* */
   /* ACTION 1   - get command & params */
@@ -206,7 +207,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   {
     if (command != "PASS" && _clients[cid].getPassStatus() == false )
     {
-      std::cout << "Error: must set PASS command first" << std::endl;
+      std::cout << "error:\t must set PASS command first\n" << std::endl;
       return;
     }
 
@@ -214,7 +215,7 @@ void  Server::handleRequest( size_t cid, std::string request )
       && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
       reply = ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() );
-      std::cout << "print reply: " << reply << std::endl; // to del
+      std::cout << "reply:\t " << reply << std::endl;
       send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       return;
     }
@@ -225,10 +226,12 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   switch(commandKey)
   {
-    case CAP:         break;
+    case CAP:         std::cout << std::endl; break;
     case PASS:        handlePass( cid, parameters ); break;
     case NICK:        handleNick( cid, parameters ); break;
     case USER:        handleUser( cid, parameters ); break;
+    case PING:        handlePing( cid, parameters ); break;
+
     // case PASS:        {
     //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
     //                     handlePass( cid, parameters );
@@ -259,10 +262,12 @@ void  Server::handleRequest( size_t cid, std::string request )
     // This message is not required for a server implementation to work, but SHOULD be implemented.
     // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
     default:        	{
-                        reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
-                        std::cout << "print reply: " << reply << std::endl; // to del
-                        send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-                        return;
+                        if (!command.empty() || (command.empty() && !parameters.empty()))
+                        {
+                          reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
+                          std::cout << "reply:\t " << reply << std::endl;
+                          send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
+                        }
                       } break;
   }
 }
@@ -289,7 +294,7 @@ void Server::receiveData( size_t cid ) {
   // Turn "^M\n" into "\0" TODO OS compatibility
   //faire un pour verifier que ca finit bien par un
   bufs[cid] += buf;
-  std::cout << "|INFO| initial buf: " << bufs[cid] << std::endl;
+  // std::cout << "|INFO| initial buf: " << bufs[cid] << std::endl;
   while (bufs[cid].size() >= 2 && bufs[cid].find(CRLF) != std::string::npos)
   {
     checkClear = 1;
