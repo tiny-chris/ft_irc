@@ -19,7 +19,7 @@
 
 void		Server::handleNick( size_t cid, std::string param )
 {
-  // std::string reply;
+  std::string reply;
   // if no param to a nick command -> No nickname given error
   if (param.compare("") == 0)
   {
