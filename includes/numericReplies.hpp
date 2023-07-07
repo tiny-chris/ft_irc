@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 22:08:40 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 11:40:13 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,14 @@
 
 // # define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
 
-# define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " " + nickname + " :No such nick/channel\r\n")
-// # define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
-// 401 Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
+# define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " 401 " + nickname + " :No such nick/channel\r\n")
+// Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
 # define ERR_NOSUCHSERVER 402
 //"<nom de serveur> :No such server"
 //Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.
 
-# define ERR_NOSUCHCHANNEL 403
-//"<nom de canal> :No such channel"
+# define ERR_NOSUCHCHANNEL(source, nickname, channel) (std::string(":") + source + " 403 " + nickname + " " + channel + ":No such channel\r\n")
 //Utilisé pour indiquer que le nom de canal donné est invalide.
 
 # define ERR_CANNOTSENDTOCHAN 404
@@ -380,5 +378,6 @@
 
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
+# define MSG_MODE(source, nickname, modeChange) (std::string(":") + source + " MODE " + nickname + " " + modeChange + "\r\n")
 
 #endif

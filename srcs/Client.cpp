@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 22:22:17 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 10:35:07 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,14 @@ void		Client::setSource( std::string nickname, std::string username ) {
 	_source = nickname + "!" + username + "@localhost";
 }
 bool		Client::setUserModes( std::string const& mode ) {
-	if ( mode.find("+i") != std::string::npos && _userModes.find('i') == std::string::npos)
+	if ( mode.find("+i") == 0 )
 	{
 		_userModes = "i";
-		if (mode.size() != 2)
-			return false;
 		return true;
 	}
-	else if ( mode.find("-i") != std::string::npos )
+	else if ( mode.find("-i") == 0 )
 	{
 		_userModes.erase();
-		if (mode.size() != 2)
-			return false;
 		return true;
 	}
 	return false;

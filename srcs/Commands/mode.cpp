@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/06 22:16:49 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 11:41:17 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ void		Server::handleMode( size_t cid, std::string param )
     if (param[0] == '#')
     {
         std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
+        if (existingChannel(token[0]) == false)
+        {
+            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), token[0]);
+            send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+        }
     }
     // USER MODE
     else
@@ -56,21 +61,24 @@ void		Server::handleMode( size_t cid, std::string param )
             send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
         }
         else if (tokens.size() < 2)
-       {
+        {
             reply = RPL_UMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), _clients[cid].getUserModes());
             send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-       }
+        }
        else
-       {
+        {
             bool test = _clients[cid].setUserModes(tokens[1]);
-            // if (_clients[cid].getUserModes() == "i")
-            //     applyMode(cid); // A CREER
-            if (test == false || tokens.size() > 2)
+            if (test == true)
+            {
+                reply = MSG_MODE(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[1].substr(0, 2));
+                send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+            }
+            if (test == false || tokens.size() > 2 || tokens[1].size() != 2)
             {
                 reply = ERR_UMODEUNKNOWNFLAG(_clients[cid].getSource(), _clients[cid].getNickname());
                 send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
             }
             std::cout <<  "client " << _clients[cid].getNickname() << " User Mode is: " << _clients[cid].getUserModes() << std::endl;
-       }
+        }
     }
 }
