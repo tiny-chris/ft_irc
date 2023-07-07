@@ -345,7 +345,17 @@ void Server::addConnection() {
   }
   _clients.push_back( Client( newsocket ) );
 
-  std::cout << "New connection accepted for client <tbd> on the socket fd " << newsocket << std::endl;
+  std::cout << "--------------------" << std::endl;
+  std::cout << "New connection accepted on socket " << newsocket << "\n" << std::endl;
+
+  // Number of clients (size - 1 as _clients[0] is not used)
+  std::cout << "    " << "Clients:\t" << _clients.size() - 1 << std::endl ;
+  for (size_t i = 1; i <= _clients.size() - 1; ++i)
+  {
+    std::string nickname = (_clients[i].getNickname().empty()) ? "to be named" : _clients[i].getNickname();
+    std::cout << "\t [ #" << i << " on socket " << _clients[i].getFd() << ": " << nickname << " ]" << std::endl;
+  }
+  std::cout << std::endl;
   // std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
   /* std::cout << "pollserver: new connection from "; */
   /* std::cout << ntop( remoteAddr ); */
@@ -370,6 +380,10 @@ void Server::setup() {
   pfd.revents = 0;      // Report read to read on incoming connection
   _pfds.push_back( pfd );
   // connection
+  std::cout << "Welcome on " << _serverName << "!\n" << std::endl;
+  std::cout << "    hostname:\t" << "127.0.0.1 (localhost)" << std::endl;
+  std::cout << "    port:\t" << _port << std::endl;
+  std::cout << "    fd:\t\t" << pfd.fd << std::endl << std::endl;
 }
 
 /**
