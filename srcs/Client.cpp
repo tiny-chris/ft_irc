@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 10:35:07 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 11:59:31 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Client::Client( std::string name, int socket ) :
 			_realname( name ),
 			_source( "" ),
 			_userModes ( "" ),
+			_channelModes( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false )
@@ -43,6 +44,7 @@ bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 std::string	Client::getSource( void ) const { return _source; }
 std::string	Client::getUserModes ( void ) const { return _userModes; }
+std::string	Client::getChannelModes ( void ) const { return _channelModes; }
 
 void		Client::setCfd( int& clientFd ) { _fd = clientFd; }
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
@@ -65,5 +67,10 @@ bool		Client::setUserModes( std::string const& mode ) {
 		_userModes.erase();
 		return true;
 	}
+	return false;
+}
+
+// TO COMPLETE
+bool		Client::setChannelModes( std::string const& mode ) {
 	return false;
 }

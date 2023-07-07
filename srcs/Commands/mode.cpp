@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 11:41:17 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 11:57:48 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ void		Server::handleMode( size_t cid, std::string param )
     if (param[0] == '#')
     {
         std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
-        if (existingChannel(token[0]) == false)
+        if (existingChannel(tokens[0]) == false)
         {
-            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), token[0]);
+            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0]);
+            send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+        }
+        else if (tokens.size() < 2)
+        {
+            reply = RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], _clients[cid].getChannelModes());
             send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
         }
     }

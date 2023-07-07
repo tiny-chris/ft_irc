@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 11:40:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 11:50:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,8 +317,10 @@
 // ":End of /LIST"
 // Les réponses RPL_LISTSTART, RPL_LIST, RPL_LISTEND marquent le début, les réponses proprement dites, et la fin du traitement d'une commande LIST. S'il n'y a aucun canal disponible, seules les réponses de début et de fin sont envoyées.
 
-# define  RPL_CHANNELMODEIS 324
-// "<canal> <mode> <paramètres de mode>"
+# define  RPL_CHANNELMODEIS(source, nickname, channel, modestring) (std::string(":") + source + " 324 " + nickname + " " + channel + " " + modestring + "\r\n")
+// Sent to a client to inform them of the currently-set modes of a channel.
+
+
 # define RPL_NOTOPIC 331
 // "<canal> :No topic is set"
 # define RPL_TOPIC 332
