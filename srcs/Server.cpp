@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 16:50:43 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/07 16:01:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) : _port(port), _password(password), _serverName(serverName) {
+Server::Server( size_t port, const char *password, std::string serverName ) : 
+  _port(port), 
+  _password(password), 
+  _serverName(serverName) {
  // std::cout << _password << std::endl;
   // setSource("", "");
   setup();
@@ -273,7 +276,7 @@ void Server::receiveData( size_t cid ) {
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
-  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
+  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 2, 0 );
   if( nbytes <= 0 ) {
     std::cout << "del connection" << std::endl;
     if( nbytes == 0 ) {

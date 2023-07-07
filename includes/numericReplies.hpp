@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 11:50:30 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 13:48:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 
 # include "defines.hpp"
 
-# define USERMODES "+o"
-# define CHANNELMODES "+it"
-# define CHANNELMODESPARAM "+kl"
-# define SERVERNAME "localhost"
-# define VERSION "1.69"
+
 
 /******	  ERROR REPLIES	  ******/
 

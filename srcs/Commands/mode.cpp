@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 11:57:48 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 14:30:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,16 @@ void		Server::handleMode( size_t cid, std::string param )
         std::cout << "client " << _clients[cid].getNickname() << " - param[" << i << "] is <" << tokens[i] << ">" << std::endl;
     }
     // CHANNEL MODE
+    // Do we have to check if the channels modes we indicates follow the same order as mode types (A, B, C and D) ?
+    // Or can we modify them in any order ?
     if (param[0] == '#')
     {
         std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
-        if (existingChannel(tokens[0]) == false)
+        if (tokens[0].size() > CHANNELLEN)
+            tokens[0] = tokens[0].substr(0, CHANNELLEN);
+        if (existingChannel(tokens[0]) == false) // TO CREATE
         {
-            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0]);
+            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0].substr(1, tokens[0].size() - 1));
             send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
         }
         else if (tokens.size() < 2)
@@ -55,6 +59,8 @@ void		Server::handleMode( size_t cid, std::string param )
     else
     {
         std::cout << "client " << _clients[cid].getNickname() << " - User Mode" << std::endl;
+        if (tokens[0].size() > USERLEN)
+            tokens[0] = tokens[0].substr(0, NICKLEN);
         if (existingNick(tokens[0]) == false)
         {
             reply = ERR_NOSUCHNICK(_clients[cid].getSource(), _clients[cid].getNickname());
@@ -86,4 +92,10 @@ void		Server::handleMode( size_t cid, std::string param )
             std::cout <<  "client " << _clients[cid].getNickname() << " User Mode is: " << _clients[cid].getUserModes() << std::endl;
         }
     }
+}
+
+
+bool		Server::existingChannel(std::string param)
+{
+    
 }

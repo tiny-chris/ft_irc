@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 10:38:52 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 16:05:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@
 
 # include "Client.hpp"
 # include "Socket.hpp"
+# include "Channel.hpp"
+
+class Client;
+class Channel;
+class Socket;
 
 class Server {
 
@@ -73,7 +78,7 @@ class Server {
 		std::vector<Client> _clients;   // Pollable file descriptors
 		Socket              _listener;  // Use Socket for managing the listener socket
 
-		std::map<int,std::string>	_mapCommands;
+		std::map<int, std::string>	_mapCommands;
 
 		size_t		_port;
 		std::string	_password;
@@ -83,10 +88,16 @@ class Server {
 		bool		isValidNick(std::string param);
 		bool		existingNick(std::string param);
 
+		bool		existingChannel(std::string param);
+
 		void		sendWelcomeMsg( size_t cid ) const;
 		void		sendLusersMsg( size_t cid ) const;
 
 		std::string getSupportToken() const;
+
+		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
+		std::vector<Channel>	_channels;
+		
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 11:58:29 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 16:05:49 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,9 @@ class Client {
 		bool		_passStatus;
 		bool		_nickStatus;
 		bool		_isRegistered;
+
+		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
+		std::vector<Channel>	_clientChannels;
 
 		// penser a :
 		/*

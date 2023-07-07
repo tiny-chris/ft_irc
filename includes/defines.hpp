@@ -44,7 +44,7 @@
 
 /* The CHANMODES parameter specifies the channel modes available and which types of arguments 
 they do or do not take when using them with the MODE command. */
-# define CHANMODES "k,l,it"
+# define CHANMODES ",k,l,it"
 
 /* The CHANNELLEN parameter specifies the maximum length of a channel name that a client may join. */
 # define CHANNELLEN 32
@@ -81,5 +81,10 @@ The value MUST be specified and MUST be a positive integer.
 Networks SHOULD be consistent with this value across different servers. */
 # define USERLEN 15
 
+# define USERMODES "+i"
+# define CHANNELMODES "+it"
+# define CHANNELMODESPARAM "+kl"
+# define SERVERNAME "localhost"
+# define VERSION "1.69"
 
 #endif /* __DEFINES_HPP__ */ 
