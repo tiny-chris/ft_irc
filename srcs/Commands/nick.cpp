@@ -24,18 +24,11 @@ void		Server::handleNick( size_t cid, std::string param )
   if (param.compare("") == 0)
   {
     replyMsg(cid, ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname()));
-    // reply = ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname());
-    // // reply = ERR_NOSUCHNICK(SOURCE(_clients[cid].getNickname(), _clients[cid].getUsername()), _clients[cid].getNickname());
-    // std::cout << "reply:\t " << reply << std::endl; // to del
-    // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   }
   // else if there are invalid char in the nickname, an erroneus nickname message is sent
   else if (isValidNick(param) == false)
   {
     replyMsg(cid, ERR_ERRONEUSNICKNAME(_clients[cid].getSource(), _clients[cid].getNickname(), param));
-    // reply = ERR_ERRONEUSNICKNAME(_clients[cid].getSource(), _clients[cid].getNickname(), param);
-    // std::cout << "reply: " << reply << std::endl; // to del
-    // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
   }
   // else if the nickname is the same nickname as another client
   else if (existingNick(param) == true)
@@ -44,13 +37,7 @@ void		Server::handleNick( size_t cid, std::string param )
     if (_clients[cid].getIfRegistered() == false)
     {
       replyMsg(cid, ERR_NICKCOLLISION(_clients[cid].getSource(), _clients[cid].getNickname(), param));
-      // reply = ERR_NICKCOLLISION(_clients[cid].getSource(), _clients[cid].getNickname(), param);
-      // std::cout << "print reply: " << reply << std::endl; // to del
-      // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       replyMsg(cid, KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname()));
-      // reply = KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname());
-      // std::cout << "print reply: " << reply << std::endl; // to del
-      // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
       this->delConnection( cid );
     }
     // but if our client is already registered then a nickname in use error occurs
@@ -58,8 +45,6 @@ void		Server::handleNick( size_t cid, std::string param )
     else
     {
       replyMsg(cid, ERR_NICKNAMEINUSE(_clients[cid].getSource(), _clients[cid].getNickname(), param));
-      // reply = ERR_NICKNAMEINUSE(_clients[cid].getSource(), _clients[cid].getNickname(), param);
-      // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     }
   }
   // else meaning if the nickname given is valid and does not already exist
@@ -67,9 +52,6 @@ void		Server::handleNick( size_t cid, std::string param )
   else
   {
     replyMsg(cid, RPL_NICK(_clients[cid].getNickname(), param));
-	  // reply = RPL_NICK(_clients[cid].getNickname(), param);
-    // std::cout << "print reply: " << reply << std::endl; // to del
-    // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
     std::cout << "info:\t valid nickname provided!\n" << std::endl;

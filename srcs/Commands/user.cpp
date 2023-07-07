@@ -25,18 +25,6 @@
  *
  */
 
-// static size_t  findCharTimes(std::string str, char c)
-// {
-//   size_t nbChar = 0;
-
-//   for (size_t i = 0; i < str.length(); ++i)
-//   {
-//     if (str[i] == c)
-//       nbChar++;
-//   }
-//   return (nbChar);
-// }
-
 static bool	isValidUser(std::string name)
 {
   for (size_t i = 0; i < name.size(); i++)
@@ -64,71 +52,63 @@ static bool	isValidParam(std::string name)
 
 void				Server::handleUser( size_t cid, std::string param )
 {
-  // std::string	              reply;
   std::string               realname = "";
   size_t                    colon;
   std::vector<std::string>  tokens;
 
-  // *** **************************** ***
-  // *** CHECK 1 - ALREADY REGISTERED ***
-  // *** **************************** ***
-  // check if Client is already registered (i.e. PASS, NICK, USER are already set)
-	// if so, cannot use the USER command again --> send ERR_ALREADYREGISTERED numeric reply
+  /* **************************** ***
+  ** CHECK 1 - ALREADY REGISTERED ***
+  ** **************************** ***
+  ** check if Client is already registered (i.e. PASS, NICK, USER are already set)
+	** if so, cannot use the USER command again --> send ERR_ALREADYREGISTERED numeric reply
+  */
   if (_clients[cid].getIfRegistered() == true)
   {
     replyMsg(cid, ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname()));
-		// std::cout << "reply:\t " << reply << std::endl;
-		// send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
 
-  // *** *************************************************** ***
-  // *** CHECK 2 - PASS & NICK COMMANDS MUST BE SET UPSTREAM ***
-  // *** *************************************************** ***
-  // check if PASS and NICK are set... otherwise, return (no numeric_reply)
+  /* *************************************************** ***
+  ** CHECK 2 - PASS & NICK COMMANDS MUST BE SET UPSTREAM ***
+  ** *************************************************** ***
+  ** check if PASS and NICK are set... otherwise, return (no numeric_reply)
+  */
   if (!_clients[cid].getPassStatus() || !_clients[cid].getNickStatus())
   {
     std::cout << "error:\t PASS or NICK are not set yet" << std::endl;
     return ;
   }
 
-  // *** *********************************************************************** ***
-  // *** CHECK 3 - PARAM CONTENT AND LAST PARAMETER (realname) MUST NOT BE EMPTY ***
-  // *** *********************************************************************** ***
-  // check if ':' exists to split the last parameter 'realname' (after ':') from the others
-  // if ':' does not exist or if realname is empty --> send a ERR_NEEDMOREPARAMS reply
-  // otherwise --> fill the '_realname' with content after ':' (space is allowed inside)
+  /* *********************************************************************** ***
+  ** CHECK 3 - PARAM CONTENT AND LAST PARAMETER (realname) MUST NOT BE EMPTY ***
+  ** *********************************************************************** ***
+  ** check if ':' exists to split the last parameter 'realname' (after ':') from the others
+  ** if ':' does not exist or if realname is empty --> send a ERR_NEEDMOREPARAMS reply
+  ** otherwise --> fill the '_realname' with content after ':' (space is allowed inside)
+  */
   colon = param.find(':', 0);
   if (param.empty() || colon == std::string::npos || colon == 0 || colon == param.length() - 1)
   {
     replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER"));
-    // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-    // std::cout << "reply:\t " << reply << std::endl;
-    // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
   realname = param.substr(colon + 1, param.length() - (colon + 1));
   _clients[cid].setRealname(realname);
 
-  // *** *********************************************** ***
-  // *** CHECK 4 - MUST BE 3 VALID PARAMETERS before ':' ***
-  // *** *********************************************** ***
-  // split 'param' until ':' with ' ' delimiter and send each substring into a std::vector<std::string>
-  // check number of substrings (must be 3) and check each substring
-  // - if there are less than 3 substrings or if the 1st substring has less than 1 char (cannot be empty) --> ERR_NEEDMOREPARAMS
-  // - if the 1st substring contains invalid char or if there are more than 3 substrings or if 2nd/3rd are not valid --> return
-  // otherwise --> fill the '_username' with content of 1st substring
-  /*
-  The second and third parameters of this command SHOULD be sent as one zero ('0', 0x30) and one asterisk character ('*', 0x2A)
-  by the client, as the meaning of these two parameters varies between different versions of the IRC protocol.
+  /* *********************************************** ***
+  ** CHECK 4 - MUST BE 3 VALID PARAMETERS before ':' ***
+  ** *********************************************** ***
+  ** split 'param' until ':' with ' ' delimiter and send each substring into a std::vector<std::string>
+  ** check number of substrings (must be 3) and check each substring
+  ** - if there is not exactly 3 substrings or substring are incorrect --> ERR_NEEDMOREPARAMS or just return
+  ** otherwise --> fill the '_username' with content of 1st substring
+  ** NB: 2nd and 3rd parameters SHOULD be sent as one zero ('0', 0x30) and one asterisk character ('*', 0x2A)
+  ** by the client, as the meaning of these two parameters varies between different versions of the IRC protocol.
   */
   tokens = splitString(param.substr(0, colon), ' ');
   if (tokens.size() < 3 || tokens[0].length() < 1)
   {
     replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER"));
-    // reply = ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER");
-    // std::cout << "reply:\t " << reply << std::endl;
-    // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
     return ;
   }
   else if (tokens.size() > 3 || isValidUser(tokens[0]) == false
@@ -139,9 +119,10 @@ void				Server::handleUser( size_t cid, std::string param )
   }
   _clients[cid].setUsername(tokens[0].substr(0, USERLEN));
 
-  // *** ********************************** ***
-  // *** CHECK 5 - CLIENT IS NOW REGISTERED ***
-  // *** ********************************** ***
+  /* ********************************** ***
+  ** CHECK 5 - CLIENT IS NOW REGISTERED ***
+  ** ********************************** ***
+  */
   if (_clients[cid].getPassStatus() == true && _clients[cid].getNickStatus() == true && !_clients[cid].getUsername().empty())
   {
     _clients[cid].setIfRegistered(true);

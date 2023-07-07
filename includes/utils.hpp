@@ -39,7 +39,6 @@ enum commands {
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,
-	ZZ_NAME = 1002,
 	ZZ_MSG = 1003,
 };
 // 	// PART,
@@ -47,7 +46,6 @@ enum commands {
 // 	// NAMES,
 // 	// LIST,
 // 	// INVITE,
-// 	// PING,
 // 	// PONG,
 // 	// MODE,
 // 	// WHO,

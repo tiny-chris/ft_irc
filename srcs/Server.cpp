@@ -100,7 +100,7 @@ void Server::broadcastMsg( std::string& msg, size_t cid ) {
 }
 
 /**
- * @brief       Initialize the commands to be handled in IRC into a map
+ * @brief       Initialize the commands to be handled in IRC into a map<int,std::string>
  */
 
 void	Server::initCommands( void )
@@ -114,13 +114,18 @@ void	Server::initCommands( void )
   _mapCommands.insert(std::make_pair(110, "JOIN"));
   _mapCommands.insert(std::make_pair(111, "PRIVMSG"));
 
+  // temp elements --> will be replaced by valid command
   _mapCommands.insert(std::make_pair(1000, "/shutdown"));
   _mapCommands.insert(std::make_pair(1001, "/quit"));
-  _mapCommands.insert(std::make_pair(1002, "/name"));
   _mapCommands.insert(std::make_pair(1003, "/msg"));
-
+  return ;
 }
 
+/**
+ * @brief       Send message to the client with all specific parameter (incl. numeric replies)
+ *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
+ *
+ */
 void	Server::replyMsg( size_t cid, std::string reply, int flag ) const
 {
   if (flag == 1)
@@ -128,23 +133,8 @@ void	Server::replyMsg( size_t cid, std::string reply, int flag ) const
     std::cout << "reply:\t " << reply << std::endl;
   }
   send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
+  return ;
 }
-
-// void Server::parseData( const char* data, size_t cid ) {
-//   std::string msg( data );
-
-//   if( msg == "/shutdown" ) {
-//     shutdown();
-//   } else if( msg == "/quit" ) {
-//     delConnection( cid );
-//   } else if( msg.substr( 0, 6 ) == "/name " ) {
-//     std::cout << "<" << _clients[cid].getName();
-//     _clients[cid].setName( msg.substr( 6 ) );
-//     std::cout << " became " << _clients[cid].getName() << ">\n";
-//   } else {
-//     broadcastMsg( msg, cid );
-//   }
-// }
 
 /**
  * @brief       Handle request by identifying command and parameters
@@ -154,20 +144,18 @@ void  Server::handleRequest( size_t cid, std::string request )
 {
   std::string command;
   std::string parameters = "";
-  std::string reply;
   size_t      splitter;
   int         commandKey = 0;
 
-  splitter = request.find(' ', 0);
-
   std::cout << "-----client [" << cid << " " << _clients[cid].getNickname() << "]-----\n" ;
   std::cout << "request: <" << request << ">" << std::endl;
+
+  splitter = request.find(' ', 0);
 
   /* ********************************* */
   /* ACTION 1   - get command & params */
   /* ********************************* */
   // if <request> has no space --> command is request string
-  //    should also take into account the empty message (initially only '\r\n' and empty after receiveData())
   // else --> split command & parameters
   if (splitter == std::string::npos)
       command = request;
@@ -178,7 +166,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   }
 
   // /* ********************************* */
-  // /* SUBACTION  - turn command content into capital letters */
+  // /* SUBACTION  - turn command content into capital letters */     TO KEPP ??????
   // /* ********************************* */
   // for (size_t i = 0; i < command.length(); ++i)
   //   command[i] = std::toupper(command[i]);
@@ -198,11 +186,6 @@ void  Server::handleRequest( size_t cid, std::string request )
       commandKey = it->first;
   }
 
-  // // display to check:
-  // std::cout << "command = " << command << std::endl;
-  // std::cout << "param = " << parameters << std::endl;
-  // std::cout << "commandKey = " << commandKey << std::endl;
-
   /* ********************************* */
   /* ACTION 4   - if 'command' is in _mapCommands */
   /* ********************************* */
@@ -219,13 +202,10 @@ void  Server::handleRequest( size_t cid, std::string request )
       std::cout << "error:\t must set PASS command first\n" << std::endl;
       return;
     }
-
     if (!_clients[cid].getIfRegistered()
       && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
-      reply = ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() );
-      std::cout << "reply:\t " << reply << std::endl;
-      send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
+      replyMsg(cid, ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() ));
       return;
     }
   }
@@ -233,51 +213,30 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
+      // This message is not required for a server implementation to work, but SHOULD be implemented.
+    // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
   switch(commandKey)
   {
-    case CAP:         std::cout << std::endl; break;
-    case PASS:        handlePass( cid, parameters ); break;
-    case NICK:        handleNick( cid, parameters ); break;
-    case USER:        handleUser( cid, parameters ); break;
-    case PING:        handlePing( cid, parameters ); break;
-
-    // case PASS:        {
-    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PASS command" << std::endl;
-    //                     handlePass( cid, parameters );
-    //                   } break;
-    // case NICK:        {
-    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle NICK command with " << parameters << std::endl;
-    //                     handleNick( cid, parameters );
-    //                   } break;
-    // case USER:        {
-    //                     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle USER command" << std::endl;
-    //                     handleUser( cid, parameters );
-    //                   } break;
-    case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
-    case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
-
+    case CAP:     std::cout << std::endl; break;
+    case PASS:    handlePass( cid, parameters ); break;
+    case NICK:    handleNick( cid, parameters ); break;
+    case USER:    handleUser( cid, parameters ); break;
+    case PING:    handlePing( cid, parameters ); break;
+    case JOIN:    std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
+    case PRIVMSG: std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 
     // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: shutdown(); break;                          // ' /shutdown '
     case ZZ_QUIT:     delConnection( cid ); break;                // ' /quit '
-    case ZZ_NAME:     {                                           // ' /name <new_name>'
-                        std::cout << "<" << _clients[cid].getRealname();
-                        _clients[cid].setRealname( parameters );
-                        std::cout << " became " << _clients[cid].getRealname() << ">\n";
-                      } break;
     case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
     // keeping Clement's initial commands just in case... - END
 
-    // This message is not required for a server implementation to work, but SHOULD be implemented.
-    // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
-    default:        	{
-                        if (!command.empty() || (command.empty() && !parameters.empty()))
-                        {
-                          reply = ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command );
-                          std::cout << "reply:\t " << reply << std::endl;
-                          send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-                        }
-                      } break;
+    default:			{
+                    if (!command.empty() || (command.empty() && !parameters.empty()))
+                    {
+                      replyMsg(cid, ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command ));
+                    }
+                  } break;
   }
 }
 
@@ -357,7 +316,7 @@ void Server::addConnection() {
   std::cout << "--------------------" << std::endl;
   std::cout << "New connection accepted on socket " << newsocket << "\n" << std::endl;
 
-  // Number of clients (size - 1 as _clients[0] is not used)
+  // Number of clients (size - 1 as _clients[0] is not used --> should be modified with new server)
   std::cout << "Clients:\t" << _clients.size() - 1 << std::endl ;
   for (size_t i = 1; i <= _clients.size() - 1; ++i)
   {
@@ -365,10 +324,6 @@ void Server::addConnection() {
     std::cout << "\t[ #" << i << " - socket " << _clients[i].getFd() << ": " << nickname << " ]" << std::endl;
   }
   std::cout << std::endl;
-  // std::cout << "<Anon_0" << newsocket << " joined the channel>\n";
-  /* std::cout << "pollserver: new connection from "; */
-  /* std::cout << ntop( remoteAddr ); */
-  /* std::cout << " on socket " << newsocket << "\n"; */
   return;
 }
 
