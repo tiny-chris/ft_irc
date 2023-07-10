@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/07 16:16:38 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/10 15:27:56 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,28 @@ void		Server::handleMode( size_t cid, std::string param )
     {
         std::cout << "client " << _clients[cid].getNickname() << " - param[" << i << "] is <" << tokens[i] << ">" << std::endl;
     }
-    // CHANNEL MODE
-    // Do we have to check if the channels modes we indicates follow the same order as mode types (A, B, C and D) ?
-    // Or can we modify them in any order ?
-    if (param[0] == '#')
-    {
-        std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
-        if (tokens[0].size() > CHANNELLEN)
-            tokens[0] = tokens[0].substr(0, CHANNELLEN);
-        if (existingChannel(tokens[0]) == false) // TO CREATE
-        {
-            reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0].substr(1, tokens[0].size() - 1));
-            send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-        }
-        else if (tokens.size() < 2)
-        {
-            reply = RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], _clients[cid].getChannelModes());
-            send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
-        }
-    }
-    // USER MODE
-    else
-    {
+    // // CHANNEL MODE
+    // // Do we have to check if the channels modes we indicates follow the same order as mode types (A, B, C and D) ?
+    // // Or can we modify them in any order ?
+    // if (param[0] == '#')
+    // {
+    //     std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
+    //     if (tokens[0].size() > CHANNELLEN)
+    //         tokens[0] = tokens[0].substr(0, CHANNELLEN);
+    //     if (existingChannel(tokens[0]) == false) // TO CREATE
+    //     {
+    //         reply = ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0].substr(1, tokens[0].size() - 1));
+    //         send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    //     }
+    //     else if (tokens.size() < 2)
+    //     {
+    //         reply = RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], _clients[cid].getChannelModes());
+    //         send(_clients[cid].getCfd(), reply.c_str(), reply.length(), 0);
+    //     }
+    // }
+    // // USER MODE
+    // else
+    // {
         std::cout << "client " << _clients[cid].getNickname() << " - User Mode" << std::endl;
         if (tokens[0].size() > USERLEN)
             tokens[0] = tokens[0].substr(0, NICKLEN);
@@ -91,14 +91,14 @@ void		Server::handleMode( size_t cid, std::string param )
             }
             std::cout <<  "client " << _clients[cid].getNickname() << " User Mode is: " << _clients[cid].getUserModes() << std::endl;
         }
-    }
+    // }
 }
 
 bool		Server::existingChannel(std::string param)
 {
-    for (std::vector<Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+    for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
     {
-        if (it->getChannelName().compare(param) == 0 && it->getChannelName().size() == param.size())
+        if (it->first.compare(param) == 0 && it->first.size() == param.size())
         return true;
     }
     return false;
