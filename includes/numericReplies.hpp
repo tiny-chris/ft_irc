@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/04 16:51:35 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/07 13:48:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 
 # include "defines.hpp"
 
-# define USERMODES "+o"
-# define CHANNELMODES "+it"
-# define CHANNELMODESPARAM "+kl"
-# define SERVERNAME "localhost"
-# define VERSION "1.69"
+
 
 /******	  ERROR REPLIES	  ******/
 
@@ -27,16 +23,14 @@
 
 // # define SOURCE(nickname, username) (std::string(":") + nickname + "!" + username + "@localhost")
 
-# define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " " + nickname + " :No such nick/channel\r\n")
-// # define ERR_NOSUCHNICK(server, nickname) (std::string(":") + server + " 401 " + nickname + " " + nickname + " :No such nick/channel\r\n") 
-// 401 Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
+# define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " 401 " + nickname + " :No such nick/channel\r\n")
+// Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
 # define ERR_NOSUCHSERVER 402
 //"<nom de serveur> :No such server"
 //Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.
 
-# define ERR_NOSUCHCHANNEL 403
-//"<nom de canal> :No such channel"
+# define ERR_NOSUCHCHANNEL(source, nickname, channel) (std::string(":") + source + " 403 " + nickname + " " + channel + ":No such channel\r\n")
 //Utilisé pour indiquer que le nom de canal donné est invalide.
 
 # define ERR_CANNOTSENDTOCHAN 404
@@ -206,12 +200,12 @@
 // ":No O-lines for your host"
 // Si un client envoie un message OPER et que le serveur n'a pas été configuré pour autoriser les connexions d'opérateurs de cet hôte, cette erreur doit être retournée.
 
-# define ERR_UMODEUNKNOWNFLAG 501
+# define ERR_UMODEUNKNOWNFLAG(source, nickname) (std::string(":") + source + " 501 " + nickname + " :Unknown MODE flag\r\n")
+//501
 // ":Unknown MODE flag"
 // Renvoyé par un serveur pour indiquer que le message MODE a été envoyé avec un pseudonyme et que le mode spécifié n'a pas été identifié.
 
-# define ERR_USERSDONTMATCH 502
-// ":Cant change mode for other users"
+# define ERR_USERSDONTMATCH(source, nickname) (std::string(":") + source + " 502 " + nickname + " :Cant change mode for other users\r\n")
 // Erreur envoyée à tout utilisateur qui essaie de voir ou de modifier le mode utilisateur d'un autre client.
 
 
@@ -254,6 +248,10 @@
 
 # define RPL_LUSERME(source, nickname, clientsnbr) (std::string(":") + source + " 255 " + nickname + " :I have " + clientsnbr + " 0 servers\r\n")
 // <c> and <s> are non-negative integers and represent the number of clients and other servers connected to this server, respectively.
+
+
+# define RPL_UMODEIS(source, nickname, usermodes) (std::string(":") + source + " 221 " + nickname + " " + usermodes + "\r\n")
+// Sent to a client to inform that client of their currently-set user modes.
 
 
 # define RPL_NONE 300
@@ -315,8 +313,10 @@
 // ":End of /LIST"
 // Les réponses RPL_LISTSTART, RPL_LIST, RPL_LISTEND marquent le début, les réponses proprement dites, et la fin du traitement d'une commande LIST. S'il n'y a aucun canal disponible, seules les réponses de début et de fin sont envoyées.
 
-# define  RPL_CHANNELMODEIS 324
-// "<canal> <mode> <paramètres de mode>"
+# define  RPL_CHANNELMODEIS(source, nickname, channel, modestring) (std::string(":") + source + " 324 " + nickname + " " + channel + " " + modestring + "\r\n")
+// Sent to a client to inform them of the currently-set modes of a channel.
+
+
 # define RPL_NOTOPIC 331
 // "<canal> :No topic is set"
 # define RPL_TOPIC 332
@@ -376,5 +376,6 @@
 
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
+# define MSG_MODE(source, nickname, modeChange) (std::string(":") + source + " MODE " + nickname + " " + modeChange + "\r\n")
 
 #endif

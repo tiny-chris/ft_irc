@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/06 15:30:05 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 15:43:50 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,18 +144,7 @@ void		Server::sendWelcomeMsg( size_t cid ) const
   char formattedDate[30];
   std::strftime(formattedDate, sizeof(formattedDate), "%a %b %d %H:%M:%S %Y", local);
   std::string date(formattedDate);
-
-  // reply = RPL_WELCOME(_clients[cid].getSource(), _clients[cid].getNickname());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_YOURHOST(_clients[cid].getSource(), _clients[cid].getNickname());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_CREATED(_clients[cid].getSource(), _clients[cid].getNickname(), date);
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_MYINFO(_clients[cid].getSource(), _clients[cid].getNickname());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_ISUPPORT(_clients[cid].getSource(), _clients[cid].getNickname(), getSupportToken());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-
+  
   replyMsg( cid, RPL_WELCOME(_clients[cid].getSource(), _clients[cid].getNickname()), 0);
   replyMsg( cid, RPL_YOURHOST(_clients[cid].getSource(), _clients[cid].getNickname()), 0);
   replyMsg( cid, RPL_CREATED(_clients[cid].getSource(), _clients[cid].getNickname(), date), 0);
@@ -186,17 +175,6 @@ void  Server::sendLusersMsg( size_t cid ) const
   std::stringstream nbrClients;
 
   nbrClients << _clients.size();
-
-  // reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_LUSEROP(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getOpsNbr()
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_LUSERUNKNOWN(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A Modifier getUnknownStateUsers()
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_LUSERCHANNELS(_clients[cid].getSource(), _clients[cid].getNickname(), "0"); // A MODIFIER getChannelNbr();
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
-  // reply = RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str());
-  // send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
 
   replyMsg(cid, RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str()), 0);
   replyMsg(cid, RPL_LUSEROP(_clients[cid].getSource(), _clients[cid].getNickname(), "0"), 0); // A MODIFIER getOpsNbr()

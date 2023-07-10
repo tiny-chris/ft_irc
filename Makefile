@@ -20,9 +20,11 @@ SRCS		:=	\
 			Commands/pass.cpp \
 			Commands/ping.cpp \
 			Commands/user.cpp \
+			Commands/mode.cpp \
 			Server.cpp \
 			Socket.cpp \
 			utils.cpp \
+			Channel.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs

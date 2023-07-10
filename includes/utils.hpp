@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 14:17:35 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 15:36:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ enum commands {
 	NICK = 101,
 	USER = 102,
 	PING = 103,
+	MODE = 109,
 	JOIN = 110,
 	PRIVMSG = 111,
 

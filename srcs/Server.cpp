@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 14:47:36 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 16:04:45 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) :
-    _port(port), _password(password), _serverName(serverName)
-{
+Server::Server( size_t port, const char *password, std::string serverName ) : 
+  _port(port), 
+  _password(password), 
+  _serverName(serverName) {
  // std::cout << _password << std::endl;
   // setSource("", "");
   setup();
@@ -70,14 +71,15 @@ void Server::shutdown( void ) {
 
 void Server::delConnection( size_t cid ) {
   close( _pfds[cid].fd );
+  _pfds.erase(_pfds.begin() + cid);
+  std::string name = _clients[cid].getRealname();
+  _clients.erase(_clients.begin() + cid);
+  // _pfds[cid] = _pfds.back();
+  // _pfds.pop_back();
 
-  _pfds[cid] = _pfds.back();
-  _pfds.pop_back();
-
-  _clients[cid] = _clients.back();
-  _clients.pop_back();
-
-  std::cout << "<" << _clients[cid].getRealname() << " left the channel>\n";
+  // _clients[cid] = _clients.back();
+  // _clients.pop_back();
+  std::cout << "<" << name << " left the channel>\n";
 }
 
 /**
@@ -111,6 +113,7 @@ void	Server::initCommands( void )
   _mapCommands.insert(std::make_pair(101, "NICK"));
   _mapCommands.insert(std::make_pair(102, "USER"));
   _mapCommands.insert(std::make_pair(103, "PING"));
+  _mapCommands.insert(std::make_pair(109, "MODE"));
   _mapCommands.insert(std::make_pair(110, "JOIN"));
   _mapCommands.insert(std::make_pair(111, "PRIVMSG"));
 
@@ -222,8 +225,12 @@ void  Server::handleRequest( size_t cid, std::string request )
     case NICK:    handleNick( cid, parameters ); break;
     case USER:    handleUser( cid, parameters ); break;
     case PING:    handlePing( cid, parameters ); break;
-    case JOIN:    std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
-    case PRIVMSG: std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+    case MODE:    {
+                    std::cout << "client " << _clients[cid].getNickname() << " - use function to handle MODE command with " << parameters << std::endl;
+                    handleMode(cid, parameters );
+                  } break;
+    case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
+    case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 
     // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: shutdown(); break;                          // ' /shutdown '
@@ -248,7 +255,7 @@ void Server::receiveData( size_t cid ) {
   static std::string bufs[MAXCONNECTION + 1];
   memset(buf, 0, sizeof(buf));
   long nbytes = 0;
-  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 1, 0 );
+  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 2, 0 );
   if( nbytes <= 0 ) {
     std::cout << "del connection" << std::endl;
     if( nbytes == 0 ) {

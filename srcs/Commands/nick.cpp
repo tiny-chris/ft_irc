@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 13:40:10 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 15:37:47 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void		Server::handleNick( size_t cid, std::string param )
 {
   // std::string reply;
   // if no param to a nick command -> No nickname given error
+  // OPTION WE TRUNC PARAM IF ITS TOO LONG
+  if (param.size() > NICKLEN)
+    param.erase(NICKLEN, param.size() - NICKLEN);
   if (param.compare("") == 0)
   {
     replyMsg(cid, ERR_NONICKNAMEGIVEN(_clients[cid].getSource(), _clients[cid].getNickname()));
