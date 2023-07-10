@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 16:08:54 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/10 17:47:51 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ Client &    Client::operator=( Client const& rhs ){
     if (this != &rhs)
 	{
 		// _fd = rhs.getFd();
-		_nickname = rhs.getNickname();
+		_nickname = rhs.getNickname();// ne peut pas être identique
 		_username = rhs.getUsername();
 		_realname = rhs.getRealname();
 		_source = rhs.getSource();

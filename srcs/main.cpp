@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
-/*   Updated: 2023/06/28 16:33:01 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/10 18:55:00 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Socket.hpp"
-
+#include "defines.hpp"
 
 
 // /**
@@ -75,9 +75,14 @@ void	checkArgs(int argc, char **argv)
 
 	if (password.empty())
 		throw std::invalid_argument("a password is required");
+	else if (password.length() < PASSMINLEN || password.length() > PASSMAXLEN)
+		throw std::invalid_argument("password length is out of bounds: " + PASSMINLEN + " to " + PASSMAXLEN);
+	else if (!isValidUser(password))
+		throw std::invalid_argument("a password is too short");
 	
 	//	//////////
 	//	Y A T IL DES CARACTERES NON AUTORISES DANS LE PWD ??? PAS QUE DES ESPACES PAR EX
+	//	- oui ne pas prendre les espaces ' ' et les \r, t, n... et \0 et
 	//	//////////
 
 	return ;

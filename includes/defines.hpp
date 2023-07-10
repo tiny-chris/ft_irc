@@ -17,6 +17,8 @@
 // The value MUST be specified and MUST be a positive integer.
 // # define USERLEN 18
 
+# define PASSMINLEN 10
+
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 # define PASSMAXLEN 100
 

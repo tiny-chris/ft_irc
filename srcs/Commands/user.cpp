@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/10 15:43:50 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/10 18:29:39 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,31 +24,6 @@
  *              https://modern.ircdocs.horse/#connection-setup
  *
  */
-
-static bool	isValidUser(std::string name)
-{
-  for (size_t i = 0; i < name.size(); i++)
-  {
-    char c = name[i];
-    if (c == '\0' || c == '\r' || c == '\n' || c == ' ')
-      return false;
-  }
-  return true;
-}
-
-// A REVOIR !!!!!
-static bool	isValidParam(std::string name)
-{
-  if (name.empty())
-    return false;
-  for (size_t i = 0; i < name.size(); i++)
-  {
-    char c = name[i];
-    if (c == '\0' || c == '\r' || c == '\n' || c == ' ')
-      return false;
-  }
-  return true;
-}
 
 void				Server::handleUser( size_t cid, std::string param )
 {
@@ -104,6 +79,8 @@ void				Server::handleUser( size_t cid, std::string param )
   ** otherwise --> fill the '_username' with content of 1st substring
   ** NB: 2nd and 3rd parameters SHOULD be sent as one zero ('0', 0x30) and one asterisk character ('*', 0x2A)
   ** by the client, as the meaning of these two parameters varies between different versions of the IRC protocol.
+  ** For RFC 1459 : USER <user name> <host> <server name> <real name>
+  ** For RFC 2812 : USER <user name> <mode> <non used> <real name>
   */
   tokens = splitString(param.substr(0, colon), ' ');
   if (tokens.size() < 3 || tokens[0].length() < 1)
@@ -137,7 +114,6 @@ void				Server::handleUser( size_t cid, std::string param )
 
 void		Server::sendWelcomeMsg( size_t cid ) const
 {
-  // std::string reply;
   std::time_t	t = std::time(0);
 	std::tm* local = std::localtime(&t);
 
@@ -171,7 +147,6 @@ std::string Server::getSupportToken() const
 
 void  Server::sendLusersMsg( size_t cid ) const
 {
-  // std::string reply;
   std::stringstream nbrClients;
 
   nbrClients << _clients.size();

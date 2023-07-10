@@ -6,13 +6,14 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:23:45 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/06 14:20:24 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 19:00:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Socket.hpp"
+#include "utils.hpp"
 
 /**
  * @brief       Int to String
@@ -80,4 +81,39 @@ std::vector<std::string>  splitString(std::string params, char splitter)
       // }
     }
     return (tokens);
+}
+
+/**
+ * @brief       Check if the user name provided meets the requirements
+ *              user  ::=  <sequence of any characters except NUL, CR, LF, and SPACE>
+ * 
+ * 
+ * Software SHOULD use the UTF-8 character encoding to encode and decode messages, with fallbacks as described in the Character Encodings implementation considerations appendix.
+ * 
+ *  REVOIR INCEPTION pour le utf...
+ * 
+ */
+
+bool	isValidUser(std::string name)
+{
+  for (size_t i = 0; i < name.size(); i++)
+  {
+    char c = name[i];
+    if (c == '\0' || c == '\r' || c == '\n' || c == ' ')
+      return false;
+  }
+  return true;
+}
+
+bool	isValidParam(std::string name)
+{
+  if (name.empty())
+    return false;
+  for (size_t i = 0; i < name.size(); i++)
+  {
+    char c = name[i];
+    if (!(isalnum(c) || c == '*' || c == '.' || c == '_' || c == '-'))
+      return false;
+  }
+  return true;
 }

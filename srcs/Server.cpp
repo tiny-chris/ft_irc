@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 16:04:45 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/10 18:39:54 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,7 @@ void  Server::handleRequest( size_t cid, std::string request )
     case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
     // keeping Clement's initial commands just in case... - END
 
+    // Servers and clients SHOULD ignore empty lines.
     default:			{
                     if (!command.empty() || (command.empty() && !parameters.empty()))
                     {
