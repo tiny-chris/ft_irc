@@ -14,7 +14,7 @@
 #include "Server.hpp"
 #include "Socket.hpp"
 #include "defines.hpp"
-
+#include "utils.hpp"
 
 // /**
 //  * @brief       Forbidden inet_ntop implementation
@@ -50,7 +50,7 @@
 //   }
 // }
 
-#include <cstdlib>		// std::atoi() 
+#include <cstdlib>		// std::atoi()
 #include <iostream>		// std::cout
 #include <stdexcept>	// std::invalid_argument, std::runtime_error...
 
@@ -70,46 +70,34 @@ void	checkArgs(int argc, char **argv)
 	if (val < 0 || val > 65535)
 		throw std::invalid_argument("wrong port number");
 
-	/* check <password> is a port number */
+	/* check <password> is existing & valid */
 	std::string	password = argv[2];
 
 	if (password.empty())
 		throw std::invalid_argument("a password is required");
 	else if (password.length() < PASSMINLEN || password.length() > PASSMAXLEN)
-		throw std::invalid_argument("password length is out of bounds: " + PASSMINLEN + " to " + PASSMAXLEN);
+		throw std::invalid_argument("password length is out of bounds");
 	else if (!isValidUser(password))
-		throw std::invalid_argument("a password is too short");
-	
-	//	//////////
-	//	Y A T IL DES CARACTERES NON AUTORISES DANS LE PWD ??? PAS QUE DES ESPACES PAR EX
-	//	- oui ne pas prendre les espaces ' ' et les \r, t, n... et \0 et
-	//	//////////
+		throw std::invalid_argument("a password contains invalid characters");
 
 	return ;
 }
 
-// int main( void ) 
-// {
-//   Server server;
-//   server.run();
-//   return 0;
-// }
-
-int	main(int argc, char **argv) 
+int	main(int argc, char **argv)
 {
 	try
 	{
 		/* ***** CHECK NB of ARG and VALUES OF ARGV[1] & ARGV[2] ***** */
 		checkArgs(argc, argv);
 		/* if incorrect --> throw an exception invalid_argument */
-		
+
 		/* ***** INIT REQUIRED PARAMETERS FOR THE SERVER CLASS ***** */
 		/* Classe Server avec 2 params: port et password, garder password en char* */
 		std::size_t	port = std::atoi(argv[1]);
 		const char	*password = argv[2];
 
 		Server server(port, password, "tiny_server");
-		server.run();	
+		server.run();
 	}
 	catch (const std::invalid_argument& ia)
 	{

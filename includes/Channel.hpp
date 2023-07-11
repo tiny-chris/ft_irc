@@ -43,10 +43,10 @@ class Channel
 
         std::string getChannelName( void ) const;
         void		setChannelName( std::string& name );
-        
+
     private:
-        std::map<std::string, Client> _connectedClients; 
+        std::map<std::string, Client> _connectedClients;
         std::string _channelName;
 };
 
-#endif
+#endif /* __CHANNEL_HPP__ */

@@ -103,7 +103,7 @@
 // "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
-# define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(":") + source + " 436 " + clientNickname + " :Nickname collision KILL\r\n") 
+# define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(":") + source + " 436 " + clientNickname + " :Nickname collision KILL\r\n")
 // 436
 // "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
@@ -132,7 +132,7 @@
 // ":USERS has been disabled"
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
-# define  ERR_NOTREGISTERED(source, nickname) (std::string(":") + source + " 451 " + nickname + " :You have not registered\r\n") 
+# define  ERR_NOTREGISTERED(source, nickname) (std::string(":") + source + " 451 " + nickname + " :You have not registered\r\n")
 // 451
 // ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
@@ -217,7 +217,7 @@
 
 /******		REGISTRATION REPLIES		******/
 
-# define RPL_WELCOME(source, nickname) (std::string(":") + source + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + source + "\r\n") 
+# define RPL_WELCOME(source, nickname) (std::string(":") + source + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + source + "\r\n")
 // The first message sent after client registration, this message introduces the client to the network. The text used in the last param of this message varies wildly.
 
 # define RPL_YOURHOST(source, nickname) (std::string(":") + source + " 002 " + nickname + " :Your host is " + SERVERNAME + " running version " + VERSION + "\r\n")
@@ -229,7 +229,7 @@
 # define RPL_MYINFO(source, nickname) (std::string(":") + source + " 004 " + nickname + " " + SERVERNAME + " " + VERSION + " " + USERMODES + " " + CHANNELMODES + " " + CHANNELMODESPARAM + "\r\n")
 // Part of the post-registration greeting. Clients SHOULD discover available features using RPL_ISUPPORT tokens rather than the mode letters listed in this reply.
 
-# define RPL_ISUPPORT(source, nickname, token) (std::string(":") + source + " 005 " + token + " :are supported by this server\r\n") 
+# define RPL_ISUPPORT(source, nickname, token) (std::string(":") + source + " 005 " + token + " :are supported by this server\r\n")
 // Part of the post-registration greeting. Clients SHOULD discover available features using RPL_ISUPPORT tokens rather than the mode letters listed in this reply.
 
 /******		  LUSERS REPLIES		  ******/
@@ -280,7 +280,7 @@
 # define RPL_WHOISUSER 311
 // "<pseudo> <utilisateur> <hôte> * :<vrai nom>"
 
-# define RPL_WHOISSERVER 312 
+# define RPL_WHOISSERVER 312
 // "<pseudo> <serveur> :<info serveur>"
 
 # define RPL_WHOISOPERATOR 313
@@ -378,4 +378,4 @@
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeChange) (std::string(":") + source + " MODE " + nickname + " " + modeChange + "\r\n")
 
-#endif
+#endif /* __NUMERIC_REPLIES_HPP__*/

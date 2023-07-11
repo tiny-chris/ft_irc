@@ -32,7 +32,7 @@
 
 class Socket {
 	public:
-	
+
 		Socket() : _sockfd( -1 ) {}
 		~Socket() { closeSocket(); }
 
@@ -40,10 +40,10 @@ class Socket {
 		int getSocket( void ) { return _sockfd; }
 
 	private:
-	
+
 		void closeSocket( void );  // useless?
 		/* int accept( struct sockaddr* addr, socklen_t* addrlen ); */
 		int _sockfd;
 };
 
-#endif
+#endif /* __SOCKET_HPP__ */

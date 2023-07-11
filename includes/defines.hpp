@@ -17,7 +17,7 @@
 // The value MUST be specified and MUST be a positive integer.
 // # define USERLEN 18
 
-# define PASSMINLEN 10
+# define PASSMINLEN 8
 
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 # define PASSMAXLEN 100
@@ -90,4 +90,4 @@ The value MUST be specified and MUST be a positive integer. */
 # define SERVERNAME "localhost"
 # define VERSION "1.69"
 
-#endif /* __DEFINES_HPP__ */ 
+#endif /* __DEFINES_HPP__ */

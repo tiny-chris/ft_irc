@@ -100,7 +100,7 @@ class Server {
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		std::map<std::string, Channel>	_channels;
-		
+
 };
 
-#endif
+#endif /* __SERVER_HPP__ */

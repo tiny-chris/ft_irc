@@ -27,7 +27,7 @@
 # include <unistd.h>	// close
 # include "Channel.hpp"
 
-class Channel; 
+class Channel;
 class Client {
 
 	public:
@@ -35,7 +35,7 @@ class Client {
 		Client( int socket );
 		Client( Client const & src );
 		~Client( void );
-	
+
 		Client &   operator=( Client const& rhs );
 
 		// Client&			operator=(const Client& other);
@@ -91,4 +91,4 @@ class Client {
 		*/
 };
 
-#endif
+#endif /* __CLIENT_HPP__ */

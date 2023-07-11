@@ -67,4 +67,4 @@ bool						isValidPassword( std::string password );
 bool						isValidUser( std::string name );
 bool						isValidParam( std::string name );
 
-#endif
+#endif /* __UTILS_HPP__ */
