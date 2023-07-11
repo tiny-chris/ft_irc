@@ -56,6 +56,8 @@ class Server {
 		void		initCommands( void );
 		void		handleRequest( size_t cid, std::string request );
 
+		void		checkRegistration( size_t cid );
+
 		/*** COMMANDS ***/
 		void		handlePass( size_t cid, std::string param );
 		void		handleNick( size_t cid, std::string param );
