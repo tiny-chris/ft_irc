@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 18:42:43 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/10 15:36:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,12 @@ enum commands {
 // 	// OPER,
 // 	// KILL
 
+bool						isValidUser(std::string name);
+bool						isValidParam(std::string name);
+
 std::string					intToString( int number );
 std::string					gaiStrerror( int errorCode );
 
-std::vector<std::string>	splitString( std::string params, char splitter );
+std::vector<std::string>	splitString(std::string params, char splitter);
 
-bool						isValidPassword( std::string password );
-bool						isValidUser( std::string name );
-bool						isValidParam( std::string name );
-
-#endif /* __UTILS_HPP__ */
+#endif

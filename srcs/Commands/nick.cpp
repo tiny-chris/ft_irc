@@ -58,8 +58,9 @@ void		Server::handleNick( size_t cid, std::string param )
     _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
     std::cout << "info:\t valid nickname provided!\n" << std::endl;
-    if (_clients[cid].getIfRegistered() == true)
-      _clients[cid].setSource( param, _clients[cid].getUsername());
+    checkRegistration(cid);
+    // if (_clients[cid].getIfRegistered() == true)
+    //   _clients[cid].setSource( param, _clients[cid].getUsername());
   }
   return ;
 }

@@ -15,16 +15,17 @@ DIR_DUP		= mkdir -p $(@D)
 
 SRCS		:=	\
 			main.cpp \
+			Channel.cpp \
 			Client.cpp \
+			Commands/mode.cpp \
 			Commands/nick.cpp \
 			Commands/pass.cpp \
 			Commands/ping.cpp \
 			Commands/user.cpp \
-			Commands/mode.cpp \
+			registration.cpp \
 			Server.cpp \
 			Socket.cpp \
 			utils.cpp \
-			Channel.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
