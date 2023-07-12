@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 18:39:54 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/12 18:28:45 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ Server::Server( size_t port, const char *password, std::string serverName ) :
   // setSource("", "");
   setup();
   initCommands();
+  // TO DEL JUSTE POUR TESTER MODE !!
+  std::string name = "chantest";
+  Channel chantest(name);
+  _channels.insert(std::pair<std::string, Channel*>("chantest", &chantest));
 }
 
 Server::~Server( void ) { shutdown(); }

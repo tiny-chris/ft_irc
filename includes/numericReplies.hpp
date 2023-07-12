@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/07 13:48:05 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/12 16:49:57 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,8 @@
 // ":Permission Denied- You're not an IRC operator"
 // Toute commande qui requiert le privilège d'opérateur pour opérer doit retourner cette erreur pour indiquer son échec.
 
-# define ERR_CHANOPRIVSNEEDED 482
+# define ERR_CHANOPRIVSNEEDED(source, nickname, channel) (std::string(":") + source + " 482 " + nickname + " " + channel + " :You're not channel operator\r\n")
+// 482
 // "<canal> :You're not channel operator"
 // Toute commande qui requiert les privilèges 'chanop' (tels les messages MODE) doit retourner ce message à un client qui l'utilise sans être chanop sur le canal spécifié.
 

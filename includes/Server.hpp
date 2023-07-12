@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 15:34:15 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/12 18:13:39 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ class Server {
 		std::string					_serverName; // a supprimer peut etre remplce par _source
 		// std::string _source;
 
-		bool		isValidNick(std::string param);
-		bool		existingNick(std::string param);
+		bool		isValidNick( std::string param );
+		bool		existingNick( std::string param );
 
-		bool		existingChannel(std::string param);
+		bool		existingChannel( std::string param );
 
 		void		sendWelcomeMsg( size_t cid ) const;
 		void		sendLusersMsg( size_t cid ) const;
@@ -101,7 +101,7 @@ class Server {
 		std::string getSupportToken() const;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
-		std::map<std::string, Channel>	_channels;
+		std::map<std::string, Channel*>	_channels;
 
 };
 

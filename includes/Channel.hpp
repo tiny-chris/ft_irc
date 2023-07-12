@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/10 16:09:59 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/12 18:40:49 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,43 @@ class Channel
 {
     public:
         Channel();
-        Channel(std::string name);
+        Channel(std::string const& name);
+        // Channel(std::string const& name, Client const& chanops);
         Channel(Channel const& src);
         ~Channel();
 
         Channel & operator=(Channel const & rhs);
 
         std::string getChannelName( void ) const;
+        bool        getKeyStatus( void ) const;
+        bool        getLimitStatus( void ) const;
+        bool        getInviteOnlyStatus( void ) const;
+        bool        getTopicRestrictionStatus( void ) const;
+        std::string getLimit( void ) const;
+        std::string getKey( void ) const;
+
         void		setChannelName( std::string& name );
+        void        setKeyStatus( bool const& status );
+        void        setLimitStatus( bool const& status );
+        void        setInviteOnlyStatus( bool const& status );
+        void        setTopicRestrictionStatus( bool const& status );
+        void        setLimit( std::string const& limit );
+        void        setKey( std::string const& key );
+
+        bool        checkChannelOps( std::string name );
 
     private:
-        std::map<std::string, Client> _connectedClients;
-        std::string _channelName;
+        std::map<std::string, Client*> _connectedClients;
+        std::map<std::string, Client*> _channelOps;
+        std::string                    _channelName;
+
+        bool    _keyStatus;
+        bool    _limitStatus;
+        bool    _inviteOnlyStatus;
+        bool    _topicRestrictionStatus;
+
+        std::string _key;
+        std::string _limit;
 };
 
 #endif /* __CHANNEL_HPP__ */
