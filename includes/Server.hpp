@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 18:13:39 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/13 15:33:33 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ class Server {
 		std::string getSupportToken() const;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
-		std::map<std::string, Channel*>	_channels;
-
+		std::map<std::string, Channel>	_channels;
+		// obligee de mettre des pointeur et non des references car problemes d'initialisation sinon 
 };
 
 #endif /* __SERVER_HPP__ */

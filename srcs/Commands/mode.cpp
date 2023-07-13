@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/12 18:27:07 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/13 17:57:10 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,69 +37,75 @@ void		Server::handleMode( size_t cid, std::string param )
     // Or can we modify them in any order ?
     if (param[0] == '#')
     {
-        std::cout << "client " << _clients[cid].getNickname() << " - Channel Mode" << std::endl;
+        std::string modechange;
+        std::string modeargs;
+        std::string key_str;
+        
         if (tokens[0].size() > CHANNELLEN)
             tokens[0] = tokens[0].substr(0, CHANNELLEN);
         if (existingChannel(tokens[0].substr(1, tokens[0].size() - 1)) == false) // TO CREATE
             replyMsg(cid, ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0].substr(1, tokens[0].size() - 1)));
         else if (tokens.size() < 2)
-            replyMsg(cid, RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], _clients[cid].getChannelModes()));
+        {
+            key_str = tokens[0].substr(1, tokens[0].size() - 1);
+            modechange = _channels[key_str].getModes();
+            modeargs = _channels[key_str].getModesArgs();
+            replyMsg(cid, RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], modechange, modeargs));
+        }
         else
         {
-            Channel *chan = _channels[tokens[0].substr(1, tokens[0].size() - 1)];
+            Channel &chan = _channels[key_str];
             std::string clientName = _clients[cid].getNickname();
             // if the user is not a channel operator, then an error msg is returned and the command is ignored
-            // if (chan->checkChannelOps(clientName) == false)
-            // {
-            //     replyMsg(cid, ERR_CHANOPRIVSNEEDED(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0]));
-            //     return ;
-            // }
-            std::string modechange;
+            if (chan.checkChannelOps(clientName) == false)
+            {
+                replyMsg(cid, ERR_CHANOPRIVSNEEDED(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0]));
+                return ;
+            }
             //  if the modestring starts with a + and has at least a mode letter
             if (tokens[1][0] == '+' && tokens[1].size() >= 2)
             {
                 std::cout << "enter +" << std::endl;
                 int j = 2;
-                modechange.push_back('+');
+                modechange += "+";
                 for (size_t i = 1; i < tokens[1].size(); i++)
                 {
                     if (tokens[1][i] == 'k' && tokens.size() > 2)
                     {
-                        // check token[j] est une valid key ->
-                        if (chan->getKeyStatus() == false)
+                        if (chan.getKeyStatus() == 0 && isValidParam(tokens[j]) == true)
                         {
-                            chan->setKeyStatus(true);
-                            chan->setKey(tokens[j]);
-                            modechange.push_back('k');
-                            std::cout << "mode";
+                            chan.setKeyStatus(1);
+                            chan.setKey(tokens[j]);
+                            modechange += "k";
+                            modeargs += tokens[j];
                         }
                         j++;
                     }
                     else if (tokens[1][i] == 'l' && tokens.size() > 2)
                     {
-                        // check token[j] est une valid limit ->
-                        if (chan->getLimitStatus() == false)
+                        if (chan.getLimitStatus() == 0 && chan.checkValidLimit(tokens[j]) == true)
                         {
-                            chan->setLimitStatus(true);
-                            chan->setLimit(tokens[j]);
-                            modechange.push_back('l');
+                            chan.setLimitStatus(1);
+                            chan.setLimit(tokens[j]);
+                            modechange += "l";
                         }
                         j++;
                     }
                     else if (tokens[1][i] == 'i')
                     {
-                        if (chan->getInviteOnlyStatus() == false)
+                        if (chan.getInviteOnlyStatus() == 0)
                         {
-                            chan->setInviteOnlyStatus(true);
-                            modechange.push_back('i');
+                            chan.setInviteOnlyStatus(1);
+                            modechange += "i";
+                            modeargs += tokens[j];
                         }
                     }
                     else if (tokens[1][i] == 't')
                     {
-                        if (chan->getTopicRestrictionStatus() == false)
+                        if (chan.getTopicRestrictionStatus() == 0)
                         {
-                            chan->setTopicRestrictionStatus(true);
-                            modechange.push_back('t');
+                            chan.setTopicRestrictionStatus(1);
+                            modechange += "t";
                         }
                     }
                     else
@@ -150,7 +156,7 @@ void		Server::handleMode( size_t cid, std::string param )
 
 bool		Server::existingChannel(std::string param)
 {
-    for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+    for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
     {
         if (it->first.compare(param) == 0 && it->first.size() == param.size())
         return true;

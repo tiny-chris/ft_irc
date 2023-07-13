@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 17:47:51 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/13 11:56:20 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Client::Client( int socket ) :
 			_realname( "" ),
 			_source( "" ),
 			_userModes ( "" ),
-			_channelModes( "" ),
+			// _channelModes( "" ),
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false )
@@ -43,7 +43,7 @@ Client &    Client::operator=( Client const& rhs ){
 		_realname = rhs.getRealname();
 		_source = rhs.getSource();
 		_userModes = rhs.getUserModes();
-		_channelModes = rhs.getChannelModes();
+		// _channelModes = rhs.getChannelModes();
 		_passStatus = getPassStatus();
 		_nickStatus = getNickStatus();
 		_isRegistered = getIfRegistered();
@@ -83,7 +83,7 @@ bool		Client::getNickStatus( void ) const { return _nickStatus; }
 bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 std::string	Client::getSource( void ) const { return _source; }
 std::string	Client::getUserModes ( void ) const { return _userModes; }
-std::string	Client::getChannelModes ( void ) const { return _channelModes; }
+// std::string	Client::getChannelModes ( void ) const { return _channelModes; }
 
 // void		Client::setFd( int& clientFd ) { _fd = clientFd; }//not used as _fd is const
 void		Client::setNickname( std::string const& name ) { _nickname = name; }

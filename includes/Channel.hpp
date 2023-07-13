@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/12 18:40:49 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/13 19:17:42 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,17 @@
 # include <unistd.h>	// close
 
 # include "Client.hpp"
+# include "utils.hpp"
+# include "defines.hpp"
 
 class Client;
 
 class Channel
 {
     public:
+        // Channel(std::string const& name);
         Channel();
-        Channel(std::string const& name);
-        // Channel(std::string const& name, Client const& chanops);
+        Channel(std::string const& name, Client* chanop);
         Channel(Channel const& src);
         ~Channel();
 
@@ -50,6 +52,10 @@ class Channel
         std::string getLimit( void ) const;
         std::string getKey( void ) const;
 
+        std::string getModes( void ) const;
+        std::string getModesArgs( void ) const;
+        bool        checkValidLimit(std::string limit) const;
+
         void		setChannelName( std::string& name );
         void        setKeyStatus( bool const& status );
         void        setLimitStatus( bool const& status );
@@ -61,8 +67,10 @@ class Channel
         bool        checkChannelOps( std::string name );
 
     private:
-        std::map<std::string, Client*> _connectedClients;
-        std::map<std::string, Client*> _channelOps;
+        
+        std::map<std::string, Client&> _connectedClients;
+        // std::map<std::string *, Client *> _channelOps;
+        std::vector< Client *> _channelOps;
         std::string                    _channelName;
 
         bool    _keyStatus;

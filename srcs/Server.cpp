@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 18:28:45 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/13 19:23:04 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ Server::Server( size_t port, const char *password, std::string serverName ) :
   // setSource("", "");
   setup();
   initCommands();
-  // TO DEL JUSTE POUR TESTER MODE !!
-  std::string name = "chantest";
-  Channel chantest(name);
-  _channels.insert(std::pair<std::string, Channel*>("chantest", &chantest));
+  // // TO DEL JUSTE POUR TESTER MODE !!
+  // std::string name = "chantest";
+  // Channel chantest(name);
+  // _channels.insert(std::pair<std::string, Channel*>("chantest", &chantest));
 }
 
 Server::~Server( void ) { shutdown(); }
@@ -216,7 +216,7 @@ void  Server::handleRequest( size_t cid, std::string request )
       return;
     }
   }
-
+  int todel = 0;
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
@@ -226,7 +226,14 @@ void  Server::handleRequest( size_t cid, std::string request )
   {
     case CAP:     std::cout << std::endl; break;
     case PASS:    handlePass( cid, parameters ); break;
-    case NICK:    handleNick( cid, parameters ); break;
+    case NICK:    {
+                    handleNick( cid, parameters );
+                    if (_clients.size() > 1 && todel == 0)
+                    {
+                      todel++;
+                      _channels.insert(std::pair<std::string, Channel>("chantest", Channel("chantest", &_clients[cid])));
+                    }
+                  } break;
     case USER:    handleUser( cid, parameters ); break;
     case PING:    handlePing( cid, parameters ); break;
     case MODE:    {
@@ -325,6 +332,19 @@ void Server::addConnection() {
   }
   _clients.push_back( Client( newsocket ) );
 
+  // std::cout << "clients size: " << _clients.size() << _clients[1].getFd() << std::endl;
+  /************************************/
+  // TO DEL JUSTE POUR TESTER MODE !!
+  // std::string *name;
+  // *name = "chantest";
+  // Channel chantest("chantest", _clients[0]);
+  // if (_clients.size() > 1)
+  // {
+  //   _channels.insert(std::pair<std::string, Channel>("chantest", Channel("chantest", &_clients[1])));
+  // }
+ /************************************/
+
+ 
   std::cout << "--------------------" << std::endl;
   std::cout << "New connection accepted on socket " << newsocket << "\n" << std::endl;
 

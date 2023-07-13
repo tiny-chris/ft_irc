@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 16:49:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/13 11:11:45 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ class Client {
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
 		std::string		getUserModes ( void ) const;
-		std::string		getChannelModes ( void ) const;
 
 		// void			setFd( int& clientFd );//not used as _fd is const
 		void			setNickname( std::string const& name );
@@ -74,7 +73,6 @@ class Client {
 
 		std::string	_source;
 		std::string	_userModes;
-		std::string	_channelModes;
 
 		bool		_passStatus;
 		bool		_nickStatus;
