@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/14 18:20:58 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:08:33 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,31 +28,30 @@ void		Server::handleMode( size_t cid, std::string param )
     }
     // parsing params
     tokens = splitString(param, ' ');
+    // que se passe t il si juste #
     if (param[0] == '#') // its a channel
     {
         // CHANGING CHANNEL MODE (type B +k, Type C +l, Type D +it)
         // Types B and C modes need a valid mode argument otherwise they are ignored
         std::string modechange;
         std::string modeargs;
-        std::string key_str;
         
         // cropping the first param (channel lenght) if its length is over the define CHANNELLEN
         if (tokens[0].size() > CHANNELLEN)
             tokens[0] = tokens[0].substr(0, CHANNELLEN);
         // if the channel entered doesn't exist no such Channel error displayed
-        if (existingChannel(tokens[0].substr(1, tokens[0].size() - 1)) == false)
-            replyMsg(cid, ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0].substr(1, tokens[0].size() - 1)));
+        if (existingChannel(tokens[0]) == false)
+            replyMsg(cid, ERR_NOSUCHCHANNEL(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0]));
         // else if a valid Channel is entered but no param the modes set are displayed 
         else if (tokens.size() < 2)
         {
-            key_str = tokens[0].substr(1, tokens[0].size() - 1);
-            modechange = _channels[key_str]->getModes();
-            modeargs = _channels[key_str]->getModesArgs();
+            modechange = _channels[tokens[0]]->getModes();
+            modeargs = _channels[tokens[0]]->getModesArgs();
             replyMsg(cid, RPL_CHANNELMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), tokens[0], modechange, modeargs));
         }
         else
         {
-            Channel *chan = _channels["chantest"];
+            Channel *chan = _channels[tokens[0]];
             std::string clientName = _clients[cid].getNickname();
             std::cout << "chan->_channelOps.size(): " << chan->_channelOps.size() << std::endl;
             // if the user is not a channel operator, then an error msg is returned and the command is ignored

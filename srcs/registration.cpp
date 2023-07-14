@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/14 18:35:24 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:11:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	Server::checkRegistration( size_t cid )
     // une copie des objets est effectuée. Contrairement au std::vector
     if (cid == 1)
     {
-      std::string name = "chantest";
-      _channels.insert(std::pair<std::string, Channel*>("chantest", new Channel(name, _clients[cid])));
+      std::string name = "#chantest";
+      _channels.insert(std::pair<std::string, Channel*>("#chantest", new Channel(name, _clients[cid])));
     }
     /************************************/
   }
