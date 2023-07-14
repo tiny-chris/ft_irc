@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/13 19:23:04 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 15:48:19 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,6 @@ void  Server::handleRequest( size_t cid, std::string request )
       return;
     }
   }
-  int todel = 0;
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
@@ -228,11 +227,6 @@ void  Server::handleRequest( size_t cid, std::string request )
     case PASS:    handlePass( cid, parameters ); break;
     case NICK:    {
                     handleNick( cid, parameters );
-                    if (_clients.size() > 1 && todel == 0)
-                    {
-                      todel++;
-                      _channels.insert(std::pair<std::string, Channel>("chantest", Channel("chantest", &_clients[cid])));
-                    }
                   } break;
     case USER:    handleUser( cid, parameters ); break;
     case PING:    handlePing( cid, parameters ); break;

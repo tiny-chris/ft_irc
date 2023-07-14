@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/13 19:17:42 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 15:15:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Channel
     public:
         // Channel(std::string const& name);
         Channel();
-        Channel(std::string const& name, Client* chanop);
+        Channel(std::string& name, Client& chanop);
         Channel(Channel const& src);
         ~Channel();
 
@@ -66,11 +66,11 @@ class Channel
 
         bool        checkChannelOps( std::string name );
 
+        std::vector<Client*>            _channelOps;
     private:
         
-        std::map<std::string, Client&> _connectedClients;
+        // std::map<std::string, Client*> _connectedClients;
         // std::map<std::string *, Client *> _channelOps;
-        std::vector< Client *> _channelOps;
         std::string                    _channelName;
 
         bool    _keyStatus;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/10 18:29:39 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/14 15:53:03 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ void	Server::checkRegistration( size_t cid )
     // EQUIVALENT OF LUSERS received
     sendLusersMsg( cid );
     std::cout << "info:\t welcome message displayed\n" << std::endl;
+    if (cid == 1)
+    {
+      std::string name = "chantest";
+      _channels.insert(std::pair<std::string, Channel*>("chantest", new Channel(name, _clients[cid])));
+    }
   }
 }
 

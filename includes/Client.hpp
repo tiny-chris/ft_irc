@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/13 11:11:45 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 13:58:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Client {
 
 	public:
 
+		Client( void );
 		Client( int socket );
 		Client( Client const & src );
 		~Client( void );
@@ -63,7 +64,6 @@ class Client {
 
 	private:
 
-		Client( void );
 
 		const int	_fd;
 

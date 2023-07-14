@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/13 19:18:10 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 17:00:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Channel::Channel() {}
 
-Channel::Channel(std::string const& name, Client* chanop) : 
+Channel::Channel(std::string& name, Client& chanop) : 
 _channelName(name),
 _keyStatus(0),
 _limitStatus(0),
@@ -23,10 +23,10 @@ _topicRestrictionStatus(1),
 _key(""),
 _limit("")
 {
-	std::cout << "chanop.getNickname(): " << chanop->getNickname() << std::endl;
+	std::cout << "chanop.getNickname(): " << chanop.getNickname() << std::endl;
 	// _channelOps.insert(std::pair< std::string *, Client * >(&(chanop->getNickname()), chanop));
-	_channelOps.push_back(chanop);
-	std::cout << "first channop size: " << std::endl;
+	_channelOps.push_back(&chanop);
+	std::cout << "first channop size: " << _channelOps.size() << std::endl;
 	setTopicRestrictionStatus(1);
 	std::cout << "topic restriction status" << _topicRestrictionStatus << std::endl;
 }
@@ -41,7 +41,7 @@ Channel::Channel( Channel const & src ) {
 Channel &    Channel::operator=( Channel const& rhs ){
     if (this != &rhs)
 	{
-		_connectedClients = rhs._connectedClients;
+		// _connectedClients = rhs._connectedClients;
 		_channelOps = rhs._channelOps;
 		_channelName = rhs._channelName;
 		_keyStatus = rhs._keyStatus;
@@ -83,18 +83,21 @@ std::string Channel::getModesArgs( void ) const {
 	std::string modesArgs;
 	
 	if (getKey() != "")
-		modesArgs += getKey();
+		modesArgs += (getKey() + " ");
 	if (getLimit() != "")
 		modesArgs += getLimit();
 	return (modesArgs);
 	
 }
 
-bool        Channel::checkValidLimit(std::string limit) const {
+bool        Channel::checkValidLimit(std::string limit) const {	
+	std::stringstream	iss(limit);	
+	int	num;
 	
-	if (limit < "1" || limit > intToString(CHANLIMIT))
-		return false;
-	return true;
+	iss >> num;
+	if (num > 1 && num < CHANLIMIT && intToString(num) == limit)
+		return true;
+	return false;
 }
 
 
@@ -110,7 +113,7 @@ bool        Channel::checkChannelOps( std::string name )
 {
 	std::cout << "test checkChannelOps" << std::endl;
 	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
-	for (unsigned i=0; i < _channelOps.size(); i++)
+	for ( unsigned i = 0; i < _channelOps.size(); i++ )
     {
 		std::cout << "Client nickname: " << _channelOps.at(i)->getNickname() << std::endl;
 		std::cout << "name: " << name << std::endl;

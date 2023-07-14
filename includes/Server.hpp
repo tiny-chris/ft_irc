@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/13 15:33:33 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 17:08:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ class Server {
 		void		handleNick( size_t cid, std::string param );
 		void		handleUser( size_t cid, std::string param );
 		void		handlePing( size_t cid, std::string param );
+		
 		void		handleMode( size_t cid, std::string param );
+		void		handleUserMode (size_t cid, std::vector<std::string> &tokens );
+		void		handleChannelMode (size_t cid, std::vector<std::string> &tokens );
 
 	private:
 
@@ -101,7 +104,7 @@ class Server {
 		std::string getSupportToken() const;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
-		std::map<std::string, Channel>	_channels;
+		std::map<std::string, Channel*>	_channels;
 		// obligee de mettre des pointeur et non des references car problemes d'initialisation sinon 
 };
 

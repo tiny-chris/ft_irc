@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/13 16:57:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/14 18:24:43 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 //"<nom de serveur> :No such server"
 //Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.
 
-# define ERR_NOSUCHCHANNEL(source, nickname, channel) (std::string(":") + source + " 403 " + nickname + " " + channel + ":No such channel\r\n")
+# define ERR_NOSUCHCHANNEL(source, nickname, channel) (std::string(":") + source + " 403 " + nickname + " " + channel + " :No such channel\r\n")
 //Utilisé pour indiquer que le nom de canal donné est invalide.
 
 # define ERR_CANNOTSENDTOCHAN 404
@@ -377,6 +377,6 @@
 
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
-# define MSG_MODE(source, nickname, modeChange) (std::string(":") + source + " MODE " + nickname + " " + modeChange + "\r\n")
+# define MSG_MODE(source, nickname, modeChange, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeChange + " " + modeargs + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
