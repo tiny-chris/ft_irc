@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/14 15:53:03 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 18:35:24 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,19 @@ void	Server::checkRegistration( size_t cid )
     // EQUIVALENT OF LUSERS received
     sendLusersMsg( cid );
     std::cout << "info:\t welcome message displayed\n" << std::endl;
+    /************************************/
+    // TO DEL JUSTE POUR TESTER MODE !!
+    // OBLIGEE DE NEW UN CHANNEL POUR CA SINON LES MODIFS REALISEES SUR LE CHANNEL NE SONT QUE LOCALES
+    // EX: J EPUSH BACK UN CLIENT A LA MAP DE CHANOPS DU CHANNEL DANS MON CONSTRUCTEUR MAIS QUAND JE VEUX Y ACCEDER DEPUIS 
+    // UNE AUTRE FONCTION DU SERVEUR CA NE MARCHE PAS LA SIZE DE MA MAP EST A 0 .....
+    // CHAT GPT DIT QUE Les objets std::map sont stockés en tant que paires de clé-valeur et lorsqu'une paire est insérée, 
+    // une copie des objets est effectuée. Contrairement au std::vector
     if (cid == 1)
     {
       std::string name = "chantest";
       _channels.insert(std::pair<std::string, Channel*>("chantest", new Channel(name, _clients[cid])));
     }
+    /************************************/
   }
 }
 

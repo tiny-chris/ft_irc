@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 15:48:19 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 18:45:02 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,15 +225,10 @@ void  Server::handleRequest( size_t cid, std::string request )
   {
     case CAP:     std::cout << std::endl; break;
     case PASS:    handlePass( cid, parameters ); break;
-    case NICK:    {
-                    handleNick( cid, parameters );
-                  } break;
+    case NICK:    handleNick( cid, parameters ); break;
     case USER:    handleUser( cid, parameters ); break;
     case PING:    handlePing( cid, parameters ); break;
-    case MODE:    {
-                    std::cout << "client " << _clients[cid].getNickname() << " - use function to handle MODE command with " << parameters << std::endl;
-                    handleMode(cid, parameters );
-                  } break;
+    case MODE:    handleMode( cid, parameters ); break;
     case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
     case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 
@@ -326,19 +321,7 @@ void Server::addConnection() {
   }
   _clients.push_back( Client( newsocket ) );
 
-  // std::cout << "clients size: " << _clients.size() << _clients[1].getFd() << std::endl;
-  /************************************/
-  // TO DEL JUSTE POUR TESTER MODE !!
-  // std::string *name;
-  // *name = "chantest";
-  // Channel chantest("chantest", _clients[0]);
-  // if (_clients.size() > 1)
-  // {
-  //   _channels.insert(std::pair<std::string, Channel>("chantest", Channel("chantest", &_clients[1])));
-  // }
- /************************************/
-
- 
+  // std::cout << "clients size: " << _clients.size() << _clients[1].getFd() << std::endl; 
   std::cout << "--------------------" << std::endl;
   std::cout << "New connection accepted on socket " << newsocket << "\n" << std::endl;
 
