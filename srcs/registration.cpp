@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/14 19:11:11 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:15:17 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	Server::checkRegistration( size_t cid )
     if (cid == 1)
     {
       std::string name = "#chantest";
-      _channels.insert(std::pair<std::string, Channel*>("#chantest", new Channel(name, _clients[cid])));
+      _channels.insert(std::pair<std::string, Channel*>(name, new Channel(name, _clients[cid])));
     }
     /************************************/
   }

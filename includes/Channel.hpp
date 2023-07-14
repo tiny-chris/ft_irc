@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/14 18:41:35 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:36:41 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,12 @@ class Channel
         void        setLimit( std::string const& limit );
         void        setKey( std::string const& key );
 
-        bool        checkChannelOps( std::string const& name );
+        bool        checkChannelOps( std::string & name );
 
-        std::vector<const Client*>  _channelOps; // a remettre en privé
     private:
         
         // std::map<std::string, Client*> _connectedClients;
-        // std::map<std::string *, Client *> _channelOps;
+        std::map<std::string, const Client *> _channelOps;
         std::string                    _channelName;
 
         bool    _keyStatus;

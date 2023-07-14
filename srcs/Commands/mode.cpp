@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/14 19:08:33 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:37:54 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void		Server::handleMode( size_t cid, std::string param )
         {
             Channel *chan = _channels[tokens[0]];
             std::string clientName = _clients[cid].getNickname();
-            std::cout << "chan->_channelOps.size(): " << chan->_channelOps.size() << std::endl;
+            // std::cout << "chan->_channelOps.size(): " << chan->_channelOps.size() << std::endl;
             // if the user is not a channel operator, then an error msg is returned and the command is ignored
             if (chan->checkChannelOps(clientName) == false)
             {
@@ -171,7 +171,7 @@ void		Server::handleMode( size_t cid, std::string param )
 void		Server::handleUserMode (size_t cid, std::vector<std::string> & tokens )
 {
         
-    std::cout << "client " << _clients[cid].getNickname() << " - User Mode" << std::endl;
+    // std::cout << "client " << _clients[cid].getNickname() << " - User Mode" << std::endl;
     if (tokens[0].size() > USERLEN)
         tokens[0] = tokens[0].substr(0, NICKLEN);
     if (existingNick(tokens[0]) == false)

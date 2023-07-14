@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/14 18:41:16 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:35:32 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,9 @@ _key(""),
 _limit("")
 {
 	std::cout << "chanop.getNickname(): " << chanop.getNickname() << std::endl;
-	// _channelOps.insert(std::pair< std::string *, Client * >(&(chanop->getNickname()), chanop));
-	_channelOps.push_back(&chanop);
+	_channelOps.insert(std::pair< std::string, const Client* >(chanop.getNickname(), &chanop));
 	std::cout << "first channop size: " << _channelOps.size() << std::endl;
 	setTopicRestrictionStatus(1);
-	std::cout << "topic restriction status" << _topicRestrictionStatus << std::endl;
 }
 
 Channel::~Channel() {}
@@ -109,16 +107,25 @@ void        Channel::setTopicRestrictionStatus( bool const& status ) { _topicRes
 void		Channel::setLimit( std::string const& limit ) { _limit = limit; } 
 void		Channel::setKey( std::string const& key ) { _key = key; }
 
-bool        Channel::checkChannelOps( std::string const& name ) 
+// bool        Channel::checkChannelOps( std::string const& name ) 
+// {
+// 	std::cout << "test checkChannelOps" << std::endl;
+// 	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
+// 	for ( unsigned i = 0; i < _channelOps.size(); i++ )
+//     {
+// 		std::cout << "Client nickname: " << _channelOps.at(i)->getNickname() << std::endl;
+// 		std::cout << "name: " << name << std::endl;
+// 		if (_channelOps.at(i)->getNickname() == name)
+// 			return true;
+//     }
+//     return false;
+// }
+
+bool        Channel::checkChannelOps( std::string & name ) 
 {
 	std::cout << "test checkChannelOps" << std::endl;
 	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
-	for ( unsigned i = 0; i < _channelOps.size(); i++ )
-    {
-		std::cout << "Client nickname: " << _channelOps.at(i)->getNickname() << std::endl;
-		std::cout << "name: " << name << std::endl;
-		if (_channelOps.at(i)->getNickname() == name)
-			return true;
-    }
+	if (_channelOps.find(name) != _channelOps.end())
+		return true;
     return false;
 }
