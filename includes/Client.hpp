@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 13:58:05 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/14 19:52:09 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Client {
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
-		std::string		getUserModes ( void ) const;
+		bool			getUserModes ( void ) const;
 
 		// void			setFd( int& clientFd );//not used as _fd is const
 		void			setNickname( std::string const& name );
@@ -59,7 +59,7 @@ class Client {
 		void			setNickStatus( bool const& status );
 		void			setIfRegistered( bool const& status );
 		void			setSource( std::string nickname, std::string username );
-		bool			setUserModes( std::string const& mode );
+		void			setUserModes( bool const& status );
 		bool			setChannelModes( std::string const& mode );
 
 	private:
@@ -72,11 +72,12 @@ class Client {
 		std::string _realname;
 
 		std::string	_source;
-		std::string	_userModes;
+		// std::string	_userModes;
 
 		bool		_passStatus;
 		bool		_nickStatus;
 		bool		_isRegistered;
+		bool		_userModes;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		//std::vector<Channel>	_clientChannels;
