@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/15 17:57:19 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/15 18:14:45 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,16 @@ void		Server::handleMode( size_t cid, std::string param )
     // parsing params
     std::vector<std::string>tokens = splitString(param, ' ');
     bool    isChannelMode = tokens[0].find('#', 0) != std::string::npos;
-    if (isChannelMode) // its a channel
+    if (isChannelMode)
         handleChannelMode(cid, tokens[0], tokens);
-    // CHANGING USER MODE (only one mode +i)
     else
         handleUserMode(cid, tokens);
 }
 
+// CHANGING CHANNEL MODE (type B +k, Type C +l, Type D +it)
+// Types B and C modes need a valid mode argument otherwise they are ignored
 void		Server::handleChannelMode (size_t cid, std::string& channelName, const std::vector<std::string> & tokens )
 {
-    // CHANGING CHANNEL MODE (type B +k, Type C +l, Type D +it)
-    // Types B and C modes need a valid mode argument otherwise they are ignored
     std::string modeChange;
     std::string modeArgs;
     
@@ -59,18 +58,18 @@ void		Server::handleChannelMode (size_t cid, std::string& channelName, const std
     {
         Channel *chan = &_channels[channelName];
         std::string clientName = _clients[cid].getNickname();
-        // std::cout << "chan->_channelOps.size(): " << chan->_channelOps.size() << std::endl;
         // if the user is not a channel operator, then an error msg is returned and the command is ignored
         if (!chan->checkChannelOps(clientName))
         {
             replyMsg(cid, ERR_CHANOPRIVSNEEDED(_clients[cid].getSource(), _clients[cid].getNickname(), channelName));
             return ;
         }
-        //  if the modestring starts with a + and has at least a mode letter
+        // checking the mode prefix 
         char modePrefix = getModePrefix(tokens[1]);
         modeChange += modePrefix;
         std::string modeString = tokens[1].substr(1, tokens[1].size() - 1);
         size_t j = 2;
+        // checking which mode to set or unset depending on the prefix
         for (size_t i = 0; i < modeString.size(); i++)
         {
             char    modeChar = modeString[i];
@@ -82,11 +81,13 @@ void		Server::handleChannelMode (size_t cid, std::string& channelName, const std
             else if (modePrefix == '-' && modeString.size() >= 1)
                 handleChannelModeUnset(chan, modeChar, &modeChange);
         }
-        if (modeChange.size() > 1)
+        // Displaying channel modes changes to every channel client
+        if (modeChange.size() > 1) //
             replyMsg(cid, MSG_MODE(_clients[cid].getSource(), _clients[cid].getNickname(), modeChange, modeArgs));
     }
 }
-        
+
+// Prefix + -> Sets new channel modes       
 void		Server::handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange,\
     const std::vector<std::string>& tokens, size_t *j)
 {    
@@ -107,6 +108,7 @@ void		Server::handleChannelModeSet(Channel *chan, char modeChar, std::string* mo
     }
 }
 
+// Sets key mode +k <modearg>
 void		Server::handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange,\
     const std::vector<std::string> &tokens, size_t *j)
 {
@@ -120,6 +122,7 @@ void		Server::handleModeSetKey(Channel *chan, std::string* modeArgs, std::string
     (*j)++;
 }
 
+// Sets limit mode +l <modearg>
 void 		Server::handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange,\
     const std::vector<std::string> &tokens, size_t *j)
 {
@@ -133,6 +136,7 @@ void 		Server::handleModeSetLimit(Channel *chan, std::string* modeArgs, std::str
     (*j)++;
 }
 
+// Sets invite only mode +i 
 void 		Server::handleModeSetInviteOnly(Channel *chan, std::string* modeChange)
 {
     if (chan->getInviteOnlyStatus() == false)
@@ -142,6 +146,7 @@ void 		Server::handleModeSetInviteOnly(Channel *chan, std::string* modeChange)
     }
 }
 
+// Sets topic restriction change mode +t 
 void 		Server::handleModeSetTopicRestriction(Channel *chan, std::string* modeChange)
 {
     if (chan->getTopicRestrictionStatus() == false)
@@ -151,6 +156,7 @@ void 		Server::handleModeSetTopicRestriction(Channel *chan, std::string* modeCha
     }
 }
 
+// Prefix - -> Unsets channel modes 
 void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange)
 {
     switch(modeChar)
@@ -169,7 +175,8 @@ void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* 
             break;
     }
 }
-            
+
+// Unsets key mode          
 void		Server::handleModeUnsetKey(Channel *chan, std::string* modeChange)
 {
     if (chan->getKeyStatus() == true)
@@ -180,6 +187,7 @@ void		Server::handleModeUnsetKey(Channel *chan, std::string* modeChange)
     }
 }
 
+// Unsets limit mode  
 void		Server::handleModeUnsetLimit(Channel *chan, std::string* modeChange)
 {
     if (chan->getLimitStatus() == true)
@@ -190,6 +198,7 @@ void		Server::handleModeUnsetLimit(Channel *chan, std::string* modeChange)
     }
 }
 
+// Unsets invite only mode  
 void		Server::handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange)
 {
     if (chan->getInviteOnlyStatus() == true)
@@ -199,6 +208,7 @@ void		Server::handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange)
     }
 }
 
+// Unsetstopic restriction mode  
 void		Server::handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange)
 {
     if (chan->getTopicRestrictionStatus() == true)
@@ -219,13 +229,16 @@ void		Server::handleUserMode (size_t cid, std::vector<std::string> & tokens )
      // if the nickname entered doesn't exist no such Channel error displayed
     if (!existingNick(userName))
         replyMsg(cid, ERR_NOSUCHNICK(_clients[cid].getSource(), _clients[cid].getNickname()));
+    // else if the username doesn't match the client nickname User Don't Match Error
     else if (userName != _clients[cid].getNickname())
         replyMsg(cid, ERR_USERSDONTMATCH(_clients[cid].getSource(), _clients[cid].getNickname()));
+    // if not mode string entered the current usermodes are displayed
     else if (tokens.size() < 2)
     {
         std::string modechange = _clients[cid].getUserModes() == true ? "+i" : "";
         replyMsg(cid, RPL_UMODEIS(_clients[cid].getSource(), _clients[cid].getNickname(), modechange));
     }
+    // else if a mode string is entered the usermode is modified
     else
     {
         if (tokens.size() > 2 || tokens[1].size() != 2)
@@ -244,6 +257,7 @@ void		Server::handleUserMode (size_t cid, std::vector<std::string> & tokens )
     }
 }
 
+// Checks if the Channel exists on the server
 bool		Server::existingChannel(std::string param)
 {
     if (_channels.find(param) != _channels.end())
@@ -251,6 +265,7 @@ bool		Server::existingChannel(std::string param)
     return false;
 }
 
+// Gets the prefix of the modestring 
 char	Server::getModePrefix( std::string const& token )
 {
     char sign = 'O';
@@ -268,6 +283,7 @@ char	Server::getModePrefix( std::string const& token )
     return (sign);
 }
 
+// Checks if the mode is a valid mode k,l,i,t
 bool		Server::isValidModeChar( char const modeChar )
 {
     if (modeChar == 'k' || modeChar == 'l' || modeChar == 'i' || modeChar == 't')
