@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 18:24:43 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/15 15:34:21 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,6 +377,6 @@
 
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
-# define MSG_MODE(source, nickname, modeChange, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeChange + " " + modeargs + "\r\n")
+# define MSG_MODE(source, nickname, modeString, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

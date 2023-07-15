@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/15 14:09:54 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/15 17:49:01 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,23 @@ class Server {
 		
 		void		handleMode( size_t cid, std::string param );
 		void		handleUserMode (size_t cid, std::vector<std::string> &tokens );
-		void		handleChannelMode (size_t cid, std::vector<std::string> &tokens );
-
+		void		handleChannelMode (size_t cid, std::string& channelName, const std::vector<std::string> &tokens );
+		void		handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange,\
+			const std::vector<std::string>& tokens, size_t *j);
+		void		handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange,\
+			const std::vector<std::string> &tokens, size_t *j);
+		void 		handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange,\
+			const std::vector<std::string> &tokens, size_t *j);
+		void 		handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
+		void 		handleModeSetTopicRestriction(Channel *chan, std::string* modeChange);
+		
+		void		handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange);
+		void		handleModeUnsetKey(Channel *chan, std::string* modeChange);
+		void		handleModeUnsetLimit(Channel *chan, std::string* modeChange);
+		void		handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange);
+		void		handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
+        
+        
 	private:
 
 		void shutdown( void );                              // close
@@ -88,8 +103,7 @@ class Server {
 
 		size_t						_port;
 		std::string					_password;
-		std::string					_serverName; // a supprimer peut etre remplce par _source
-		// std::string _source;
+		std::string					_serverName;
 
 		bool		isValidNick( std::string param );
 		bool		existingNick( std::string param );
@@ -102,10 +116,11 @@ class Server {
 		void		replyMsg( size_t cid, std::string reply, int flag = 1 ) const;
 
 		std::string getSupportToken() const;
+		char		getModePrefix( std::string const& token );
+		bool		isValidModeChar( char const modeChar );
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		std::map<std::string, Channel>	_channels;
-		// obligee de mettre des pointeur et non des references car problemes d'initialisation sinon 
 };
 
 #endif /* __SERVER_HPP__ */
