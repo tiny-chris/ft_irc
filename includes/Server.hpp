@@ -39,80 +39,87 @@ class Socket;
 class Server {
 
   public:
-    void		checkRegistration( int clientSocket );
-    void		sendWelcomeMsg( int clientSocket );
-    void		sendLusersMsg( int clientSocket );
+
+    typedef std::map< int, Client >						mapClients;
+		typedef std::map< std::string, Channel >	mapChannels;
+    typedef std::map< int, std::string >			mapCommands;
+
+    void				checkRegistration( int clientSocket );
+    void				sendWelcomeMsg( int clientSocket );
+    void				sendLusersMsg( int clientSocket );
 
 
     /*** COMMANDS ***/
 
-    void		handlePass( int clientSocket, std::string param );
-    void		handleNick( int clientSocket, std::string param );
-    bool		isValidNick( std::string param );
-    bool		existingNick( std::string param );
-    void		handleUser( int clientSocket, std::string param );
-    void		handlePing( int clientSocket, std::string param );
+    void				handlePass( int clientSocket, std::string param );
+    void				handleNick( int clientSocket, std::string param );
+    bool				isValidNick( std::string param );
+    bool				existingNick( std::string param );
+    void				handleUser( int clientSocket, std::string param );
+    void				handlePing( int clientSocket, std::string param );
 
-    void		handleMode( int clientSocket, std::string param );
-    void		handleUserMode (int clientSocket, std::vector<std::string> &tokens );
-    void		handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> &tokens );
-    bool		existingChannel( std::string param );
-    void		handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
-    void		handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange);
+    void				handleMode( int clientSocket, std::string param );
+    void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );
+    void				handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> &tokens );
+    bool				existingChannel( std::string param );
+    void				handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
+    void				handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange);
 
-    void		handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
-    void 		handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
-    void 		handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
-    void 		handleModeSetTopicRestriction(Channel *chan, std::string* modeChange);
+    void				handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
+    void				handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
+    void				handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
+    void				handleModeSetTopicRestriction(Channel *chan, std::string* modeChange);
 
-    void		handleModeUnsetKey(Channel *chan, std::string* modeChange);
-    bool		isValidModeChar( char const modeChar );
-    char		getModePrefix( std::string const& token );
-    void		handleModeUnsetLimit(Channel *chan, std::string* modeChange);
-    void		handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange);
-    void		handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
+    void				handleModeUnsetKey(Channel *chan, std::string* modeChange);
+    bool				isValidModeChar( char const modeChar );
+    char				getModePrefix( std::string const& token );
+    void				handleModeUnsetLimit(Channel *chan, std::string* modeChange);
+    void				handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange);
+    void				handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
 
-    std::string getSupportToken() const;
+    std::string	getSupportToken() const;
+
 
   public:
+
     Server( size_t port, const char *password, std::string serverName );
     ~Server( void );
-    void start( void );
+
+    void				start( void );
     virtual void print( std::ostream& o ) const;
 
 
   private:
 
-    size_t      getPort( void ) const;
-    std::string getPassword( void ) const;
-    void        setPort( size_t& port );
-    void        setPassword( std::string& password );
-    void stop( void );
-    void removeDisconnectedClients( void );
-    void disconnectAClient( int clientSocket );
-    void disconnectAllClients();
-    void broadcastMsg( std::string& msg, int clientSocket );
-    void  initCommands( void );
-    void  replyMsg( int clientSocket, std::string reply, int flag = 1);
-    void  handleRequest( int clientSocket, std::string request );
-    void handleExistingClient( int clientSocket );
-    void handleNewClient( void );
-    void createServerSocket( void );
+    size_t			getPort( void ) const;
+    std::string	getPassword( void ) const;
+    void				setPort( size_t& port );
+    void				setPassword( std::string& password );
+    void				stop( void );
+    void				removeDisconnectedClients( void );
+    void				disconnectAClient( int clientSocket );
+    void				disconnectAllClients();
+    void				broadcastMsg( std::string& msg, int clientSocket );
+    void				initCommands( void );
+    void				replyMsg( int clientSocket, std::string reply, bool copyToServer = 1 );
+    void				handleRequest( int clientSocket, std::string request );
+    void				handleExistingClient( int clientSocket );
+    void				handleNewClient( void );
+		void				createServerSocket( void );
 
 
+    size_t				  	_port;
+    std::string				_password;
+    std::string				_serverName;
 
-    size_t						_port;
-    std::string					_password;
-    std::string					_serverName;
+    int								_serverSocket;
+    int								_epollFd;
 
-    int _serverSocket;
-    int _epollFd;
+    std::vector<int>	_disconnectedClients;
 
-    std::vector<int> _disconnectedClients;
-
-    std::map<int, Client> _clients;
-    std::map<std::string, Channel>	_channels;
-    std::map<int, std::string>	_mapCommands;
+    mapClients				_clients;
+    mapChannels				_channels;
+    mapCommands				_commands;
 };
 
 std::ostream& operator<<( std::ostream& o, Server const& i );

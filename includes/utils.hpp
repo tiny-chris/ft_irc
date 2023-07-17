@@ -58,12 +58,12 @@ enum commands {
 // 	// OPER,
 // 	// KILL
 
-bool						isValidUser(std::string name);
-bool						isValidParam(std::string name);
+bool						isValidUser( std::string name );
+bool						isValidParam( std::string name );
 
 std::string					intToString( int number );
-std::string					gaiStrerror( int errorCode );
+// std::string					gaiStrerror( int errorCode );
 
-std::vector<std::string>	splitString(std::string params, char splitter);
+std::vector<std::string>	splitString( std::string params, char splitter );
 
 #endif

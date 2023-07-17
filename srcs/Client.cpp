@@ -14,7 +14,7 @@
 
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Client::Client() : _fd(-1) {}
+Client::Client() : _fd( -1 ) {}
 
 Client::Client( int socket ) :
 			_fd( socket ),
@@ -29,13 +29,13 @@ Client::Client( int socket ) :
 			_userModes ( true )
 {}
 
-Client::Client( Client const & src ) : _fd(src.getFd()) {
+Client::Client( Client const & src ) : _fd( src.getFd() ) {
 	*this = src;
 	return ;
 }
 
-Client &    Client::operator=( Client const& rhs ){
-    if (this != &rhs)
+Client &    Client::operator=( Client const& rhs ) {
+    if ( this != &rhs )
 	{
 		// _fd = rhs.getFd();
 		_nickname = rhs.getNickname();// ne peut pas être identique
@@ -48,7 +48,7 @@ Client &    Client::operator=( Client const& rhs ){
 		_nickStatus = getNickStatus();
 		_isRegistered = getIfRegistered();
 	}
-	return (*this);
+	return ( *this );
 }
 
 Client::~Client( void ) {}

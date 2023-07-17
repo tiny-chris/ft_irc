@@ -30,21 +30,19 @@
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
 Server::Server( size_t port, const char *password, std::string serverName ) :
-  _port(port),
-  _password(password),
-  _serverName(serverName) {
+    _port( port ), _password( password ), _serverName( serverName ) {
 
-    _serverSocket = -1;
-    _epollFd = -1;
-    initCommands();
+  _serverSocket = -1;
+  _epollFd = -1;
+  initCommands();
 
-    createServerSocket();
-    return;
-  }
+  createServerSocket();
+  return;
+}
 
 Server::~Server( void ) {
   stop();
-  std::cout << "Server shutting down...\n";
+  std::cout << MSGINFO << "Server shutting down...\n";
 }
 
 
@@ -52,17 +50,9 @@ Server::~Server( void ) {
 
 size_t      Server::getPort( void ) const { return _port; }
 std::string Server::getPassword( void ) const { return _password; }
-// std::string Server::getSource( void ) const { return _source; }
 
 void        Server::setPort( size_t& port ) { _port = port; }
 void        Server::setPassword( std::string& password ) { _password = password; }
-// void        Server::setSource ( std::string nickname, std::string username ) {
-//   _source.erase();
-//   if (nickname.compare("") != 0 && username.compare("") != 0)
-//     _source = ":" + nickname + "!" + username + "@localhost";
-//   // else
-//   //   _source = ":";
-// }
 
 /* -------------------- MEMBER FUNCTIONS: TO BE DEFINED --------------------- */
 
@@ -82,12 +72,12 @@ void Server::removeDisconnectedClients( void ) {
   size_t      totalClients = _clients.size();
 
   for( std::size_t i = 0; i < totalDisconnectedClients; ++i ) {
-    _clients.erase( _disconnectedClients[i] );
-    Utility::closeFd( _disconnectedClients[i] );
+    _clients.erase( _disconnectedClients[ i ] );
+    Utility::closeFd( _disconnectedClients[ i ] );
   }
   // DEV_BEG
   if( totalDisconnectedClients ) {
-    std::cout << "<" << totalDisconnectedClients << "/" << totalClients;
+    std::cout << MSGINFO << "<" << totalDisconnectedClients << "/" << totalClients;
     std::cout << "_clients removed>\n";
   }
   // END_END
@@ -110,7 +100,7 @@ void Server::stop( void ) {
  */
 
 void Server::disconnectAClient( int clientSocket ) {
-  std::cout << "<" << _clients.at( clientSocket ).getFd();
+  std::cout << MSGINFO << "<client on socket " << _clients.at( clientSocket ).getFd();
   std::cout << " disconnected>\n";
   _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
 }
@@ -123,7 +113,8 @@ void Server::disconnectAllClients() {
   std::map<int, Client>::const_iterator it;
 
   for( it = _clients.begin(); it != _clients.end(); ++it ) {
-    std::cout << "<" << it->second.getNickname() << " disconnected>\n";
+    std::cout << MSGINFO << "< client on socket " << it->second.getNickname();
+    std::cout << " disconnected>\n";
     _disconnectedClients.push_back( it->first );
   }
 }
@@ -158,20 +149,20 @@ void Server::broadcastMsg( std::string& msg, int clientSocket ) {
 
 void	Server::initCommands( void )
 {
-  _mapCommands.insert(std::make_pair(0, "UNDEFINED"));
-  _mapCommands.insert(std::make_pair(99, "CAP"));
-  _mapCommands.insert(std::make_pair(100, "PASS"));
-  _mapCommands.insert(std::make_pair(101, "NICK"));
-  _mapCommands.insert(std::make_pair(102, "USER"));
-  _mapCommands.insert(std::make_pair(103, "PING"));
-  _mapCommands.insert(std::make_pair(109, "MODE"));
-  _mapCommands.insert(std::make_pair(110, "JOIN"));
-  _mapCommands.insert(std::make_pair(111, "PRIVMSG"));
+  _commands.insert( std::make_pair( 0, "UNDEFINED" ) );
+  _commands.insert( std::make_pair( 99, "CAP" ) );
+  _commands.insert( std::make_pair( 100, "PASS" ) );
+  _commands.insert( std::make_pair( 101, "NICK" ) );
+  _commands.insert( std::make_pair( 102, "USER" ) );
+  _commands.insert( std::make_pair( 103, "PING" ) );
+  _commands.insert( std::make_pair( 109, "MODE" ) );
+  _commands.insert( std::make_pair( 110, "JOIN" ) );
+  _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
 
   // temp elements --> will be replaced by valid command
-  _mapCommands.insert(std::make_pair(1000, "/shutdown"));
-  _mapCommands.insert(std::make_pair(1001, "/quit"));
-  _mapCommands.insert(std::make_pair(1003, "/msg"));
+  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
+  _commands.insert( std::make_pair( 1001, "/quit" ) );
+  _commands.insert( std::make_pair( 1003, "/msg" ) );
   return ;
 }
 
@@ -180,13 +171,13 @@ void	Server::initCommands( void )
  *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
  *
  */
-void	Server::replyMsg( int clientSocket, std::string reply, int flag )
+void	Server::replyMsg( int clientSocket, std::string reply, bool copyToServer )
 {
-  if (flag == 1)
+  if ( copyToServer == true )
   {
-    std::cout << "reply:\t " << reply << std::endl;
+    std::cout << MSGREPLY << reply << std::endl;
   }
-  send(clientSocket, reply.c_str(), reply.length(), 0);
+  send( clientSocket, reply.c_str(), reply.length(), 0 );
   return ;
 }
 
@@ -201,23 +192,54 @@ void  Server::handleRequest( int clientSocket, std::string request )
   size_t      splitter;
   int         commandKey = 0;
 
-  std::cout << "-----client [" << clientSocket;
-  std::cout << _clients.at( clientSocket ).getNickname() << "]-----\n" ;
+  std::cout << "-----client [ ";
+  if ( _clients.at( clientSocket ).getNickStatus() ) {
+    std::cout << _clients.at( clientSocket ).getNickname() << " ";
+  }
+  std::cout  << "on socket " << clientSocket << " ]-----\n" ;
+  // std::cout << "-----client [" <<  << " ";
+  // std::cout << _clients.at( clientSocket ).getNickname() << "]-----\n" ;
   std::cout << "request: <" << request << ">" << std::endl;
 
   splitter = request.find(' ', 0);
+
+
+
+/*  ************************************  */
+/*       POUR CHECKER LES SOCKETS !!      */
+/*  ************************************  */
+  std::cout << "\n\t *** CHECK CLIENT SOCKET: ***\n";
+  std::cout << "\t from handleRequest parameter <"<< clientSocket << ">\n";
+  std::cout << "\t in map _clients.at( clientSocket ).getFd() <"<< _clients.at( clientSocket ).getFd() << ">\n";
+  std::cout << "\t\t fdIsValid(_clients.at( clientSocket ).getFd()) = " << Utility::fdIsValid( _clients.at( clientSocket ).getFd() ) << "\n";
+  std::cout << "\t for each existing client (loop on _clients):\n";
+  mapClients::iterator it;
+  int i = 0;
+  for ( it = _clients.begin(); it != _clients.end(); it++ )
+  {
+    std::cout << "\t for client #" << i << ": it->first = " << it->first;
+    std::cout << " and it->second.getFd() = " << it->second.getFd() << std::endl;
+    if ( clientSocket == it->first ) {
+      std::cout << "\t\t demande en cours du client #" << i << " de la map _clients (i.e. clientSocket <" << clientSocket << ">)" << std::endl;
+    }
+    i++;
+  }
+   std::cout << std::endl;
+/*  ************************************  */
+/*  ************************************  */
+
 
   /* ********************************* */
   /* ACTION 1   - get command & params */
   /* ********************************* */
   // if <request> has no space --> command is request string
   // else --> split command & parameters
-  if (splitter == std::string::npos)
+  if ( splitter == std::string::npos )
     command = request;
   else
   {
-    command = request.substr(0, splitter);
-    parameters = request.substr(splitter + 1, std::string::npos);
+    command = request.substr( 0, splitter );
+    parameters = request.substr( splitter + 1, std::string::npos );
   }
 
   // /* ********************************* */
@@ -229,21 +251,21 @@ void  Server::handleRequest( int clientSocket, std::string request )
   /* ********************************* */
   /* ACTION 2   - check the case when the client is disconnected and return */
   /* ********************************* */
-  //   /* TODO:  prévoir le cas où le client est a été déconnecté et breaker */
+  //   /* TODO:  prévoir le cas où le client est / a été déconnecté et breaker */
 
 
   /* ********************************* */
-  /* ACTION 3   - check if 'command' is part of the _mapCommands and get the command key */
+  /* ACTION 3   - check if 'command' is part of the _commands and get the command key */
   /* ********************************* */
-  for (std::map<int, std::string>::const_iterator it = _mapCommands.begin(); it != _mapCommands.end(); ++it)
+  for ( mapCommands::const_iterator it = _commands.begin(); it != _commands.end(); ++it )
   {
-    if (command == it->second) {
+    if ( command == it->second ) {
       commandKey = it->first;
     }
   }
 
   /* ********************************* */
-  /* ACTION 4   - if 'command' is in _mapCommands */
+  /* ACTION 4   - if 'command' is in _commands */
   /* ********************************* */
   //
   //  SUB-ACTION 4.1   - 'PASS' must be the first command entered, if not --> return (numeric_reply ??)
@@ -251,17 +273,17 @@ void  Server::handleRequest( int clientSocket, std::string request )
   //
   //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem pour potentiel shutdown
   //
-  if (commandKey != UNDEFINED && commandKey != CAP)
+  if ( commandKey != UNDEFINED && commandKey != CAP )
   {
-    if (command != "PASS" && _clients.at( clientSocket ).getPassStatus() == false )
+    if ( command != "PASS" && _clients.at( clientSocket ).getPassStatus() == false )
     {
-      std::cout << "error:\t must set PASS command first\n" << std::endl;
+      std::cout << MSGERROR << "must set PASS command first\n" << std::endl;
       return;
     }
-    if (!_clients.at( clientSocket ).getIfRegistered()
-        && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
+    if ( !_clients.at( clientSocket ).getIfRegistered() \
+        && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT" ) )
     {
-      replyMsg(clientSocket, ERR_NOTREGISTERED( _serverName,_clients.at( clientSocket ).getNickname() ));
+      replyMsg( clientSocket, ERR_NOTREGISTERED( _serverName,_clients.at( clientSocket ).getNickname() ) );
       return;
     }
   }
@@ -270,7 +292,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
   /* ********************************* */
   // This message is not required for a server implementation to work, but SHOULD be implemented.
   // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
-  switch(commandKey)
+  switch( commandKey )
   {
     case CAP:     std::cout << std::endl; break;
     case PASS:    handlePass( clientSocket, parameters ); break;
@@ -287,9 +309,9 @@ void  Server::handleRequest( int clientSocket, std::string request )
 
     case ZZ_MSG:      broadcastMsg( parameters, clientSocket ); break;        // ' /msg <message to broadcast>'
     default:			{
-                    if (!command.empty() || (command.empty() && !parameters.empty()))
+                    if ( !command.empty() || ( command.empty() && !parameters.empty() ) )
                     {
-                      replyMsg(clientSocket, ERR_UNKNOWNCOMMAND( _serverName, _clients.at( clientSocket ).getRealname(), command ));
+                      replyMsg( clientSocket, ERR_UNKNOWNCOMMAND( _serverName, _clients.at( clientSocket ).getRealname(), command ) );
                     }
                   } break;
   }
@@ -297,10 +319,10 @@ void  Server::handleRequest( int clientSocket, std::string request )
 
 void Server::handleExistingClient( int clientSocket ) {
   int checkClear = 0;
-  char buf[BUFMAXLEN];  // Buffer for client data
+  char buf[ BUFMAXLEN ];  // Buffer for client data
                         // TODO A REFAIRE !!!
-  static std::string bufs[MAXCONNECTION + 1]; // TODO plus de client 0
-  memset(buf, 0, sizeof(buf));
+  static std::string bufs[ MAXCONNECTION + 1 ]; // TODO plus de client 0
+  memset( buf, 0, sizeof( buf ) );
 
 
   ssize_t bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
@@ -314,16 +336,16 @@ void Server::handleExistingClient( int clientSocket ) {
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
   //faire un pour verifier que ca finit bien par un
-  bufs[clientSocket] += buf;
+  bufs[ clientSocket ] += buf;
   // std::cout << "|INFO| initial buf: " << bufs[clientSocket] << std::endl;
-  while (bufs[clientSocket].size() >= 2 && bufs[clientSocket].find(CRLF) != std::string::npos)
+  while ( bufs[ clientSocket ].size() >= 2 && bufs[ clientSocket ].find( CRLF ) != std::string::npos )
   {
     checkClear = 1;
-    handleRequest( clientSocket, bufs[clientSocket].substr(0, bufs[clientSocket].find(CRLF)) );
-    bufs[clientSocket].erase(0, bufs[clientSocket].find(CRLF) + 2);
+    handleRequest( clientSocket, bufs[ clientSocket ].substr( 0, bufs[ clientSocket ].find( CRLF ) ) );
+    bufs[ clientSocket ].erase(0, bufs[ clientSocket ].find( CRLF ) + 2 );
   }
-  if (checkClear == 1){
-    bufs[clientSocket].clear();
+  if ( checkClear == 1 ){
+    bufs[ clientSocket ].clear();
   }
 }
 
@@ -369,6 +391,12 @@ void Server::createServerSocket( void ) {
   if( listen( _serverSocket, 10 ) == -1 ) {
     throw std::runtime_error( "Error listening on socket" );
   }
+  // connection
+  std::cout << "Welcome on " << _serverName << "!\n" << std::endl;
+  std::cout << "  hostname:\t\t" << "127.0.0.1 (localhost)" << std::endl;
+  std::cout << "  port:\t\t\t" << _port << std::endl;
+  std::cout << "  server socket:\t" << _serverSocket << std::endl << std::endl;
+
   return;
 }
 
@@ -390,9 +418,9 @@ void Server::handleNewClient( void ) {
     std::cerr << "accept: " << strerror( errno ) << "\n";
     return;
   }
-  std::cout << "New connection from " << Utility::ntop( clientAddress );
-  /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
-  std::cout << std::endl;
+  // std::cout << "New connection from " << Utility::ntop( clientAddress );
+  // /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
+  // std::cout << std::endl;
 
   struct epoll_event event;
   memset( &event, 0, sizeof( event ) );
@@ -403,15 +431,21 @@ void Server::handleNewClient( void ) {
     exit( 1 );
   }
 
+  std::cout << "--------------------" << std::endl;
+  std::cout << "New connection from " << Utility::ntop( clientAddress );
+  std::cout << " accepted on client socket " << clientSocket << std::endl;
+  /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
+  std::cout << std::endl;
+
   _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
 
-  std::cout << "<" << _clients.at( clientSocket ).getFd();
-  std::cout << " joined the channel>\n";
+  // std::cout << "<" << _clients.at( clientSocket ).getFd();
+  // std::cout << " joined the channel>\n";
 
-  std::cout << "-------------------" << std::endl;
-  std::cout << Utility::fdIsValid(_clients.find( clientSocket )->first) << "\n";
-  std::cout << Utility::fdIsValid(_clients.at( clientSocket ).getFd()) << "\n";
-  std::cout << "-------------------" << std::endl;
+  // std::cout << "-------------------" << std::endl;
+  // std::cout << Utility::fdIsValid(_clients.find( clientSocket )->first) << "\n";
+  // std::cout << Utility::fdIsValid(_clients.at( clientSocket ).getFd()) << "\n";
+  // std::cout << "-------------------" << std::endl;
 }
 
 /**

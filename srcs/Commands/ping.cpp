@@ -27,18 +27,19 @@
 
 void	Server::handlePing( int clientSocket, std::string param )
 {
-	std::vector<std::string>	tokens = splitString(param, ' ');
+	std::vector<std::string>	tokens = splitString( param, ' ' );
 
-	if (param.empty())
+	if ( param.empty() )
 	{
-		replyMsg(clientSocket, ERR_NEEDMOREPARAMS(_serverName, _clients.at( clientSocket ).getNickname(), "USER"));
+		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, _clients.at( clientSocket ).getNickname(), "USER" ) );
 	}
-	else if (tokens.size() == 1 && param.compare(_clients.at( clientSocket ).getNickname()) == 0)
+	// else if ( tokens.size() == 1 && param.compare( _clients.at( clientSocket ).getNickname() ) == 0 )
+	else if ( tokens.size() == 1 && param == _clients.at( clientSocket ).getNickname() )
 	{
 		// replyMsg(clientSocket, _serverName + " PONG " + param + "\r\n");
-		replyMsg(clientSocket, "PONG " + param + "\r\n");
+		replyMsg( clientSocket, "PONG " + param + "\r\n" );
 	}
 	else
-		std::cout << "error:\t <" << param << "> is not client's nickname <" << _clients.at( clientSocket ).getNickname() << ">" << std::endl;
+		std::cout << MSGERROR << param << " is not client's nickname <" << _clients.at( clientSocket ).getNickname() << ">\n" << std::endl;
 	return ;
 }

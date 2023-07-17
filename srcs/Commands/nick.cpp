@@ -55,13 +55,27 @@ void		Server::handleNick( int clientSocket, std::string param )
   else
   {
     replyMsg(clientSocket, RPL_NICK(_clients.at( clientSocket ).getNickname(), param));
-    _clients.at( clientSocket ).setNickStatus(true);
-    _clients.at( clientSocket ).setNickname(param);
-    std::cout << "info:\t valid nickname provided!\n" << std::endl;
-    if (_clients.at( clientSocket ).getIfRegistered() == false)
-      checkRegistration(clientSocket);
-    // if (_clients.at( clientSocket ).getIfRegistered() == true)
-    //   _clients.at( clientSocket ).setSource( param, _clients.at( clientSocket ).getUsername());
+    _clients.at( clientSocket ).setNickStatus( true );
+    _clients.at( clientSocket ).setNickname( param );
+    std::cout << MSGINFO << "valid nickname provided!" << std::endl;
+
+
+// /*  ************************************  */
+// /*       POUR CHECKER LES SOCKETS !!      */
+// /*  ************************************  */
+// std::cout << "\n\t *** INFO BEFORE CHECKING REGISTRATION FUNCTION: ***\n";
+// std::cout << "\t getPassStatus <"<< _clients.at( clientSocket ).getPassStatus() << ">\n";
+// std::cout << "\t getNickStatus <"<< _clients.at( clientSocket ).getNickStatus() << ">\n";
+// std::cout << "\t getUsername <"<< _clients.at( clientSocket ).getUsername() << ">\n";
+// std::cout << std::endl;
+// /*  ************************************  */
+// /*  ************************************  */
+
+
+    if ( _clients.at( clientSocket ).getIfRegistered() == false ) {
+      checkRegistration( clientSocket );
+    }
+    std::cout << std::endl;
   }
   return ;
 }

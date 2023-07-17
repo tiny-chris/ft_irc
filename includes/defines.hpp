@@ -10,6 +10,11 @@
 */
 # define CRLF std::string("\r\n")
 
+# define MSGINFO "info:\t "
+# define MSGREPLY "reply:\t "
+# define MSGERROR "error:\t "
+# define ZZ_MSGTEST "ZZ_test:\t "
+
 // Maximum length of username (WITH OU WITHOUT CRLF ????? )
 // The USERLEN parameter indicates the maximum length that a username may be on the server.
 // Networks SHOULD be consistent with this value across different servers.
@@ -19,6 +24,8 @@
 
 # define PASSMINLEN 8
 
+# define MAXPARAM 15
+
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 # define PASSMAXLEN 100
 
@@ -26,10 +33,10 @@
 # define BUFMAXLEN 512
 
 // Max number of clients connected (such as max fds 'openable')
-# define MAXCONNECTION 128// ou CLIMAXCONNECTION
+# define MAXCONNECTION 128
 
 // Max number of clients on a channel --> TO BE CONFIRMED
-# define MAXONCHANNEL 10// ou CLIMAXONCHANNEL
+# define MAXONCHANNEL 10
 
 // # define CHANNAMELEN 100
 
