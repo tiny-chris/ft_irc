@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 16:50:10 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 14:03:57 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void		Server::handleNick( size_t cid, std::string param )
     _clients[cid].setNickStatus(true);
     _clients[cid].setNickname(param);
     std::cout << "info:\t valid nickname provided!\n" << std::endl;
-    checkRegistration(cid);
+    if (_clients[cid].getIfRegistered() == false)
+      checkRegistration(cid);
     // if (_clients[cid].getIfRegistered() == true)
     //   _clients[cid].setSource( param, _clients[cid].getUsername());
   }

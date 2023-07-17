@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/12 16:50:15 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 14:04:08 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ void				Server::handleUser( size_t cid, std::string param )
   _clients[cid].setUsername(tokens[0].substr(0, USERLEN));
   std::cout << "info:\t user and real names provided!\n" << std::endl;
 
-  checkRegistration(cid);
+  if (_clients[cid].getIfRegistered() == false)
+    checkRegistration(cid);
   // /* ******************************************************* ***
   // ** CHECK IF CLIENT IS REGISTERED & DISPLAY WELCOME MESSAGE ***
   // ** ******************************************************* ***

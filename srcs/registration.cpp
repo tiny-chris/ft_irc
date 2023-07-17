@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/15 14:12:34 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/17 13:53:14 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ void	Server::checkRegistration( size_t cid )
       std::string name = "#chantest";
       _channels.insert(std::pair<std::string, Channel>(name, Channel(name)));
       _channels[name].addChannelOps(&_clients[cid]);
+      _channels[name].addChannelMembers(&_clients[cid]);
+    }
+    if (cid == 2)
+    {
+      _channels["#chantest"].addChannelMembers(&_clients[cid]);
     }
     /************************************/
   }

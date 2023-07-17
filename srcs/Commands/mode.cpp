@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/17 11:59:40 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 13:52:10 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,11 @@ void		Server::handleChannelMode (size_t cid, std::string& channelName, const std
                 handleChannelModeUnset(chan, modeChar, &modeChange);
         }
         // Displaying channel modes changes to every channel client
-        if (modeChange.size() > 1) //
-            replyMsg(cid, MSG_MODE(_clients[cid].getSource(), _clients[cid].getNickname(), modeChange, modeArgs));
+        if (modeChange.size() > 1)
+        {
+            for (size_t i = 1; i < chan->getChannelMembers().size(); i++)
+                replyMsg(cid, MSG_MODE(_clients[cid].getSource(), _clients[cid].getNickname(), modeChange, modeArgs));
+        } //
     }
 }
 

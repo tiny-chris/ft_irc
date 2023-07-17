@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/17 11:59:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 13:51:36 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,15 @@ void        Channel::addChannelOps(const Client* client){
 	}
 }
 
+void        Channel::addChannelMembers(const Client* client)
+{
+	if (client != NULL)
+	{
+		std::string name = client->getNickname();
+		_channelMembers.insert(std::pair< std::string, const Client* >(name, client));
+	}
+}
+
 
 std::string Channel::getChannelName( void ) const { return ( _channelName ); }
 bool        Channel::getKeyStatus( void ) const { return ( _keyStatus ); }
@@ -106,6 +115,8 @@ std::string Channel::getModesArgs( void ) const {
 	return (modesArgs);
 	
 }
+
+std::map<std::string, const Client *>&   Channel::getChannelMembers( void ) { return (_channelMembers); }
 
 bool        Channel::checkValidLimit(std::string limit) const {	
 	std::stringstream	iss(limit);	

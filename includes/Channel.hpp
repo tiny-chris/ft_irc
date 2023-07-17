@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/15 13:58:03 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/17 13:51:34 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ class Channel
 
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
+        std::map<std::string, const Client *>&   getChannelMembers( void );
+        
         bool        checkValidLimit(std::string limit) const;
 
         void		setChannelName( std::string& name );
@@ -66,6 +68,7 @@ class Channel
         void        setKey( std::string const& key );
 
         void        addChannelOps(const Client* client);
+        void        addChannelMembers(const Client* client);
 
         bool        checkChannelOps( std::string & name );
 
@@ -73,6 +76,7 @@ class Channel
         
         // std::map<std::string, Client*> _connectedClients;
         std::map<std::string, const Client *> _channelOps;
+        std::map<std::string, const Client *> _channelMembers;
         std::string      _channelName;
 
         bool    _keyStatus;
