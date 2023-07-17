@@ -14,18 +14,18 @@ RM 			:=	rm -f
 DIR_DUP		= mkdir -p $(@D)
 
 SRCS		:=	\
-			main.cpp \
-			Channel.cpp \
-			Client.cpp \
-			Commands/mode.cpp \
-			Commands/nick.cpp \
-			Commands/pass.cpp \
-			Commands/ping.cpp \
-			Commands/user.cpp \
-			registration.cpp \
-			Server.cpp \
-			Socket.cpp \
-			utils.cpp \
+				Channel.cpp \
+				Client.cpp \
+				main.cpp \
+				registration.cpp \
+				Server.cpp \
+				Utility.cpp \
+				utils.cpp \
+				Commands/mode.cpp \
+				Commands/nick.cpp \
+				Commands/pass.cpp \
+				Commands/ping.cpp \
+				Commands/user.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
@@ -39,23 +39,23 @@ DEPS		:=	$(OBJS:.o=.d)
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-			$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJS) -o $(NAME)
-			$(info CREATE : $(NAME))
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJS) -o $(NAME)
+	$(info CREATE : $(NAME))
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-			$(DIR_DUP)
-			$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-			$(info CREATE : $@)
+	$(DIR_DUP)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(info CREATE : $@)
 
 -include $(DEPS)
 
 clean:
-			$(RM) -r $(OBJ_DIR)
-			$(info REMOVED : object files)
+	$(RM) -r $(OBJ_DIR)
+	$(info REMOVED : object files)
 
 fclean:		clean
-			$(RM) $(NAME)
-			$(info REMOVED : binary file)
+	$(RM) $(NAME)
+	$(info REMOVED : binary file)
 
 re: 		fclean all
 

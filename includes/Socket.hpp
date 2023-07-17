@@ -10,40 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKET_HPP
-# define SOCKET_HPP
+#ifndef SERVERSOCKET_HPP_
+#define SERVERSOCKET_HPP_
 
-# include <cerrno>    // errno
-# include <cstring>   // strerror
-# include <iostream>  // cerr, cout
-# include <sstream>   // stringstream
-# include <string>    // string
-# include <vector>    // vector
+#include <iosfwd>
+#include <string>
 
-# include <arpa/inet.h>  // inet_ntoa
-# include <netdb.h>  // recv, send, sockaddr, accept, addrinfo, getaddrinfo, socket, setsockopt, bind, freeaddrinfo, listen
-# include <poll.h>   // pollfd, poll
-# include <stdlib.h>  // exit
-# include <unistd.h>  // close
-
-/**
- * @brief       Socket
+/** @brief      Represents a server-side listening socket and manages the
+ *              underlying socket file descriptor. It follows the RAII principle
+ *              by automatically managing the socket life cycle.
  */
 
-class Socket {
-	public:
+class ServerSocket {
+ public:
+  ServerSocket( void );
+  /* ServerSocket( ServerSocket const& src ); */
+  virtual ~ServerSocket( void );
+  /* ServerSocket& operator=( ServerSocket const& rhs ); */
+  virtual void print( std::ostream& o ) const;
 
-		Socket() : _sockfd( -1 ) {}
-		~Socket() { closeSocket(); }
+  int  get( void );
+  void create( void );
 
-		int createListenerSocket( size_t port );
-		int getSocket( void ) { return _sockfd; }
+ private:
+  void close( void );
 
-	private:
-
-		void closeSocket( void );  // useless?
-		/* int accept( struct sockaddr* addr, socklen_t* addrlen ); */
-		int _sockfd;
+  int _fd;
 };
 
-#endif /* __SOCKET_HPP__ */
+std::ostream& operator<<( std::ostream& o, ServerSocket const& i );
+
+#endif  // SERVERSOCKET_HPP_
+

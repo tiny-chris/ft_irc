@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/17 14:04:08 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 17:17:11 by cvidon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
  *
  */
 
-void				Server::handleUser( size_t cid, std::string param )
+void				Server::handleUser( int clientSocket, std::string param )
 {
   std::string               realname = "";
   size_t                    colon;
@@ -37,9 +37,9 @@ void				Server::handleUser( size_t cid, std::string param )
   ** check if Client is already registered (i.e. PASS, NICK, USER are already set)
 	** if so, cannot use the USER command again --> send ERR_ALREADYREGISTERED numeric reply
   */
-  if (_clients[cid].getIfRegistered() == true)
+  if (_clients.at( clientSocket ).getIfRegistered() == true)
   {
-    replyMsg(cid, ERR_ALREADYREGISTRED(_serverName, _clients[cid].getNickname()));
+    replyMsg(clientSocket, ERR_ALREADYREGISTRED(_serverName, _clients.at( clientSocket ).getNickname()));
     return ;
   }
 
@@ -48,7 +48,7 @@ void				Server::handleUser( size_t cid, std::string param )
   ** *************************************************** ***
   ** check if PASS and NICK are set... otherwise, return (no numeric_reply)
   */
-  // if (!_clients[cid].getPassStatus() || !_clients[cid].getNickStatus())
+  // if (!_clients.at( clientSocket ).getPassStatus() || !_clients.at( clientSocket ).getNickStatus())
   // {
   //   std::cout << "error:\t PASS or NICK are not set yet" << std::endl;
   //   return ;
@@ -64,11 +64,11 @@ void				Server::handleUser( size_t cid, std::string param )
   colon = param.find(':', 0);
   if (param.empty() || colon == std::string::npos || colon == 0 || colon == param.length() - 1)
   {
-    replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER"));
+    replyMsg(clientSocket, ERR_NEEDMOREPARAMS(_serverName, _clients.at( clientSocket ).getNickname(), "USER"));
     return ;
   }
   realname = param.substr(colon + 1, param.length() - (colon + 1));
-  _clients[cid].setRealname(realname);
+  _clients.at( clientSocket ).setRealname(realname);
 
   /* *********************************************** ***
   ** CHECK 4 - MUST BE 3 VALID PARAMETERS before ':' ***
@@ -85,7 +85,7 @@ void				Server::handleUser( size_t cid, std::string param )
   tokens = splitString(param.substr(0, colon), ' ');
   if (tokens.size() < 3 || tokens[0].length() < 1)
   {
-    replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), "USER"));
+    replyMsg(clientSocket, ERR_NEEDMOREPARAMS(_serverName, _clients.at( clientSocket ).getNickname(), "USER"));
     return ;
   }
   else if (tokens.size() > 3 || isValidUser(tokens[0]) == false
@@ -94,24 +94,24 @@ void				Server::handleUser( size_t cid, std::string param )
     std::cout << "error:\t wrong parameters with USER command\n" << std::endl;
     return ;
   }
-  _clients[cid].setUsername(tokens[0].substr(0, USERLEN));
+  _clients.at( clientSocket ).setUsername(tokens[0].substr(0, USERLEN));
   std::cout << "info:\t user and real names provided!\n" << std::endl;
 
-  if (_clients[cid].getIfRegistered() == false)
-    checkRegistration(cid);
+  if (_clients.at( clientSocket ).getIfRegistered() == false)
+    checkRegistration(clientSocket);
   // /* ******************************************************* ***
   // ** CHECK IF CLIENT IS REGISTERED & DISPLAY WELCOME MESSAGE ***
   // ** ******************************************************* ***
   // */
-  // if (_clients[cid].getPassStatus() == true && _clients[cid].getNickStatus() == true && !_clients[cid].getUsername().empty())
+  // if (_clients.at( clientSocket ).getPassStatus() == true && _clients.at( clientSocket ).getNickStatus() == true && !_clients.at( clientSocket ).getUsername().empty())
   // {
-  //   _clients[cid].setIfRegistered(true);
-  //   _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
-  //   std::cout << "info:\t " << _clients[cid].getNickname() << " is now registered!\n" << std::endl;
+  //   _clients.at( clientSocket ).setIfRegistered(true);
+  //   _clients.at( clientSocket ).setSource(_clients.at( clientSocket ).getNickname(), _clients.at( clientSocket ).getUsername());
+  //   std::cout << "info:\t " << _clients.at( clientSocket ).getNickname() << " is now registered!\n" << std::endl;
   //   // DISPLAY WELCOME MESSAGES
-  //   sendWelcomeMsg( cid );
+  //   sendWelcomeMsg( clientSocket );
   //   // EQUIVALENT OF LUSERS received
-  //   sendLusersMsg( cid );
+  //   sendLusersMsg( clientSocket );
   //   std::cout << "info:\t welcome message displayed\n" << std::endl;
   // }
 }

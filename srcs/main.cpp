@@ -16,40 +16,6 @@
 #include "defines.hpp"
 #include "utils.hpp"
 
-// /**
-//  * @brief       Forbidden inet_ntop implementation
-//  */
-
-// std::string ntop( const struct sockaddr_storage& socket ) {
-//   std::stringstream ss;
-
-//   if( socket.ss_family == AF_INET ) {
-//     const struct sockaddr_in* sockaddr;
-//     const uint8_t*            addr;
-//     sockaddr = reinterpret_cast<const struct sockaddr_in*>( &socket );
-//     addr = reinterpret_cast<const uint8_t*>( &sockaddr->sin_addr.s_addr );
-//     ss << static_cast<int>( addr[0] ) << ".";
-//     ss << static_cast<int>( addr[1] ) << ".";
-//     ss << static_cast<int>( addr[2] ) << ".";
-//     ss << static_cast<int>( addr[3] ) << ".";
-//     return ss.str();
-//   } else if( socket.ss_family == AF_INET6 ) {
-//     const struct sockaddr_in6* sockaddr;
-//     const uint8_t*             addr;
-//     sockaddr = reinterpret_cast<const struct sockaddr_in6*>( &socket );
-//     addr = sockaddr->sin6_addr.s6_addr;
-//     for( int i = 0; i < 16; ++i ) {
-//       if( i > 0 && i % 2 == 0 ) {
-//         ss << "::";
-//       }
-//       ss << static_cast<int>( addr[i] );
-//     }
-//     return ss.str();
-//   } else {
-//     return std::string( "UNKN_ADDR" );
-//   }
-// }
-
 #include <cstdlib>		// std::atoi()
 #include <iostream>		// std::cout
 #include <stdexcept>	// std::invalid_argument, std::runtime_error...
@@ -97,7 +63,7 @@ int	main(int argc, char **argv)
 		const char	*password = argv[2];
 
 		Server server(port, password, "tiny_server");
-		server.run();
+		server.start();
 	}
 	catch (const std::invalid_argument& ia)
 	{

@@ -10,30 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "Client.hpp"
-#include "Socket.hpp"
+#include <netdb.h>  // recv, send, sockaddr, accept, addrinfo, getaddrinfo, socket, setsockopt, bind, freeaddrinfo, listen
+#include <stdlib.h>     // exit XXX
+#include <sys/epoll.h>  // epoll stuff
+#include <unistd.h>     // close
+#include <cerrno>       // errno
+#include <cstring>      // strerror
+#include <iostream>     // cerr, cout
+#include <string>       // string
+
 #include "utils.hpp"
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
+#include "Client.hpp"
+#include "Server.hpp"
+#include "Utility.hpp"
+
 /* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
 
-Server::Server( size_t port, const char *password, std::string serverName ) : 
-  _port(port), 
-  _password(password), 
+Server::Server( size_t port, const char *password, std::string serverName ) :
+  _port(port),
+  _password(password),
   _serverName(serverName) {
- // std::cout << _password << std::endl;
-  // setSource("", "");
-  setup();
-  initCommands();
-  // // TO DEL JUSTE POUR TESTER MODE !!
-  // std::string name = "chantest";
-  // Channel chantest(name);
-  // _channels.insert(std::pair<std::string, Channel*>("chantest", &chantest));
+
+    _serverSocket = -1;
+    _epollFd = -1;
+    initCommands();
+
+    createServerSocket();
+    return;
+  }
+
+Server::~Server( void ) {
+  stop();
+  std::cout << "Server shutting down...\n";
 }
 
-Server::~Server( void ) { shutdown(); }
 
 /* ---------------------- MEMBER FUNCTIONS: ACCESSORS ----------------------- */
 
@@ -53,52 +66,86 @@ void        Server::setPassword( std::string& password ) { _password = password;
 
 /* -------------------- MEMBER FUNCTIONS: TO BE DEFINED --------------------- */
 
-void Server::shutdown( void ) {
-  std::cout << "Server shutting down...\n";
-  for( size_t cid = 0; cid < _pfds.size(); ++cid ) {
-    if( _pfds[cid].fd != _listener.getSocket() ) {
-      close( _pfds[cid].fd );
-    }
+void Server::print( std::ostream& o ) const {
+  o << "Server:";
+  o << "  Server socket:" << _serverSocket;
+  o << "  Connected Clients: " << _disconnectedClients.size() << "\n";
+  o << "  Disconnected Clients: " << _disconnectedClients.size() << "\n";
+}
+
+/**
+ * @brief      Removes disconnected clients from the server.
+ */
+
+void Server::removeDisconnectedClients( void ) {
+  std::size_t totalDisconnectedClients = _disconnectedClients.size();
+  size_t      totalClients = _clients.size();
+
+  for( std::size_t i = 0; i < totalDisconnectedClients; ++i ) {
+    _clients.erase( _disconnectedClients[i] );
+    Utility::closeFd( _disconnectedClients[i] );
   }
-  _pfds.clear();
-  _clients.clear();
-  /* _listener.close(); */
-  exit( 0 );
+  // DEV_BEG
+  if( totalDisconnectedClients ) {
+    std::cout << "<" << totalDisconnectedClients << "/" << totalClients;
+    std::cout << "_clients removed>\n";
+  }
+  // END_END
+  _disconnectedClients.clear();
+}
+
+
+void Server::stop( void ) {
+  disconnectAllClients();
+  removeDisconnectedClients();
+  /* _clients.clear(); */
+  Utility::closeFd( _epollFd );
+  Utility::closeFd( _serverSocket );
 }
 
 /**
- * @brief       Delete a connection
+ * @brief      Disconnects a client at the specified index.
  *
- * Copy one of the fd in place of the deleted one to prevent the
- * re-indexing of our list.
+ * @param[in]  index The index of the client to disconnect.
  */
 
-void Server::delConnection( size_t cid ) {
-  close( _pfds[cid].fd );
-  _pfds.erase(_pfds.begin() + cid);
-  std::string name = _clients[cid].getRealname();
-  _clients.erase(_clients.begin() + cid);
-  // _pfds[cid] = _pfds.back();
-  // _pfds.pop_back();
-
-  // _clients[cid] = _clients.back();
-  // _clients.pop_back();
-  std::cout << "<" << name << " left the channel>\n";
+void Server::disconnectAClient( int clientSocket ) {
+  std::cout << "<" << _clients.at( clientSocket ).getFd();
+  std::cout << " disconnected>\n";
+  _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
 }
 
 /**
- * @brief       Broadcast a message to all clients
+ * @brief      Disconnects all the clients
  */
 
-void Server::broadcastMsg( std::string& msg, size_t cid ) {
-  int dest;
+void Server::disconnectAllClients() {
+  std::map<int, Client>::const_iterator it;
 
-  msg = _clients[cid].getRealname() + ": " + msg + "\n";
-  for( size_t i = 0; i < _pfds.size(); ++i ) {
-    dest = _pfds[i].fd;
-    if( dest != _listener.getSocket() && dest != _pfds[cid].fd ) {
-      if( send( dest, msg.c_str(), msg.length(), 0 ) == -1 ) {
+  for( it = _clients.begin(); it != _clients.end(); ++it ) {
+    std::cout << "<" << it->second.getNickname() << " disconnected>\n";
+    _disconnectedClients.push_back( it->first );
+  }
+}
+
+/**
+ * @brief       Broadcasts a message to all connected clients except the sender
+ *
+ * @param[in]   msg The message to broadcast.
+ * @param[in]   clientSocket The client socket
+ */
+
+void Server::broadcastMsg( std::string& msg, int clientSocket ) {
+  std::map<int, Client>::const_iterator it;
+  int                                   recipient;
+
+  msg = _clients.at( clientSocket ).getNickname() + ": " + msg + "\n";
+  for( it = _clients.begin(); it != _clients.end(); ++it ) {
+    recipient = it->first;
+    if( recipient != _serverSocket && recipient != clientSocket ) {
+      if( send( recipient, msg.c_str(), msg.length(), 0 ) < 0 ) {
         std::cerr << "send: " << strerror( errno ) << "\n";
+        exit( 1 );
       }
     }
   }
@@ -133,13 +180,13 @@ void	Server::initCommands( void )
  *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
  *
  */
-void	Server::replyMsg( size_t cid, std::string reply, int flag ) const
+void	Server::replyMsg( int clientSocket, std::string reply, int flag )
 {
   if (flag == 1)
   {
     std::cout << "reply:\t " << reply << std::endl;
   }
-  send(_clients[cid].getFd(), reply.c_str(), reply.length(), 0);
+  send(clientSocket, reply.c_str(), reply.length(), 0);
   return ;
 }
 
@@ -147,14 +194,15 @@ void	Server::replyMsg( size_t cid, std::string reply, int flag ) const
  * @brief       Handle request by identifying command and parameters
  */
 
-void  Server::handleRequest( size_t cid, std::string request )
+void  Server::handleRequest( int clientSocket, std::string request )
 {
   std::string command;
   std::string parameters = "";
   size_t      splitter;
   int         commandKey = 0;
 
-  std::cout << "-----client [" << cid << " " << _clients[cid].getNickname() << "]-----\n" ;
+  std::cout << "-----client [" << clientSocket;
+  std::cout << _clients.at( clientSocket ).getNickname() << "]-----\n" ;
   std::cout << "request: <" << request << ">" << std::endl;
 
   splitter = request.find(' ', 0);
@@ -165,7 +213,7 @@ void  Server::handleRequest( size_t cid, std::string request )
   // if <request> has no space --> command is request string
   // else --> split command & parameters
   if (splitter == std::string::npos)
-      command = request;
+    command = request;
   else
   {
     command = request.substr(0, splitter);
@@ -189,8 +237,9 @@ void  Server::handleRequest( size_t cid, std::string request )
   /* ********************************* */
   for (std::map<int, std::string>::const_iterator it = _mapCommands.begin(); it != _mapCommands.end(); ++it)
   {
-    if (command == it->second)
+    if (command == it->second) {
       commandKey = it->first;
+    }
   }
 
   /* ********************************* */
@@ -204,198 +253,210 @@ void  Server::handleRequest( size_t cid, std::string request )
   //
   if (commandKey != UNDEFINED && commandKey != CAP)
   {
-    if (command != "PASS" && _clients[cid].getPassStatus() == false )
+    if (command != "PASS" && _clients.at( clientSocket ).getPassStatus() == false )
     {
       std::cout << "error:\t must set PASS command first\n" << std::endl;
       return;
     }
-    if (!_clients[cid].getIfRegistered()
-      && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
+    if (!_clients.at( clientSocket ).getIfRegistered()
+        && !(command == "PASS" || command == "NICK" || command == "USER" || command == "QUIT"))
     {
-      replyMsg(cid, ERR_NOTREGISTERED( _serverName,_clients[cid].getNickname() ));
+      replyMsg(clientSocket, ERR_NOTREGISTERED( _serverName,_clients.at( clientSocket ).getNickname() ));
       return;
     }
   }
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
-      // This message is not required for a server implementation to work, but SHOULD be implemented.
-    // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
+  // This message is not required for a server implementation to work, but SHOULD be implemented.
+  // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
   switch(commandKey)
   {
     case CAP:     std::cout << std::endl; break;
-    case PASS:    handlePass( cid, parameters ); break;
-    case NICK:    handleNick( cid, parameters ); break;
-    case USER:    handleUser( cid, parameters ); break;
-    case PING:    handlePing( cid, parameters ); break;
-    case MODE:    handleMode( cid, parameters ); break;
-    case JOIN:        std::cout << "client " << _clients[cid].getNickname() << " - use function to handle JOIN command" << std::endl; break;
-    case PRIVMSG:     std::cout << "client " << _clients[cid].getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+    case PASS:    handlePass( clientSocket, parameters ); break;
+    case NICK:    handleNick( clientSocket, parameters ); break;
+    case USER:    handleUser( clientSocket, parameters ); break;
+    case PING:    handlePing( clientSocket, parameters ); break;
+    case MODE:    handleMode( clientSocket, parameters ); break;
+    case JOIN:        std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl; break;
+    case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 
-    // keeping Clement's initial commands just in case... - START
-    case ZZ_SHUTDOWN: shutdown(); break;                          // ' /shutdown '
-    case ZZ_QUIT:     delConnection( cid ); break;                // ' /quit '
-    case ZZ_MSG:      broadcastMsg( parameters, cid ); break;        // ' /msg <message to broadcast>'
-    // keeping Clement's initial commands just in case... - END
+                      // keeping Clement's initial commands just in case... - START
+    case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '
+    case ZZ_QUIT:     disconnectAClient( clientSocket ); break;                // ' /quit '
 
-    // Servers and clients SHOULD ignore empty lines.
+    case ZZ_MSG:      broadcastMsg( parameters, clientSocket ); break;        // ' /msg <message to broadcast>'
     default:			{
                     if (!command.empty() || (command.empty() && !parameters.empty()))
                     {
-                      replyMsg(cid, ERR_UNKNOWNCOMMAND( _serverName, _clients[cid].getRealname(), command ));
+                      replyMsg(clientSocket, ERR_UNKNOWNCOMMAND( _serverName, _clients.at( clientSocket ).getRealname(), command ));
                     }
                   } break;
   }
 }
 
-/*  Peut etre penser a enlever le '\n' tout seul ?? ou quid de '\r' sans le '\n' ? */
-
-void Server::receiveData( size_t cid ) {
+void Server::handleExistingClient( int clientSocket ) {
   int checkClear = 0;
   char buf[BUFMAXLEN];  // Buffer for client data
-  static std::string bufs[MAXCONNECTION + 1];
+                        // TODO A REFAIRE !!!
+  static std::string bufs[MAXCONNECTION + 1]; // TODO plus de client 0
   memset(buf, 0, sizeof(buf));
-  long nbytes = 0;
-  nbytes = recv( _pfds[cid].fd, buf, sizeof( buf ) - 2, 0 );
-  if( nbytes <= 0 ) {
-    std::cout << "del connection" << std::endl;
-    if( nbytes == 0 ) {
-      std::cout << "server: socket " << _pfds[cid].fd << " hung up\n";
-    } else {
-      std::cerr << "recv: " << strerror( errno ) << "\n";
-    }
-    delConnection( cid );
+
+
+  ssize_t bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
+
+  if( bytesRead < 0 ) {
+    std::cerr << "recv: " << strerror( errno ) << "\n";
+    exit( 1 );
+  } else if( bytesRead == 0 ) {
+    disconnectAClient( clientSocket );
     return;
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
   //faire un pour verifier que ca finit bien par un
-  bufs[cid] += buf;
-  // std::cout << "|INFO| initial buf: " << bufs[cid] << std::endl;
-  while (bufs[cid].size() >= 2 && bufs[cid].find(CRLF) != std::string::npos)
+  bufs[clientSocket] += buf;
+  // std::cout << "|INFO| initial buf: " << bufs[clientSocket] << std::endl;
+  while (bufs[clientSocket].size() >= 2 && bufs[clientSocket].find(CRLF) != std::string::npos)
   {
     checkClear = 1;
-    // std::string tmp;
-    // tmp = bufs[cid].substr(0, bufs[cid].find(CRLF));
-    // std::cout << "tmp: " << tmp << std::endl;
-    // handleRequest( cid, tmp );
-    handleRequest( cid, bufs[cid].substr(0, bufs[cid].find(CRLF)) );
-    bufs[cid].erase(0, bufs[cid].find(CRLF) + 2);
-    // std::cout << "new bufs: " <<  bufs[cid] << std::endl;
+    handleRequest( clientSocket, bufs[clientSocket].substr(0, bufs[clientSocket].find(CRLF)) );
+    bufs[clientSocket].erase(0, bufs[clientSocket].find(CRLF) + 2);
   }
-  if (checkClear == 1)
-    bufs[cid].clear();
-  //}
-  // parseData( buf, cid );
+  if (checkClear == 1){
+    bufs[clientSocket].clear();
+  }
 }
 
-void Server::addConnection() {
-  int                     newsocket;   // Newly accept()ed socket descriptor
-  pollfd                  pfd;         // New pollfd for new connection
-  struct sockaddr_storage remoteAddr;  // Client address
-  socklen_t               remoteAddrLen;
+/**
+ * @brief       Creates a listening server socket.
+ */
 
-  remoteAddrLen = sizeof( remoteAddr );
-  newsocket = accept( _listener.getSocket(),
-                      reinterpret_cast<struct sockaddr*>( &remoteAddr ),
-                      &remoteAddrLen );
-  if( newsocket == -1 ) {
-    std::cerr << "accept: " << strerror( errno ) << "\n";
-    return;
+void Server::createServerSocket( void ) {
+  int             opt = 1;  // For setsockopt() SO_REUSEADDR, below
+  int             status;
+  struct addrinfo hints, *res, *p;
+
+  std::memset( &hints, 0, sizeof( hints ) );
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+  status = getaddrinfo( NULL, Utility::intToString( getPort() ).c_str(), &hints, &res );
+  if( status != 0 ) {
+    std::cerr << "selectserver: " << Utility::gaiStrerror( status ) << "\n";
+    exit( 1 );
   }
-
-  // IPv6 TEST
-  /* sockaddr->sin6_family = AF_INET6; */
-  /* sockaddr->sin6_addr.s6_addr[15] = 1; */
-  /* std::string ipAddress = ntop( socket ); */
-  /* std::cout << "IPv6 Address: " << ipAddress << std::endl; */
-
-  // CREATE POLLFD
-  pfd.fd = newsocket;
-  pfd.events = POLLIN;  // Check ready-to-read
-  pfd.revents = 0;      // prevent conditional jump in run()
-  _pfds.push_back( pfd );
-
-  // If there is no client --> create a first client "NONE" to start the client counting at 1
-  if( _clients.size() == 0 ) {
-    _clients.push_back( Client( -1 ) );
+  for( p = res; p != NULL; p = p->ai_next ) {
+    _serverSocket = socket( p->ai_family, p->ai_socktype, p->ai_protocol );
+    if( _serverSocket < 0 ) {
+      continue;
+    };
+    if( setsockopt( _serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt,
+          sizeof( int ) )
+        != 0 ) {
+      std::cerr << "setsockopt: " << strerror( errno ) << "\n";
+      exit( 1 );
+    }
+    if( bind( _serverSocket, p->ai_addr, p->ai_addrlen ) != 0 ) {
+      Utility::closeFd( _serverSocket );
+      continue;
+    }
+    break;
   }
-  _clients.push_back( Client( newsocket ) );
-
-  // std::cout << "clients size: " << _clients.size() << _clients[1].getFd() << std::endl; 
-  std::cout << "--------------------" << std::endl;
-  std::cout << "New connection accepted on socket " << newsocket << "\n" << std::endl;
-
-  // Number of clients (size - 1 as _clients[0] is not used --> should be modified with new server)
-  std::cout << "Clients:\t" << _clients.size() - 1 << std::endl ;
-  for (size_t i = 1; i <= _clients.size() - 1; ++i)
-  {
-    std::string nickname = (_clients[i].getNickname().empty()) ? "to be named" : _clients[i].getNickname();
-    std::cout << "\t[ #" << i << " - socket " << _clients[i].getFd() << ": " << nickname << " ]" << std::endl;
+  freeaddrinfo( res );
+  if( p == NULL ) {
+    throw std::runtime_error( "Error creating socket" );
   }
-  std::cout << std::endl;
+  if( listen( _serverSocket, 10 ) == -1 ) {
+    throw std::runtime_error( "Error listening on socket" );
+  }
   return;
 }
 
+
 /**
- * @brief       Create the listener socket
+ * @brief       Handles new client connections.
  */
 
-void Server::setup() {
-  pollfd pfd;
+void Server::handleNewClient( void ) {
+  sockaddr_storage clientAddress;
+  socklen_t        clientAddressLength;
+  int              clientSocket;
 
-  if( _listener.createListenerSocket(this->_port) == -1 ) {
-    std::cerr << "error creating listening socket\n";
+  clientAddressLength = sizeof( clientAddress );
+  clientSocket = accept( _serverSocket,
+      reinterpret_cast<struct sockaddr*>( &clientAddress ),
+      &clientAddressLength );
+  if( clientSocket < 0 ) {
+    std::cerr << "accept: " << strerror( errno ) << "\n";
+    return;
+  }
+  std::cout << "New connection from " << Utility::ntop( clientAddress );
+  /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
+  std::cout << std::endl;
+
+  struct epoll_event event;
+  memset( &event, 0, sizeof( event ) );
+  event.events = EPOLLIN;  // TODO EPOLLIN | EPOLLONESHOT
+  event.data.fd = clientSocket;
+  if( epoll_ctl( _epollFd, EPOLL_CTL_ADD, event.data.fd, &event ) < 0 ) {
+    std::cerr << "epoll_ctl: " << strerror( errno ) << "\n";
     exit( 1 );
   }
-  pfd.fd = _listener.getSocket();
- // std::cout << "pfd.fd: " << pfd.fd << std::endl;
-  pfd.events = POLLIN;  // Report read to read on incoming connection
-  pfd.revents = 0;      // Report read to read on incoming connection
-  _pfds.push_back( pfd );
-  // connection
-  std::cout << "Welcome on " << _serverName << "!\n" << std::endl;
-  std::cout << "  hostname:\t" << "127.0.0.1 (localhost)" << std::endl;
-  std::cout << "  port:\t\t" << _port << std::endl;
-  std::cout << "  fd:\t\t" << pfd.fd << std::endl << std::endl;
+
+  _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
+
+  std::cout << "<" << _clients.at( clientSocket ).getFd();
+  std::cout << " joined the channel>\n";
+
+  std::cout << "-------------------" << std::endl;
+  std::cout << Utility::fdIsValid(_clients.find( clientSocket )->first) << "\n";
+  std::cout << Utility::fdIsValid(_clients.at( clientSocket ).getFd()) << "\n";
+  std::cout << "-------------------" << std::endl;
 }
 
 /**
- * @brief       Server main loop
+ * @brief       Start listening.
  */
 
-void Server::run() {
-  while( true ) {
-    // pfds is a vector that contains all our pollfd structs that contains all
-    // our socket
-    // - the first one is the listening socket that is bind()ed to 4242 port so
-    //   clients trying to connect to it can be detected. So the listener can
-    //   only accept / deny detected incoming connections
-    // - the other pfds are the connections that has been detected and accepted:
-    //   our clients, that can thus send / recv data
-    // - poll monitors each pollfd structs stored in pfds and handle the POLLIN
-    // event, so we know that if the POLLIN event occur on the listener socket
-    // it will be for a new connection otherwise if it occur on other socket it
-    // will be for send / recv
+#define MAX_EVENTS 10 // TODO
 
-    if( poll( _pfds.data(), _pfds.size(), -1 ) < 0 ) {
-      std::cerr << "poll: " << strerror( errno ) << "\n";
-      return;
+void Server::start( void ) {
+  int                eventsSize;
+  struct epoll_event events[MAX_EVENTS];
+
+  _epollFd = epoll_create( 1 );
+  if( _epollFd < 0 ) {
+    std::cerr << "epoll_create: " << strerror( errno ) << "\n";
+    exit( 1 );
+  }
+  struct epoll_event event;
+  memset( &event, 0, sizeof( event ) );
+  event.events = EPOLLIN;  // TODO | EPOLLONESHOT ?
+  event.data.fd = _serverSocket;
+  if( epoll_ctl( _epollFd, EPOLL_CTL_ADD, event.data.fd, &event ) < 0 ) {
+    std::cerr << "epoll_ctl: " << strerror( errno ) << "\n";
+    exit( 1 );
+  }
+  while( _serverSocket != -1 ) {
+    eventsSize = epoll_wait( _epollFd, events, MAX_EVENTS, -1 );  // 3.
+    if( eventsSize == -1 ) {
+      std::cerr << "epoll_wait: " << strerror( errno ) << "\n";
+      exit( 1 );
     }
-    if( _pfds[0].revents & POLLIN ) {
-     // std::cout << "trying a new connection" << std::endl;
-      addConnection();
-    }
-    else
-    {
-    //  std::cout << "rentre dans le else" << std::endl;
-      for( size_t cid = 1; cid < _pfds.size(); ++cid )
-      {
-      //  std::cout << "cid: " << cid << std::endl;
-        if( _pfds[cid].revents & POLLIN ) {
-          // std::cout << "test received data" << std::endl;
-          receiveData( cid );
+    for( int i = 0; i < eventsSize; i++ ) {
+      if( events[i].events & EPOLLIN ) {
+        if( events[i].data.fd == _serverSocket ) {
+          handleNewClient();
+        } else {
+          handleExistingClient( events[i].data.fd );
         }
       }
     }
+    removeDisconnectedClients();
   }
+}
+
+std::ostream& operator<<( std::ostream& o, Server const& i ) {
+  i.print( o );
+  return o;
 }

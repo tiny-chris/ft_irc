@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/17 13:53:14 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 17:16:01 by cvidon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,41 +16,43 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-void	Server::checkRegistration( size_t cid )
+void	Server::checkRegistration( int clientSocket )
 {
-  if (_clients[cid].getPassStatus() == true && _clients[cid].getNickStatus() == true && !_clients[cid].getUsername().empty())
+  if (_clients.at( clientSocket ).getPassStatus() == true && _clients.at(
+        clientSocket ).getNickStatus() == true && !_clients.at( clientSocket ).getUsername().empty())
   {
-    _clients[cid].setIfRegistered(true);
-    _clients[cid].setSource(_clients[cid].getNickname(), _clients[cid].getUsername());
-    std::cout << "info:\t " << _clients[cid].getNickname() << " is now registered!\n" << std::endl;
+    _clients.at( clientSocket ).setIfRegistered(true);
+    _clients.at( clientSocket ).setSource(_clients.at( clientSocket
+          ).getNickname(), _clients.at( clientSocket ).getUsername());
+    std::cout << "info:\t " << _clients.at( clientSocket ).getNickname() << " is now registered!\n" << std::endl;
     // DISPLAY WELCOME MESSAGES
-    sendWelcomeMsg( cid );
+    sendWelcomeMsg( clientSocket );
     // EQUIVALENT OF LUSERS received
-    sendLusersMsg( cid );
+    sendLusersMsg( clientSocket );
     std::cout << "info:\t welcome message displayed\n" << std::endl;
     /************************************/
     // TO DEL JUSTE POUR TESTER MODE !!
     // OBLIGEE DE NEW UN CHANNEL POUR CA SINON LES MODIFS REALISEES SUR LE CHANNEL NE SONT QUE LOCALES
-    // EX: J EPUSH BACK UN CLIENT A LA MAP DE CHANOPS DU CHANNEL DANS MON CONSTRUCTEUR MAIS QUAND JE VEUX Y ACCEDER DEPUIS 
+    // EX: J EPUSH BACK UN CLIENT A LA MAP DE CHANOPS DU CHANNEL DANS MON CONSTRUCTEUR MAIS QUAND JE VEUX Y ACCEDER DEPUIS
     // UNE AUTRE FONCTION DU SERVEUR CA NE MARCHE PAS LA SIZE DE MA MAP EST A 0 .....
-    // CHAT GPT DIT QUE Les objets std::map sont stockés en tant que paires de clé-valeur et lorsqu'une paire est insérée, 
+    // CHAT GPT DIT QUE Les objets std::map sont stockés en tant que paires de clé-valeur et lorsqu'une paire est insérée,
     // une copie des objets est effectuée. Contrairement au std::vector
-    if (cid == 1)
-    {
-      std::string name = "#chantest";
-      _channels.insert(std::pair<std::string, Channel>(name, Channel(name)));
-      _channels[name].addChannelOps(&_clients[cid]);
-      _channels[name].addChannelMembers(&_clients[cid]);
-    }
-    if (cid == 2)
-    {
-      _channels["#chantest"].addChannelMembers(&_clients[cid]);
-    }
+    /* if (clientSocket == 1) */
+    /* { */
+    /*   std::string name = "#chantest"; */
+    /*   _channels.insert(std::pair<std::string, Channel>(name, Channel(name))); */
+    /*   _channels[name].addChannelOps(&_clients.at( clientSocket )); */
+    /*   _channels[name].addChannelMembers(&_clients.at( clientSocket )); */
+    /* } */
+    /* if (clientSocket == 2) */
+    /* { */
+    /*   _channels["#chantest"].addChannelMembers(&_clients.at( clientSocket )); */
+    /* } */
     /************************************/
   }
 }
 
-void		Server::sendWelcomeMsg( size_t cid ) const
+void		Server::sendWelcomeMsg( int clientSocket)
 {
   std::time_t	t = std::time(0);
 	std::tm* local = std::localtime(&t);
@@ -59,11 +61,11 @@ void		Server::sendWelcomeMsg( size_t cid ) const
   std::strftime(formattedDate, sizeof(formattedDate), "%a %b %d %H:%M:%S %Y", local);
   std::string date(formattedDate);
 
-  replyMsg( cid, RPL_WELCOME(_clients[cid].getSource(), _clients[cid].getNickname()), 0);
-  replyMsg( cid, RPL_YOURHOST(_clients[cid].getSource(), _clients[cid].getNickname()), 0);
-  replyMsg( cid, RPL_CREATED(_clients[cid].getSource(), _clients[cid].getNickname(), date), 0);
-  replyMsg( cid, RPL_MYINFO(_clients[cid].getSource(), _clients[cid].getNickname()), 0);
-  replyMsg( cid, RPL_ISUPPORT(_clients[cid].getSource(), _clients[cid].getNickname(), getSupportToken()), 0);
+  replyMsg( clientSocket, RPL_WELCOME(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()), 0);
+  replyMsg( clientSocket, RPL_YOURHOST(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()), 0);
+  replyMsg( clientSocket, RPL_CREATED(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), date), 0);
+  replyMsg( clientSocket, RPL_MYINFO(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()), 0);
+  replyMsg( clientSocket, RPL_ISUPPORT(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), getSupportToken()), 0);
 }
 
 std::string Server::getSupportToken() const
@@ -82,15 +84,15 @@ std::string Server::getSupportToken() const
   return (token.str());
 }
 
-void  Server::sendLusersMsg( size_t cid ) const
+void  Server::sendLusersMsg( int clientSocket)
 {
   std::stringstream nbrClients;
 
   nbrClients << _clients.size();
 
-  replyMsg(cid, RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str()), 0);
-  replyMsg(cid, RPL_LUSEROP(_clients[cid].getSource(), _clients[cid].getNickname(), "0"), 0); // A MODIFIER getOpsNbr()
-  replyMsg(cid, RPL_LUSERUNKNOWN(_clients[cid].getSource(), _clients[cid].getNickname(), "0"), 0); // A Modifier getUnknownStateUsers()
-  replyMsg(cid, RPL_LUSERCHANNELS(_clients[cid].getSource(), _clients[cid].getNickname(), "0"), 0); // A MODIFIER getChannelNbr();
-  replyMsg(cid, RPL_LUSERCLIENT(_clients[cid].getSource(), _clients[cid].getNickname(), nbrClients.str()), 0);
+  replyMsg(clientSocket, RPL_LUSERCLIENT(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), nbrClients.str()), 0);
+  replyMsg(clientSocket, RPL_LUSEROP(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0"), 0); // A MODIFIER getOpsNbr()
+  replyMsg(clientSocket, RPL_LUSERUNKNOWN(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0"), 0); // A Modifier getUnknownStateUsers()
+  replyMsg(clientSocket, RPL_LUSERCHANNELS(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0"), 0); // A MODIFIER getChannelNbr();
+  replyMsg(clientSocket, RPL_LUSERCLIENT(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), nbrClients.str()), 0);
 }

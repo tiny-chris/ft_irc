@@ -25,6 +25,7 @@
 # include <poll.h>		// pollfd, poll
 # include <stdlib.h>	// exit
 # include <unistd.h>	// close
+
 # include "Channel.hpp"
 
 class Channel;
@@ -32,7 +33,7 @@ class Client {
 
 	public:
 
-		Client( void );
+		Client();
 		Client( int socket );
 		Client( Client const & src );
 		~Client( void );
@@ -65,7 +66,9 @@ class Client {
 	private:
 
 
-		const int	_fd;
+		int	_fd;
+
+		std::string	_name; //  TODO delete
 
 		std::string	_nickname;
 		std::string	_username;

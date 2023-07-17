@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:32 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 16:53:25 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/17 17:16:50 by cvidon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,36 @@
 
 /* Peut etre mettre des comments dans le serveur (pour indiquer par exemple que le mot de passe est correct....)*/
 
-void	Server::handlePass( size_t cid, std::string param )
+void	Server::handlePass( int clientSocket, std::string param )
 {
-	// checking if the Client is already registered
-	// meaning checking if PASS, NICK, USER are already set
-	// if not ERR_ALREADYREGISTERED numeric reply is sent
-	if (_clients[cid].getIfRegistered() == true)
-	{
-		// ERR_ALREADYREGISTERED numeric reply is sent
-		replyMsg(cid, ERR_ALREADYREGISTRED(_clients[cid].getSource(), _clients[cid].getNickname()));
-	}
-	// else if there is no param to the PASS command
-	// ERR_NEEDMOREPARAMS numeric reply is sent
-	else if (param.compare("") == 0)
-	{
-		replyMsg(cid, ERR_NEEDMOREPARAMS (_clients[cid].getSource(), _clients[cid].getNickname(), "PASS"));
-	}
-	// else if Pass command's param is different from the password set for the Server
-	// then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
-	else if (param.compare(_password) != 0 || param.size() != _password.size())
-	{
-		replyMsg(cid, ERR_PASSWDMISMATCH(_clients[cid].getSource(), _clients[cid].getNickname()));
-		replyMsg(cid, KILL_MSG(_clients[cid].getSource(), _clients[cid].getNickname()));
-		this->delConnection( cid );
-	}
-	// else if it's the right password, the client is not yet registered then setPassStatus to true
-	else
-	{
-		_clients[cid].setPassStatus(true);
-		std::cout << "info:\t valid password provided!\n" << std::endl;
-	}
-	return ;
+  // checking if the Client is already registered
+  // meaning checking if PASS, NICK, USER are already set
+  // if not ERR_ALREADYREGISTERED numeric reply is sent
+  if (_clients.at( clientSocket ).getIfRegistered() == true)
+  {
+    // ERR_ALREADYREGISTERED numeric reply is sent
+    replyMsg(clientSocket, ERR_ALREADYREGISTRED(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()));
+  }
+  // else if there is no param to the PASS command
+  // ERR_NEEDMOREPARAMS numeric reply is sent
+  else if (param.compare("") == 0)
+  {
+    replyMsg(clientSocket, ERR_NEEDMOREPARAMS (_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "PASS"));
+  }
+  // else if Pass command's param is different from the password set for the Server
+  // then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
+  else if (param.compare(_password) != 0 || param.size() != _password.size())
+  {
+    replyMsg(clientSocket, ERR_PASSWDMISMATCH(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()));
+    replyMsg(clientSocket, KILL_MSG(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()));
+    disconnectAClient( clientSocket );
+
+  }
+  // else if it's the right password, the client is not yet registered then setPassStatus to true
+  else
+  {
+    _clients.at( clientSocket ).setPassStatus(true);
+    std::cout << "info:\t valid password provided!\n" << std::endl;
+  }
+  return ;
 }

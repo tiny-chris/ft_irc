@@ -14,7 +14,7 @@
 
 Channel::Channel() {}
 
-// Channel::Channel(std::string const& name, const Client& chanop) : 
+// Channel::Channel(std::string const& name, const Client& chanop) :
 // _channelName(name),
 // _keyStatus(0),
 // _limitStatus(0),
@@ -29,54 +29,54 @@ Channel::Channel() {}
 // 	setTopicRestrictionStatus(1);
 // }
 
-Channel::Channel(std::string const& name) : 
-_channelName(name),
-_keyStatus(0),
-_limitStatus(0),
-_inviteOnlyStatus(0),
-_topicRestrictionStatus(1),
-_key(""),
-_limit("")
+Channel::Channel(std::string const& name) :
+  _channelName(name),
+  _keyStatus(0),
+  _limitStatus(0),
+  _inviteOnlyStatus(0),
+  _topicRestrictionStatus(1),
+  _key(""),
+  _limit("")
 {}
 
 Channel::~Channel() {}
 
 Channel::Channel( Channel const & src ) {
-	*this = src;
-	return ;
+  *this = src;
+  return ;
 }
 
 Channel &    Channel::operator=( Channel const& rhs ){
-    if (this != &rhs)
-	{
-		// _connectedClients = rhs._connectedClients;
-		_channelOps = rhs._channelOps;
-		_channelName = rhs._channelName;
-		_keyStatus = rhs._keyStatus;
-		_limitStatus = rhs._limitStatus;
-		_inviteOnlyStatus = rhs._inviteOnlyStatus;
-		_topicRestrictionStatus = rhs._topicRestrictionStatus;
-		_key = rhs._key;
-		_limit = rhs._limit;
-	}
-	return (*this);
+  if (this != &rhs)
+  {
+    // _connectedClients = rhs._connectedClients;
+    _channelOps = rhs._channelOps;
+    _channelName = rhs._channelName;
+    _keyStatus = rhs._keyStatus;
+    _limitStatus = rhs._limitStatus;
+    _inviteOnlyStatus = rhs._inviteOnlyStatus;
+    _topicRestrictionStatus = rhs._topicRestrictionStatus;
+    _key = rhs._key;
+    _limit = rhs._limit;
+  }
+  return (*this);
 }
 
 void        Channel::addChannelOps(const Client* client){
-	if (client != NULL )
-	{
-		std::string name = client->getNickname();
-		_channelOps.insert(std::pair< std::string, const Client* >(name, client));
-	}
+  if (client != NULL )
+  {
+    std::string name = client->getNickname();
+    _channelOps.insert(std::pair< std::string, const Client* >(name, client));
+  }
 }
 
 void        Channel::addChannelMembers(const Client* client)
 {
-	if (client != NULL)
-	{
-		std::string name = client->getNickname();
-		_channelMembers.insert(std::pair< std::string, const Client* >(name, client));
-	}
+  if (client != NULL)
+  {
+    std::string name = client->getNickname();
+    _channelMembers.insert(std::pair< std::string, const Client* >(name, client));
+  }
 }
 
 
@@ -89,43 +89,43 @@ std::string	Channel::getLimit( void ) const { return (_limit ); }
 std::string	Channel::getKey( void ) const { return ( _key ); }
 
 std::string	Channel::getModes( void ) const {
-	std::string modes;
-	
-	modes.push_back('+');
-	if (getKeyStatus() == true)
-		modes.push_back('k');
-	if (getLimitStatus() == true)
-		modes.push_back('l');
-	if (getInviteOnlyStatus() == true)
-		modes.push_back('i');
-	if (getTopicRestrictionStatus() == true)
-		modes.push_back('t');
-	if (modes.size() == 1)
-		modes.clear();
-	return (modes);
+  std::string modes;
+
+  modes.push_back('+');
+  if (getKeyStatus() == true)
+    modes.push_back('k');
+  if (getLimitStatus() == true)
+    modes.push_back('l');
+  if (getInviteOnlyStatus() == true)
+    modes.push_back('i');
+  if (getTopicRestrictionStatus() == true)
+    modes.push_back('t');
+  if (modes.size() == 1)
+    modes.clear();
+  return (modes);
 }
 
 std::string Channel::getModesArgs( void ) const {
-	std::string modesArgs;
-	
-	if (getKey() != "")
-		modesArgs += (getKey() + " ");
-	if (getLimit() != "")
-		modesArgs += getLimit();
-	return (modesArgs);
-	
+  std::string modesArgs;
+
+  if (getKey() != "")
+    modesArgs += (getKey() + " ");
+  if (getLimit() != "")
+    modesArgs += getLimit();
+  return (modesArgs);
+
 }
 
 std::map<std::string, const Client *>&   Channel::getChannelMembers( void ) { return (_channelMembers); }
 
-bool        Channel::checkValidLimit(std::string limit) const {	
-	std::stringstream	iss(limit);	
-	int	num;
-	
-	iss >> num;
-	if (num > 1 && num < CHANLIMIT && intToString(num) == limit)
-		return true;
-	return false;
+bool        Channel::checkValidLimit(std::string limit) const {
+  std::stringstream	iss(limit);
+  int	num;
+
+  iss >> num;
+  if (num > 1 && num < CHANLIMIT && intToString(num) == limit)
+    return true;
+  return false;
 }
 
 
@@ -134,10 +134,10 @@ void        Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
 void        Channel::setLimitStatus( bool const& status ) { _limitStatus = status; }
 void        Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus = status; }
 void        Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
-void		Channel::setLimit( std::string const& limit ) { _limit = limit; } 
+void		Channel::setLimit( std::string const& limit ) { _limit = limit; }
 void		Channel::setKey( std::string const& key ) { _key = key; }
 
-// bool        Channel::checkChannelOps( std::string const& name ) 
+// bool        Channel::checkChannelOps( std::string const& name )
 // {
 // 	std::cout << "test checkChannelOps" << std::endl;
 // 	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
@@ -151,9 +151,10 @@ void		Channel::setKey( std::string const& key ) { _key = key; }
 //     return false;
 // }
 
-bool        Channel::checkChannelOps( std::string & name ) 
+bool        Channel::checkChannelOps( std::string & name )
 {
-	if (_channelOps.find(name) != _channelOps.end())
-		return true;
-    return false;
+  if (_channelOps.find(name) != _channelOps.end()) {
+    return true;
+  }
+  return false;
 }
