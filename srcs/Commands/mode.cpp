@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/15 18:14:45 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/17 11:59:40 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void		Server::handleChannelMode (size_t cid, std::string& channelName, const std
         for (size_t i = 0; i < modeString.size(); i++)
         {
             char    modeChar = modeString[i];
-            std::cout << "modechar: " << modeChar << std::endl; ///
             if (!isValidModeChar(modeChar))
                 break;
             if (modePrefix == '+')
@@ -112,7 +111,7 @@ void		Server::handleChannelModeSet(Channel *chan, char modeChar, std::string* mo
 void		Server::handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange,\
     const std::vector<std::string> &tokens, size_t *j)
 {
-    if (tokens.size() >= *j && chan->getKeyStatus() == false && isValidParam(tokens[*j]) == true)
+    if (tokens.size() > *j && chan->getKeyStatus() == false && isValidParam(tokens[*j]) == true)
     {
         chan->setKeyStatus(true);
         chan->setKey(tokens[*j]);

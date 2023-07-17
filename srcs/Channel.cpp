@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/15 14:02:09 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/17 11:59:13 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,8 +142,6 @@ void		Channel::setKey( std::string const& key ) { _key = key; }
 
 bool        Channel::checkChannelOps( std::string & name ) 
 {
-	std::cout << "test checkChannelOps" << std::endl;
-	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
 	if (_channelOps.find(name) != _channelOps.end())
 		return true;
     return false;
