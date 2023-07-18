@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 18:45:02 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/18 10:52:28 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ void	Server::initCommands( void )
   _commands.insert( std::make_pair( 109, "MODE" ) );
   _commands.insert( std::make_pair( 110, "JOIN" ) );
   _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
+  _commands.insert( std::make_pair( 120, "NAMES" ) );
 
   // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "/shutdown" ) );
@@ -302,6 +303,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
     case MODE:    handleMode( clientSocket, parameters ); break;
     case JOIN:        std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl; break;
     case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+    case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '

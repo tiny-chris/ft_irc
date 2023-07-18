@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/15 15:34:21 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/18 12:44:58 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,16 @@
 //Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.
 
 # define ERR_NOSUCHCHANNEL(source, nickname, channel) (std::string(":") + source + " 403 " + nickname + " " + channel + " :No such channel\r\n")
-//Utilisé pour indiquer que le nom de canal donné est invalide.
+// Utilisé pour indiquer que le nom de canal donné est invalide.
+// "<client> <channel> :No such channel"
+// Indicates that no channel can be found for the supplied channel name.
 
 # define ERR_CANNOTSENDTOCHAN 404
 //"<nom de canal> :Cannot send to channel"
 //Envoyé à un utilisateur qui (a) soit n'est pas dans un canal en mode +n ou (b) n'est pas opérateur (ou mode +v) sur un canal en mode +m ; et essaie d'envoyer un PRIVMSG à ce canal.
 
-# define ERR_TOOMANYCHANNELS 405
+# define ERR_TOOMANYCHANNELS(source, nickname, channel) (std::string(":") + source + " 405 " + nickname + " " + channel + ":You have joined too many channels\r\n")
+// 405
 //"<nom de canal> :You have joined too many channels"
 //Envoyé à un utilisateur quand il a atteint le nombre maximal de canaux qu'il est autorisé à accéder simultanément, s'il essaie d'en rejoindre un autre.
 
@@ -164,7 +167,9 @@
 // "<canal> :Channel key already set"
 // Clé de canal déjà définie.
 
-# define  ERR_CHANNELISFULL 471
+// # define  ERR_CHANNELISFULL(source, nickname, channel) (std::string(":") + source + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)\r\n")
+# define  ERR_CHANNELISFULL(source, channel) (std::string(":") + source + " 471 " + channel + " :Cannot join channel (+l)\r\n")
+// 471
 // "<canal> :Cannot join channel (+l)"
 // Impossible de joindre le canal (+l)
 
@@ -183,6 +188,13 @@
 # define  ERR_BADCHANNELKEY 475
 // "<canal> :Cannot join channel (+k)"
 // Impossible de joindre le canal (+k).
+
+# define ERR_BADCHANMASK(source, nickname, channel) (std::string(":") + source + " 476 " + nickname + " " + channel + " :Bad Channel Mask\r\n")
+// 476
+// "<channel> :Bad Channel Mask"
+// Indicates the supplied channel name is not a valid.
+// This is similar to, but stronger than, ERR_NOSUCHCHANNEL (403), which indicates that the channel does not exist, but that it may be a valid name.
+// The text used in the last param of this message may vary
 
 # define  ERR_NOPRIVILEGES 481
 // ":Permission Denied- You're not an IRC operator"
@@ -336,6 +348,17 @@
 # define RPL_ENDOFWHO 315
 // "<nom> :End of /WHO list"
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO. Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO. S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
+
+# define RPL_NAMREPLY(source, nickname, channel, members) (std::string(":") + source + " 353 " + nickname + " " + channel + " :" + members + "\r\n")
+// 353
+// "<client> <symbol> <channel> :[prefix]<nick>{ [prefix]<nick>}"
+// Sent as a reply to the NAMES command, this numeric lists the clients that are joined to <channel> and their status in that channel.
+// Only public channel so no use of <symbol> (public, secret, private)
+
+# define RPL_ENDOFNAMES(source, nickname, channel) (std::string(":") + source + " 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
+// 366 
+// "<client> <channel> :End of /NAMES list"
+// Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.
 
 # define RPL_BANLIST 367
 // "<canal> <identification de bannissement>"

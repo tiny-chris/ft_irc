@@ -10,6 +10,7 @@
 */
 # define CRLF std::string("\r\n")
 
+// Intro to message displayed on Server side
 # define MSGINFO "info:\t "
 # define MSGREPLY "reply:\t "
 # define MSGERROR "error:\t "
@@ -22,9 +23,10 @@
 // The value MUST be specified and MUST be a positive integer.
 // # define USERLEN 18
 
-# define PASSMINLEN 8
-
 # define MAXPARAM 15
+
+// Password minimum length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
+# define PASSMINLEN 8
 
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 # define PASSMAXLEN 100

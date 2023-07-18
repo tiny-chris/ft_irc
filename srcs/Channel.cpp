@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/17 13:51:36 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/18 12:27:44 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string Channel::getModesArgs( void ) const {
 
 }
 
-std::map<std::string, const Client *>&   Channel::getChannelMembers( void ) { return (_channelMembers); }
+Channel::mapClientsPtr&   Channel::getChannelMembers( void ) { return (_channelMembers); }
 
 bool        Channel::checkValidLimit(std::string limit) const {
   std::stringstream	iss(limit);
@@ -130,10 +130,10 @@ bool        Channel::checkValidLimit(std::string limit) const {
 
 
 void		Channel::setChannelName( std::string& name ) { _channelName = name; }
-void        Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
-void        Channel::setLimitStatus( bool const& status ) { _limitStatus = status; }
-void        Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus = status; }
-void        Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
+void    Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
+void    Channel::setLimitStatus( bool const& status ) { _limitStatus = status; }
+void    Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus = status; }
+void    Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
 void		Channel::setLimit( std::string const& limit ) { _limit = limit; }
 void		Channel::setKey( std::string const& key ) { _key = key; }
 

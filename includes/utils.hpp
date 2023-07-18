@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/12 16:50:04 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/18 10:48:51 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ enum commands {
 	MODE = 109,
 	JOIN = 110,
 	PRIVMSG = 111,
+	NAMES = 120,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,
@@ -44,7 +45,6 @@ enum commands {
 };
 // 	// PART,
 // 	// NOTICE,
-// 	// NAMES,
 // 	// LIST,
 // 	// INVITE,
 // 	// PONG,

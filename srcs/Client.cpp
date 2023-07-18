@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 20:22:55 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/18 10:57:18 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ Client::Client( int socket ) :
 			_passStatus( false ),
 			_nickStatus( false ),
 			_isRegistered( false ),
-			_userModes ( true )
+			_userModes ( true ),
+			_isInvisible( true )
 {}
 
 Client::Client( Client const & src ) : _fd( src.getFd() ) {
@@ -47,6 +48,7 @@ Client &    Client::operator=( Client const& rhs ) {
 		_passStatus = getPassStatus();
 		_nickStatus = getNickStatus();
 		_isRegistered = getIfRegistered();
+		_isInvisible = getIfInvisible();
 	}
 	return ( *this );
 }
@@ -84,6 +86,7 @@ bool 		Client::getIfRegistered( void ) const { return _isRegistered; }
 std::string	Client::getSource( void ) const { return _source; }
 bool		Client::getUserModes ( void ) const { return _userModes; }
 // std::string	Client::getChannelModes ( void ) const { return _channelModes; }
+bool 		Client::getIfInvisible( void ) const { return _isInvisible; }
 
 // void		Client::setFd( int& clientFd ) { _fd = clientFd; }//not used as _fd is const
 void		Client::setNickname( std::string const& name ) { _nickname = name; }
@@ -96,6 +99,7 @@ void		Client::setSource( std::string nickname, std::string username ) {
 	_source = nickname + "!" + username + "@localhost";
 }
 void		Client::setUserModes( bool const& mode ) { _userModes = mode; }
+void		Client::setIfInvisible( bool const& status ) { _isInvisible = status; }
 
 // // TO COMPLETE
 // bool		Client::setChannelModes( std::string const& mode ) {

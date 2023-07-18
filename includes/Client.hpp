@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/14 19:52:09 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/18 10:56:07 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class Client {
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
 		bool			getUserModes ( void ) const;
+		bool			getIfInvisible( void ) const;
 
 		// void			setFd( int& clientFd );//not used as _fd is const
 		void			setNickname( std::string const& name );
@@ -62,6 +63,7 @@ class Client {
 		void			setSource( std::string nickname, std::string username );
 		void			setUserModes( bool const& status );
 		bool			setChannelModes( std::string const& mode );
+		void			setIfInvisible( bool const& status );
 
 	private:
 
@@ -81,6 +83,7 @@ class Client {
 		bool		_nickStatus;
 		bool		_isRegistered;
 		bool		_userModes;
+		bool		_isInvisible;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		//std::vector<Channel>	_clientChannels;

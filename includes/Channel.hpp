@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/17 13:51:34 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/18 12:26:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ class Client;
 class Channel
 {
     public:
+
+        typedef std::map< std::string, const Client * > mapClientsPtr; 
+
         // Channel(std::string const& name);
         Channel();
         // Channel(std::string const& name, const Client& chanop);
@@ -55,7 +58,7 @@ class Channel
 
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
-        std::map<std::string, const Client *>&   getChannelMembers( void );
+        mapClientsPtr&   getChannelMembers( void );
         
         bool        checkValidLimit(std::string limit) const;
 
@@ -75,9 +78,9 @@ class Channel
     private:
         
         // std::map<std::string, Client*> _connectedClients;
-        std::map<std::string, const Client *> _channelOps;
-        std::map<std::string, const Client *> _channelMembers;
-        std::string      _channelName;
+        mapClientsPtr   _channelOps;
+        mapClientsPtr   _channelMembers;
+        std::string     _channelName;
 
         bool    _keyStatus;
         bool    _limitStatus;

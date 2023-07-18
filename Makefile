@@ -22,6 +22,7 @@ SRCS		:=	\
 				Utility.cpp \
 				utils.cpp \
 				Commands/mode.cpp \
+				Commands/names.cpp \
 				Commands/nick.cpp \
 				Commands/pass.cpp \
 				Commands/ping.cpp \

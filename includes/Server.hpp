@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/17 17:17:50 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/18 12:47:13 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ class Server {
     bool				existingNick( std::string param );
     void				handleUser( int clientSocket, std::string param );
     void				handlePing( int clientSocket, std::string param );
+
+    void				handleNames( int clientSocket, std::string param );
+    void        displayNames( int clientSocket, Channel& channel );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );
