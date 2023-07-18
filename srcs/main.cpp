@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/10 18:55:00 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 18:19:58 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ void	checkArgs( int argc, char **argv )
 		throw std::invalid_argument("incorrect number of arguments");
 
 	/* check <port> is a port number */
-	std::string	port( argv[1] );
+	std::string	port( argv[ 1 ] );
 	if ( port.find_first_not_of( "0123456789" ) != std::string::npos \
 		|| port.empty() )
 		throw std::invalid_argument( "wrong port number" );
 
-	long val = std::atol( argv[1] );
+	long val = std::atol( argv[ 1 ] );
 	if ( val < 0 || val > 65535 )
 		throw std::invalid_argument( "wrong port number" );
 
@@ -59,7 +59,7 @@ int	main( int argc, char **argv )
 
 		/* ***** INIT REQUIRED PARAMETERS FOR THE SERVER CLASS ***** */
 		/* Classe Server avec 2 params: port et password, garder password en char* */
-		std::size_t	port = std::atoi( argv[1] );
+		std::size_t	port = std::atoi( argv[ 1 ] );
 		const char	*password = argv[ 2 ];
 
 		Server server( port, password, "tiny_server" );

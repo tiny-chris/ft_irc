@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 12:26:10 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:39:22 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Channel
 {
     public:
 
-        typedef std::map< std::string, const Client * > mapClientsPtr; 
+        typedef std::map< std::string, Client * > mapClientsPtr; 
 
         // Channel(std::string const& name);
         Channel();
@@ -70,8 +70,8 @@ class Channel
         void        setLimit( std::string const& limit );
         void        setKey( std::string const& key );
 
-        void        addChannelOps(const Client* client);
-        void        addChannelMembers(const Client* client);
+        void        addChannelOps( Client* client );
+        void        addChannelMembers( Client* client );
 
         bool        checkChannelOps( std::string & name );
 

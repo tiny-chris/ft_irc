@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/18 12:52:41 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 17:49:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 {
 	Channel::mapClientsPtr&					chanMembers = channel.getChannelMembers();
 	Channel::mapClientsPtr::const_iterator	it;
-	bool									requestorIsOnChannel = false;
+	// bool									requestorIsOnChannel = false;
 	std::string								listMembers;
 
 
@@ -37,25 +37,26 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 /*  POUR CHECKER LES CLIENTS DANS CHANNEL !!  */
 /*  ****************************************  */
 
-		std::cout << ZZ_MSGTEST;
+		std::cout << ZZ_MSGTEST << "\n";
 		int n = 0;
 		for (Channel::mapClientsPtr::const_iterator	testIt = chanMembers.begin(); testIt != chanMembers.end(); testIt++)
 		{
-			std::cout << "\n\t channel member [" << n << "] named " << testIt->second->getNickname();
-			std::cout << " with status 'is visible' = " << testIt->second->getIfInvisible() << "\n";
+			std::cout << "\t\t channel member [" << n << "] named '" << testIt->second->getNickname();
+			std::cout << "' with status 'is invisible' = " << testIt->second->getUserModes() << "\n";
 			n++;
 		}
 /*  ****************************************  */
 /*  ****************************************  */
 
-	std::cout << ZZ_MSGTEST << "Current channel = '" << channel.getChannelName() << "'\n" << std::endl;
-	if ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) {
-		requestorIsOnChannel = true ;
-	}
-	std::cout << ZZ_MSGTEST << "requestor client = '" << _clients.at( clientSocket ).getNickname() << "' is on channel :" << requestorIsOnChannel << "\n" << std::endl;
+	std::cout << ZZ_MSGTEST << "Current channel = '" << channel.getChannelName() << "'" << std::endl;
+	bool requestorIsOnChannel = ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) ? true : false;
+	// if ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) {
+	// 	requestorIsOnChannel = true ;
+	// }
+	std::cout << ZZ_MSGTEST << "requestor client = '" << _clients.at( clientSocket ).getNickname() << "' is on channel : " << requestorIsOnChannel << std::endl;
 	for ( it = chanMembers.begin(); it != chanMembers.end(); it++ )
 	{
-		if ( it->second->getIfInvisible() == true && requestorIsOnChannel == false )
+		if ( it->second->getUserModes() == true && requestorIsOnChannel == false )
 			continue ;
 		if ( it != chanMembers.begin() ) {
 			listMembers += " ";
@@ -98,7 +99,6 @@ void	Server::handleNames( int clientSocket, std::string param )
 	// else: display client names of listed channels that exist (evaluate channels one by one)
 	else
 	{
-		std::cout << "ZZ_test:\t " << "IL Y A DES TOKENS !!\n" << std::endl;
 		// utiliser TARGMAX pour limiter les multi-ddes ???
 		// créer une macro 'TARGMAX' dans defines !!
 		// TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1
@@ -118,31 +118,6 @@ void	Server::handleNames( int clientSocket, std::string param )
 				// std::cout << ZZ_MSGTEST << "'" << tokens[i] << "' n'est pas dans la liste des channels" << std::endl;
 				replyMsg( clientSocket, RPL_ENDOFNAMES( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), tokens[ i ] ) );
 			}
-
-			// 	Channel::mapClientsPtr					chanMembers = channel.getChannelMembers();
-			// 	Channel::mapClientsPtr::const_iterator	clientIt;
-			// 	bool									requestorIsOnChannel = false;
-
-
-			// 	if ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() )
-			// 		requestorIsOnChannel = true ;
-			// 	for (clientIt = chanMembers.begin(); clientIt != chanMembers.end(); clientIt++)
-			// 	{
-			// 		const std::string& clientName = clientIt->first;
-			// 		// Client *client = clientIt->second;
-
-			// 		if ( clientIt->second->getIfInvisible() == true && requestorIsOnChannel == false )
-			// 		{
-			// 			std::cout << ZZ_MSGTEST << "Le client '" << _clients.at( clientSocket ).getNickname() << "' est invisible et le request client n'est pas dans le channel" << std::endl;
-			// 		}
-			// 		else
-			// 		{
-			// 			std::cout << ZZ_MSGTEST << "Le request client " << _clients.at( clientSocket ).getNickname() << " est dans le channel --> il faut ajouter " << clientName << std::endl;
-			// 		}
-			// 	}
-			// }
-			// else
-			// 	std::cout << ZZ_MSGTEST << "'" << tokens[i] << "' n'est pas dans la liste des channels" << std::endl;
 		}
 	}
 	return ;

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 12:44:58 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 15:50:41 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,12 @@
 //"<destination> :Duplicate recipients. No message delivered"
 //Renvoyé à un client qui essaie d'envoyer un PRIVMSG/NOTICE utilisant le format de destination utilisateur@hôte pour lequel utilisateur@hôte a plusieurs occurrences.
 
-# define  ERR_NOORIGIN 409
+# define  ERR_NOORIGIN(source, nickname) (std::string(":") + source + " 409 " + nickname + " :No origin specified\r\n") 
+//409
 //":No origin specified"
+//"<client> :No origin specified"
 //Message PING ou PONG sans le paramètre origine qui est obligatoire puisque ces commandes doivent marcher sans préfixe.
+//Indicates a PING or PONG message missing the originator parameter which is required by old IRC servers. Nowadays, this may be used by some servers when the PING <token> is empty.
 
 # define  ERR_NORECIPIENT 411
 //":No recipient given (<commande>)"

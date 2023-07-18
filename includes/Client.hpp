@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 10:56:07 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 17:50:52 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ class Client {
 		bool			getIfRegistered( void ) const;
 		std::string		getSource( void ) const;
 		bool			getUserModes ( void ) const;
-		bool			getIfInvisible( void ) const;
 
 		// void			setFd( int& clientFd );//not used as _fd is const
 		void			setNickname( std::string const& name );
@@ -62,28 +61,25 @@ class Client {
 		void			setIfRegistered( bool const& status );
 		void			setSource( std::string nickname, std::string username );
 		void			setUserModes( bool const& status );
-		bool			setChannelModes( std::string const& mode );
-		void			setIfInvisible( bool const& status );
+		// bool			setChannelModes( std::string const& mode );
 
 	private:
 
-
 		int	_fd;
+
+		bool		_passStatus;
+		bool		_nickStatus;
+		bool		_isRegistered;
+		bool		_userModes;
 
 		std::string	_name; //  TODO delete
 
 		std::string	_nickname;
 		std::string	_username;
 		std::string _realname;
-
 		std::string	_source;
 		// std::string	_userModes;
 
-		bool		_passStatus;
-		bool		_nickStatus;
-		bool		_isRegistered;
-		bool		_userModes;
-		bool		_isInvisible;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		//std::vector<Channel>	_clientChannels;
@@ -91,7 +87,6 @@ class Client {
 		// penser a :
 		/*
 		bool				_welcomeStatus;
-		std::string			_userModes;
 		std::string			_serverName;
 		*/
 };

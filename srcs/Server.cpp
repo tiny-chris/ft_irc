@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 10:52:28 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 18:21:08 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,18 @@ void  Server::handleRequest( int clientSocket, std::string request )
     }
     i++;
   }
-   std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << "\n\t *** CHECK CLIENT DATA (avant requete): ***\n";
+  std::cout << "\t client's getPassStatus <" << _clients.at( clientSocket ).getPassStatus() << ">\n";
+  std::cout << "\t client's getNickStatus <" << _clients.at( clientSocket ).getNickStatus() << ">\n";
+  std::cout << "\t client's getIfRegistered <" << _clients.at( clientSocket ).getIfRegistered() << ">\n";
+  std::cout << "\t client's getUserModes <" << _clients.at( clientSocket ).getUserModes() << ">\n";
+
+  std::cout << "\t client's getNickname <" << _clients.at( clientSocket ).getNickname() << ">\n";
+  std::cout << "\t client's getUsername <" << _clients.at( clientSocket ).getUsername() << ">\n";
+  std::cout << "\t client's getRealname <" << _clients.at( clientSocket ).getRealname() << ">\n";
+  std::cout << "\t client's getSource <" << _clients.at( clientSocket ).getSource() << ">\n";
+  std::cout << std::endl;
 /*  ************************************  */
 /*  ************************************  */
 
@@ -317,6 +328,24 @@ void  Server::handleRequest( int clientSocket, std::string request )
                     }
                   } break;
   }
+
+/*  ************************************  */
+/*    POUR CHECKER LES DATA CLIENTS !     */
+/*  ************************************  */
+  std::cout << "\n\t *** CHECK CLIENT DATA (apres requete): ***\n";
+  std::cout << "\t client's getPassStatus <" << _clients.at( clientSocket ).getPassStatus() << ">\n";
+  std::cout << "\t client's getNickStatus <" << _clients.at( clientSocket ).getNickStatus() << ">\n";
+  std::cout << "\t client's getIfRegistered <" << _clients.at( clientSocket ).getIfRegistered() << ">\n";
+  std::cout << "\t client's getUserModes <" << _clients.at( clientSocket ).getUserModes() << ">\n";
+
+  std::cout << "\t client's getNickname <" << _clients.at( clientSocket ).getNickname() << ">\n";
+  std::cout << "\t client's getUsername <" << _clients.at( clientSocket ).getUsername() << ">\n";
+  std::cout << "\t client's getRealname <" << _clients.at( clientSocket ).getRealname() << ">\n";
+  std::cout << "\t client's getSource <" << _clients.at( clientSocket ).getSource() << ">\n";
+  std::cout << std::endl;
+/*  ************************************  */
+/*  ************************************  */
+
 }
 
 void Server::handleExistingClient( int clientSocket ) {
@@ -458,7 +487,7 @@ void Server::handleNewClient( void ) {
 
 void Server::start( void ) {
   int                eventsSize;
-  struct epoll_event events[MAX_EVENTS];
+  struct epoll_event events[ MAX_EVENTS ];
 
   _epollFd = epoll_create( 1 );
   if( _epollFd < 0 ) {
@@ -480,11 +509,11 @@ void Server::start( void ) {
       exit( 1 );
     }
     for( int i = 0; i < eventsSize; i++ ) {
-      if( events[i].events & EPOLLIN ) {
-        if( events[i].data.fd == _serverSocket ) {
+      if( events[ i ].events & EPOLLIN ) {
+        if( events[ i ].data.fd == _serverSocket ) {
           handleNewClient();
         } else {
-          handleExistingClient( events[i].data.fd );
+          handleExistingClient( events[ i ].data.fd );
         }
       }
     }

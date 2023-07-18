@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/17 17:17:11 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/18 18:22:53 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,18 @@ void				Server::handleUser( int clientSocket, std::string param )
   ** For RFC 2812 : USER <user name> <mode> <non used> <real name>
   */
   tokens = splitString( param.substr( 0, colon ), ' ' );
-  if ( tokens.size() < 3 || tokens[0].length() < 1 )
+  if ( tokens.size() < 3 || tokens[ 0 ].length() < 1 )
   {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, _clients.at( clientSocket ).getNickname(), "USER" ) );
     return ;
   }
-  else if ( tokens.size() > 3 || isValidUser( tokens[0] ) == false
-      || !isValidParam( tokens[1] ) || !isValidParam( tokens[2] ) || ( colon > 0 && param[colon - 1] != ' ' ) )
+  else if ( tokens.size() > 3 || isValidUser( tokens[ 0 ] ) == false
+      || !isValidParam( tokens[ 1 ] ) || !isValidParam( tokens[ 2 ] ) || ( colon > 0 && param[ colon - 1 ] != ' ' ) )
   {
     std::cout << MSGERROR << "wrong parameters with USER command\n" << std::endl;
     return ;
   }
-  _clients.at( clientSocket ).setUsername( tokens[0].substr( 0, USERLEN ) );
+  _clients.at( clientSocket ).setUsername( tokens[ 0 ].substr( 0, USERLEN ) );
   std::cout << MSGINFO << "user and real names provided!" << std::endl;
 
   if ( _clients.at( clientSocket ).getIfRegistered() == false ) {

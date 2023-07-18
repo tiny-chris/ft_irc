@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 12:27:44 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/18 18:31:09 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,20 @@ Channel &    Channel::operator=( Channel const& rhs ){
   return (*this);
 }
 
-void        Channel::addChannelOps(const Client* client){
+void        Channel::addChannelOps( Client* client ){
   if (client != NULL )
   {
     std::string name = client->getNickname();
-    _channelOps.insert(std::pair< std::string, const Client* >(name, client));
+    _channelOps.insert(std::pair< std::string, Client* >( name, client ));
   }
 }
 
-void        Channel::addChannelMembers(const Client* client)
+void        Channel::addChannelMembers( Client* client )
 {
   if (client != NULL)
   {
     std::string name = client->getNickname();
-    _channelMembers.insert(std::pair< std::string, const Client* >(name, client));
+    _channelMembers.insert(std::pair< std::string, Client* >( name, client ));
   }
 }
 
