@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 17:57:28 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/19 18:17:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void        Server::sendMotdMsg( int clientSocket )
   motdFile.open("./motd.txt", std::ifstream::in);
   if (!motdFile)
   {
-    std::cerr << "Erreur lors de l'ouverture du fichier motd.txt" << std::endl;
+    std::cout << "Error opening motd.txt file" << std::endl;
     exit (1); // TO DO
   }
   

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 17:52:20 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/19 18:21:46 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ class Server {
     void				handleModeUnsetLimit(Channel *chan, std::string* modeChange);
     void				handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange);
     void				handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
+
+    void        handleKick( int clientSocket, std::string param );
 
     std::string	getSupportToken() const;
 

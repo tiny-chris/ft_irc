@@ -99,4 +99,6 @@ The value MUST be specified and MUST be a positive integer. */
 # define SERVERNAME "localhost"
 # define VERSION "1.69"
 
+# define TARGMAXKICK 1
+
 #endif /* __DEFINES_HPP__ */

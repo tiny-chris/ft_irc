@@ -27,6 +27,7 @@ SRCS		:=	\
 				Commands/pass.cpp \
 				Commands/ping.cpp \
 				Commands/user.cpp \
+				Channels/kick.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
