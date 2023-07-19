@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 12:14:00 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:42:56 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 		}
 		else
 		{
-			if ( joinNonExistingChannel( requestor, channels[i] ) == false )
+			if ( joinNonExistingChannel( clientSocket, channels[ i ] ) == false )
+			// if ( joinNonExistingChannel( requestor, channels[i] ) == false )
 				return ;
 			std::map<std::string, Channel>::iterator it;
 			for (it = _channels.begin(); it != _channels.end();++it)
@@ -147,27 +148,29 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 **		3. add this new channel to the list of the Client 'vector'
 **
 */
-bool	Server::joinNonExistingChannel( Client& requestor, std::string chanName )
+bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
+// bool	Server::joinNonExistingChannel( Client& requestor, std::string chanName )
 {
+	Client&	client = _clients.at( clientSocket );
 	// penser à recoder avec une fonction sur _channels
-	if ( requestor.getClientChannels().size() >= CHANLIMIT )
+	if ( client.getClientChannels().size() >= CHANLIMIT )
 	{
-		replyMsgFd( requestor.getFd(), ERR_TOOMANYCHANNELS( requestor.getSource(), requestor.getNickname(), chanName ) );
+		replyMsg( clientSocket, ERR_TOOMANYCHANNELS( client.getSource(), client.getNickname(), channelName ) );
 		return false ;
 	}
 
 	// je crée un nouveau channel
-	Channel newChan( chanName );
+	Channel newChan( channelName );
 	std::cout << MSGINFO << "recup nom channel dans joinNonexistingClient '" << newChan.getChannelName() << "'" << std::endl;
 	// je lui ajoute le client --> prévoir le chanOp
-	newChan.addConnectedClient( requestor );
+	newChan.addConnectedClient( client );
 	// voir pour les paramètres --> opérateur, mode? dans le constructeur ?
 	// j'ajoute le channel à la liste des channels
-	_channels.insert( std::make_pair( chanName, newChan ) );
+	_channels.insert( std::make_pair( channelName, newChan ) );
 	// j'ajoute le nom du channel dans le client (vraiment nécessaire ??)
-	requestor.addChannel( chanName );
-	std::cout << MSGINFO << "a new channel <" << _channels[ chanName ].getChannelName() << "> is created\n";// << std::endl;
-	std::cout << ZZ_MSGTEST << requestor.getNickname() << " has created the channel <" << chanName << "> and is chan op (TO BE CONFIGURED)\n" << std::endl;
+	client.addChannel( channelName );
+	std::cout << MSGINFO << "a new channel <" << _channels[ channelName ].getChannelName() << "> is created\n";// << std::endl;
+	std::cout << ZZ_MSGTEST << client.getNickname() << " has created the channel <" << channelName << "> and is chan op (TO BE CONFIGURED)\n" << std::endl;
 	return true ;
 }
 
