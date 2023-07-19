@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/17 17:16:01 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/19 14:58:27 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,16 @@ void	Server::checkRegistration( int clientSocket )
     // UNE AUTRE FONCTION DU SERVEUR CA NE MARCHE PAS LA SIZE DE MA MAP EST A 0 .....
     // CHAT GPT DIT QUE Les objets std::map sont stockés en tant que paires de clé-valeur et lorsqu'une paire est insérée,
     // une copie des objets est effectuée. Contrairement au std::vector
+    std::string name = "#chantest";
     if ( clientSocket == 5 )
     {
-      std::string name = "#chantest";
       _channels.insert( std::pair<std::string, Channel>( name, Channel( name ) ) );
       _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
       _channels[ name ].addChannelMembers(&_clients.at( clientSocket ) );
     }
     if ( clientSocket == 6 )
     {
-      _channels[ "#chantest" ].addChannelMembers( &_clients.at( clientSocket ) );
+      _channels[ name ].addChannelMembers( &_clients.at( clientSocket ) );
     }
     /************************************/
   }

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/17 17:17:04 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/19 16:36:48 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void		Server::handleNick( int clientSocket, std::string param )
   // nickname is set to param value and nickstatus set to true
   else
   {
+    std::string oldNickname = _clients.at( clientSocket ).getNickname();
     replyMsg(clientSocket, RPL_NICK(_clients.at( clientSocket ).getNickname(), param));
     _clients.at( clientSocket ).setNickStatus( true );
     _clients.at( clientSocket ).setNickname( param );
@@ -75,6 +76,12 @@ void		Server::handleNick( int clientSocket, std::string param )
     if ( _clients.at( clientSocket ).getIfRegistered() == false ) {
       checkRegistration( clientSocket );
     }
+    else // maj de la source + maj des nickname dans les map de chanops et de chanmembers dans les channels;
+    {
+      _clients.at( clientSocket ).setSource( _clients.at( clientSocket ).getNickname(), _clients.at( clientSocket ).getUsername() );
+      updateChannelMemberNick( oldNickname, _clients.at( clientSocket ).getNickname() );
+      updateChannelOpsNick( oldNickname, _clients.at( clientSocket ).getNickname() );
+    }
     std::cout << std::endl;
   }
   return ;
@@ -92,7 +99,7 @@ bool		Server::isValidNick(std::string param)
   return true;
 }
 
-bool  Server::existingNick(std::string param)
+bool  Server::existingNick( std::string param )
 {
   for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it)
   {
@@ -102,4 +109,32 @@ bool  Server::existingNick(std::string param)
   return false;
 }
 
+void  Server::updateChannelMemberNick( std::string &oldNickname, std::string nickName )
+{
+  for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+  {
+    std::map< std::string, Client* >	&mapClients = it->second.getChannelMembers();
+    std::map<std::string, Client *>::iterator elem = mapClients.find(oldNickname);
+    if (elem != mapClients.end())
+    {
+      Client *tmp = elem->second;
+      mapClients.erase( oldNickname );
+      mapClients.insert(std::make_pair(nickName, tmp));
+    }
+  }
+}
 
+void  Server::updateChannelOpsNick( std::string &oldNickname, std::string nickName )
+{
+  for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+  {
+    std::map< std::string, Client* >	&mapClients = it->second.getChannelOps();
+    std::map<std::string, Client *>::iterator elem = mapClients.find(oldNickname);
+    if (elem != mapClients.end())
+    {
+      Client *tmp = elem->second;
+      mapClients.erase( oldNickname );
+      mapClients.insert(std::make_pair(nickName, tmp));
+    }
+  }
+}

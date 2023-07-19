@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 18:31:09 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:42:12 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ Channel &    Channel::operator=( Channel const& rhs ){
 void        Channel::addChannelOps( Client* client ){
   if (client != NULL )
   {
-    std::string name = client->getNickname();
-    _channelOps.insert(std::pair< std::string, Client* >( name, client ));
+    _channelOps.insert(std::make_pair( client->getNickname(), client ));
   }
 }
 
@@ -74,8 +73,7 @@ void        Channel::addChannelMembers( Client* client )
 {
   if (client != NULL)
   {
-    std::string name = client->getNickname();
-    _channelMembers.insert(std::pair< std::string, Client* >( name, client ));
+    _channelMembers.insert(std::make_pair( client->getNickname(), client ));
   }
 }
 
@@ -117,6 +115,7 @@ std::string Channel::getModesArgs( void ) const {
 }
 
 Channel::mapClientsPtr&   Channel::getChannelMembers( void ) { return (_channelMembers); }
+Channel::mapClientsPtr&   Channel::getChannelOps( void ) { return (_channelOps); }
 
 bool        Channel::checkValidLimit(std::string limit) const {
   std::stringstream	iss(limit);
@@ -136,20 +135,6 @@ void    Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus =
 void    Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
 void		Channel::setLimit( std::string const& limit ) { _limit = limit; }
 void		Channel::setKey( std::string const& key ) { _key = key; }
-
-// bool        Channel::checkChannelOps( std::string const& name )
-// {
-// 	std::cout << "test checkChannelOps" << std::endl;
-// 	std::cout << "_channelOps.size(): " << _channelOps.size() << std::endl;
-// 	for ( unsigned i = 0; i < _channelOps.size(); i++ )
-//     {
-// 		std::cout << "Client nickname: " << _channelOps.at(i)->getNickname() << std::endl;
-// 		std::cout << "name: " << name << std::endl;
-// 		if (_channelOps.at(i)->getNickname() == name)
-// 			return true;
-//     }
-//     return false;
-// }
 
 bool        Channel::checkChannelOps( std::string & name )
 {

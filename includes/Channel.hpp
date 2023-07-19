@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 16:39:22 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:41:18 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ class Channel
 
         typedef std::map< std::string, Client * > mapClientsPtr; 
 
-        // Channel(std::string const& name);
         Channel();
-        // Channel(std::string const& name, const Client& chanop);
         Channel(std::string const& name);
         Channel(Channel const& src);
         ~Channel();
@@ -59,6 +57,7 @@ class Channel
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
         mapClientsPtr&   getChannelMembers( void );
+        mapClientsPtr&   getChannelOps( void );
         
         bool        checkValidLimit(std::string limit) const;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/18 18:22:53 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:27:49 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void				Server::handleUser( int clientSocket, std::string param )
   // if (_clients.at( clientSocket ).getPassStatus() == true && _clients.at( clientSocket ).getNickStatus() == true && !_clients.at( clientSocket ).getUsername().empty())
   // {
   //   _clients.at( clientSocket ).setIfRegistered(true);
-  //   _clients.at( clientSocket ).setSource(_clients.at( clientSocket ).getNickname(), _clients.at( clientSocket ).getUsername());
+  //   _clients.at( clientSocket ).->setrce(_clients.at( clientSocket ).getNickname(), _clients.at( clientSocket ).getUsername());
   //   std::cout << MSGINFO << _clients.at( clientSocket ).getNickname() << " is now registered!\n" << std::endl;
   //   // DISPLAY WELCOME MESSAGES
   //   sendWelcomeMsg( clientSocket );
