@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 18:21:08 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 11:31:42 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,6 +469,8 @@ void Server::handleNewClient( void ) {
   std::cout << std::endl;
 
   _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
+  // Client client( clientSocket );
+  // _clients[ clientSocket ] = client;
 
   // std::cout << "<" << _clients.at( clientSocket ).getFd();
   // std::cout << " joined the channel>\n";

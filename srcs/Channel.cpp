@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 18:31:09 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:17:38 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,15 @@ Channel::Channel() {}
 // }
 
 Channel::Channel(std::string const& name) :
-  _channelName(name),
-  _keyStatus(0),
-  _limitStatus(0),
-  _inviteOnlyStatus(0),
-  _topicRestrictionStatus(1),
-  _key(""),
-  _limit("")
+  _channelName( name ),
+  _channelOps(),
+  _channelMembers(),
+  _keyStatus( 0 ),
+  _limitStatus( 0 ),
+  _inviteOnlyStatus( 0 ),
+  _topicRestrictionStatus( 1 ),
+  _key( "" ),
+  _limit( "" )
 {}
 
 Channel::~Channel() {}
@@ -50,8 +52,9 @@ Channel &    Channel::operator=( Channel const& rhs ){
   if (this != &rhs)
   {
     // _connectedClients = rhs._connectedClients;
-    _channelOps = rhs._channelOps;
     _channelName = rhs._channelName;
+    _channelOps = rhs._channelOps;
+    _channelMembers = rhs._channelMembers;
     _keyStatus = rhs._keyStatus;
     _limitStatus = rhs._limitStatus;
     _inviteOnlyStatus = rhs._inviteOnlyStatus;

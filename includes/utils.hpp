@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 10:48:51 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 14:58:59 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ enum commands {
 
 bool						isValidUser( std::string name );
 bool						isValidParam( std::string name );
+bool						isValidToken(std::string name);
 
 std::string					intToString( int number );
 // std::string					gaiStrerror( int errorCode );

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 17:55:08 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:03:20 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ Client::Client( int socket ) :
 			_nickname( "" ),
 			_username( "" ),
 			_realname( "" ),
-			_source( "" )
+			_source( "" ),
+			_clientChannels()
 			// _channelModes( "" ),
 {}
 
@@ -46,6 +47,20 @@ Client &    Client::operator=( Client const& rhs ) {
 		_username = rhs.getUsername();
 		_realname = rhs.getRealname();
 		_source = rhs.getSource();
+		deepCopyVector( rhs._clientChannels, _clientChannels );
+		// ChannelPtr copyClientChannels;
+		// copyClientChannels.reserve( rhs._clientChannels.size() );
+		// for ( size_t i = 0; i < rhs._clientChannels.size(); ++i ) {
+		// 	Channel* ptr = rhs._clientChannels[ i ];
+		// 	//copie profonde:
+		// 	Channel* newPtr = new Channel(*ptr);
+		// 	copyClientChannels.push_back( newPtr );
+		// }
+		// for ( size_t i = 0; i < rhs._clientChannels.size(); ++i ) {
+		// 	delete _clientChannels[ i ];
+		// }
+		// _clientChannels = copyClientChannels;
+
 		// _channelModes = rhs.getChannelModes();
 	}
 	return ( *this );

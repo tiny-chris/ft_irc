@@ -23,6 +23,7 @@
 // The value MUST be specified and MUST be a positive integer.
 // # define USERLEN 18
 
+// Max number of parameters authorised in a request
 # define MAXPARAM 15
 
 // Password minimum length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED

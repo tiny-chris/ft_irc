@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/18 16:39:22 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:12:34 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ class Channel
 
     private:
         
+        std::string     _channelName;
         // std::map<std::string, Client*> _connectedClients;
         mapClientsPtr   _channelOps;
         mapClientsPtr   _channelMembers;
-        std::string     _channelName;
 
         bool    _keyStatus;
         bool    _limitStatus;

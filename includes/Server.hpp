@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 12:47:13 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:09:48 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ class Server {
     void				handlePing( int clientSocket, std::string param );
 
     void				handleNames( int clientSocket, std::string param );
-    void        displayNames( int clientSocket, Channel& channel );
+    void				displayNames( int clientSocket, Channel& channel );
+
+    void				handleJoin( int clientSocket, std::string param, std::string cmd );
+    bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );

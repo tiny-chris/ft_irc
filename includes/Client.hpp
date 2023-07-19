@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 17:50:52 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/19 15:24:05 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,16 @@
 # include <unistd.h>	// close
 
 # include "Channel.hpp"
+# include "deepCopyUtils.hpp"
 
 class Channel;
+
 class Client {
 
 	public:
 
+		typedef std::vector< Channel* >	ChannelPtr;
+	
 		Client();
 		Client( int socket );
 		Client( Client const & src );
@@ -43,24 +47,26 @@ class Client {
 		// Client&			operator=(const Client& other);
 
 		int				getFd( void ) const;
-		std::string		getNickname( void ) const;
-		std::string		getUsername( void ) const;
-		std::string		getRealname( void ) const;
 		bool			getPassStatus( void ) const;
 		bool			getNickStatus( void ) const;
 		bool			getIfRegistered( void ) const;
-		std::string		getSource( void ) const;
 		bool			getUserModes ( void ) const;
+		std::string		getNickname( void ) const;
+		std::string		getUsername( void ) const;
+		std::string		getRealname( void ) const;
+		std::string		getSource( void ) const;
+		ChannelPtr		getClientChannels( void ) const;
 
-		// void			setFd( int& clientFd );//not used as _fd is const
-		void			setNickname( std::string const& name );
-		void			setUsername( std::string const& name );
-		void			setRealname( std::string const& name );
 		void			setPassStatus( bool const& status );
 		void			setNickStatus( bool const& status );
 		void			setIfRegistered( bool const& status );
-		void			setSource( std::string nickname, std::string username );
 		void			setUserModes( bool const& status );
+		void			setNickname( std::string const& name );
+		void			setUsername( std::string const& name );
+		void			setRealname( std::string const& name );
+		void			setSource( std::string nickname, std::string username );
+		void			setClientChannels( ChannelPtr channels ) const;
+
 		// bool			setChannelModes( std::string const& mode );
 
 	private:
@@ -80,6 +86,7 @@ class Client {
 		std::string	_source;
 		// std::string	_userModes;
 
+		ChannelPtr	_clientChannels;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		//std::vector<Channel>	_clientChannels;
