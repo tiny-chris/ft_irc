@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/17 17:17:20 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/19 14:17:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,13 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         // Displaying channel modes changes to every channel client
         if (modeChange.size() > 1)
         {
-            for (size_t i = 1; i < chan->getChannelMembers().size(); i++)
-                replyMsg(clientSocket, MSG_MODE(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), modeChange, modeArgs));
-        } //
+            int socket;
+            for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++)
+            {
+                socket = it->second->getFd();
+                replyMsg(socket, MSG_MODE(_clients.at( socket ).getSource(), _clients.at( socket ).getNickname(), modeChange, modeArgs));
+            }
+        }   //
     }
 }
 
