@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 14:58:27 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/19 17:57:28 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ void	Server::checkRegistration( int clientSocket )
     std::cout << " is now registered!" << std::endl;
     // DISPLAY WELCOME MESSAGES
     sendWelcomeMsg( clientSocket );
-    // EQUIVALENT OF LUSERS received
-    sendLusersMsg( clientSocket );
+    sendLusersMsg( clientSocket ); // EQUIVALENT OF LUSERS received
+    sendMotdMsg( clientSocket ); // EQUIVALENT OF MOTD commad received
+    
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
     /************************************/
     // TO DEL JUSTE POUR TESTER MODE !!
@@ -70,12 +71,14 @@ void		Server::sendWelcomeMsg( int clientSocket)
   char formattedDate[ 30 ];
   std::strftime( formattedDate, sizeof( formattedDate ), "%a %b %d %H:%M:%S %Y", local );
   std::string date( formattedDate );
+  std::string source = _clients.at( clientSocket ).getSource();
+  std::string nick = _clients.at( clientSocket ).getNickname();
 
-  replyMsg( clientSocket, RPL_WELCOME( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ), 0 );
-  replyMsg( clientSocket, RPL_YOURHOST( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ), 0 );
-  replyMsg( clientSocket, RPL_CREATED( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), date ), 0 );
-  replyMsg( clientSocket, RPL_MYINFO( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ), 0 );
-  replyMsg( clientSocket, RPL_ISUPPORT( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), getSupportToken() ), 0 );
+  replyMsg( clientSocket, RPL_WELCOME( source, nick ), 0 );
+  replyMsg( clientSocket, RPL_YOURHOST( source, nick ), 0 );
+  replyMsg( clientSocket, RPL_CREATED( source, nick, date ), 0 );
+  replyMsg( clientSocket, RPL_MYINFO( source, nick ), 0 );
+  replyMsg( clientSocket, RPL_ISUPPORT( source, nick, getSupportToken() ), 0 );
 }
 
 std::string Server::getSupportToken() const
@@ -99,10 +102,32 @@ void  Server::sendLusersMsg( int clientSocket )
   std::stringstream nbrClients;
 
   nbrClients << _clients.size();
+  std::string source = _clients.at( clientSocket ).getSource();
+  std::string nick = _clients.at( clientSocket ).getNickname();
 
-  replyMsg( clientSocket, RPL_LUSERCLIENT( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), nbrClients.str() ), 0 );
-  replyMsg( clientSocket, RPL_LUSEROP( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0" ), 0 ); // A MODIFIER getOpsNbr()
-  replyMsg( clientSocket, RPL_LUSERUNKNOWN( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0" ), 0 ); // A Modifier getUnknownStateUsers()
-  replyMsg( clientSocket, RPL_LUSERCHANNELS( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "0" ), 0 ); // A MODIFIER getChannelNbr();
-  replyMsg( clientSocket, RPL_LUSERCLIENT( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), nbrClients.str() ), 0 );
+  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str() ), 0 );
+  replyMsg( clientSocket, RPL_LUSEROP( source, nick, "0" ), 0 ); // A MODIFIER getOpsNbr()
+  replyMsg( clientSocket, RPL_LUSERUNKNOWN( source, nick, "0" ), 0 ); // A Modifier getUnknownStateUsers()
+  replyMsg( clientSocket, RPL_LUSERCHANNELS( source, nick, "0" ), 0 ); // A MODIFIER getChannelNbr();
+  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str() ), 0 );
+}
+
+void        Server::sendMotdMsg( int clientSocket )
+{
+  std::string source = _clients.at( clientSocket ).getSource();
+  std::string nick = _clients.at( clientSocket ).getNickname();
+  std::ifstream motdFile;
+  motdFile.open("./motd.txt", std::ifstream::in);
+  if (!motdFile)
+  {
+    std::cerr << "Erreur lors de l'ouverture du fichier motd.txt" << std::endl;
+    exit (1); // TO DO
+  }
+  
+  replyMsg( clientSocket, RPL_MOTDSTART(source, nick, _serverName), 0);
+  std::string line;
+  while (std::getline(motdFile, line))
+    replyMsg( clientSocket, RPL_MOTD(source, nick) + line + "\r\n", 0);
+  motdFile.close();
+  replyMsg( clientSocket, RPL_ENDOFMOTD(source, nick), 0);
 }

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 16:34:43 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/19 17:52:20 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <cerrno>    // errno
 # include <cstring>   // strerror
 # include <iostream>  // cerr, cout
+# include <fstream>
 # include <sstream>   // stringstream
 # include <string>    // string
 # include <vector>    // vector
@@ -47,6 +48,7 @@ class Server {
     void				checkRegistration( int clientSocket );
     void				sendWelcomeMsg( int clientSocket );
     void				sendLusersMsg( int clientSocket );
+    void        sendMotdMsg( int clientSocket );
 
 
     /*** COMMANDS ***/
