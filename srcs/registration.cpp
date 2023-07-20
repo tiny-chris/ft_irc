@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 18:17:30 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/20 14:43:36 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	Server::checkRegistration( int clientSocket )
       _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
       _channels[ name ].addChannelMembers(&_clients.at( clientSocket ) );
     }
-    if ( clientSocket == 6 )
+    if ( clientSocket == 7 )
     {
       _channels[ name ].addChannelMembers( &_clients.at( clientSocket ) );
     }

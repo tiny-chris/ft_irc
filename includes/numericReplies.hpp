@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 18:04:11 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/20 16:56:07 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,11 @@
 # define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(":") + source + " 436 " + clientNickname + " :Nickname collision KILL\r\n")
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
 
-# define  ERR_USERNOTINCHANNEL 441
-// "<pseudo> <canal> :They aren't on that channel"
+# define  ERR_USERNOTINCHANNEL(source, nickname, tokick, channel) (std::string(":") + source + " 441 " + nickname + " " + tokick + " " + channel + " :They aren't on that channel\r\n")
 // Renvoyé par un serveur pour indiquer que l'utilisateur donné n'est pas dans le canal spécifié.
 
-# define  ERR_NOTONCHANNEL 442
+# define  ERR_NOTONCHANNEL(source, nickname, channel) (std::string(":") + source + " 442 " + nickname + " " + channel + " :You're not on that channel\r\n")
+// 442
 // "<canal> :You're not on that channel"
 // Renvoyé par le serveur quand un client essaie une commande affectant un canal dont il ne fait pas partie.
 
@@ -376,5 +376,7 @@
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
+# define DEFAULTKICK(source, nickname, channel) (std::string(":") + source + " KICK " + channel + " "  + nickname + " :You have been kicked\r\n")
+# define KICKER(source, nickname, channel) (std::string(":") + source + " KICK " + channel + " "  + nickname + " : was kicked\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

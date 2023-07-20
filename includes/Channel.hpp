@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/19 15:41:18 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/20 15:49:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ class Channel
         void        addChannelMembers( Client* client );
 
         bool        checkChannelOps( std::string & name );
+        bool        checkChannelMembers( std::string & name );
 
     private:
         

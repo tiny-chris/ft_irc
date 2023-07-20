@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/19 15:42:12 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/20 15:48:27 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,14 @@ void		Channel::setKey( std::string const& key ) { _key = key; }
 bool        Channel::checkChannelOps( std::string & name )
 {
   if (_channelOps.find(name) != _channelOps.end()) {
+    return true;
+  }
+  return false;
+}
+
+bool        Channel::checkChannelMembers( std::string & name )
+{
+  if (_channelMembers.find(name) != _channelMembers.end()) {
     return true;
   }
   return false;
