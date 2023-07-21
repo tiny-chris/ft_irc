@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:32:52 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 17:40:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,10 @@ class Server {
 
     void				handleJoin( int clientSocket, std::string cmd, std::string param );
     bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
-    bool				joinNonExistingChannel( int clientSocket, std::string sharpChannelName );
-    bool				joinExistingChannel( int clientSocket, std::string sharpChannelName );
+    // bool				joinNonExistingChannel( int clientSocket, std::string sharpChannelName );
+    // bool				joinExistingChannel( int clientSocket, std::string sharpChannelName );
+    bool				joinNonExistingChannel( int clientSocket, std::string channelName );
+    bool				joinExistingChannel( int clientSocket, std::string channelName );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );

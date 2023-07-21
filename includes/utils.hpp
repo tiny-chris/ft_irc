@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:34:51 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 18:14:26 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ bool						isValidParam( std::string name );
 bool						isValidToken(std::string name);
 
 std::string					intToString( int number );
-// std::string					gaiStrerror( int errorCode );
 
 std::vector<std::string>	splitString( std::string params, char splitter );
 
