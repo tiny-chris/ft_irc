@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 18:38:25 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 18:41:39 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void        Server::handleKick( int clientSocket, std::string param )
     std::vector<std::string> tokens = splitString( param, ' ' );
     if ( param.empty() || tokens.size() < 2 )
     {
-        replyMsg(clientSocket, ERR_NEEDMOREPARAMS( source, nick, "MODE"));
+        replyMsg(clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK"));
         return ;
     }
 	std::string channelName = tokens[ 0 ];

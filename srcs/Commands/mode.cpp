@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/19 14:17:35 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 18:55:45 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ void		Server::handleChannelModeSet(Channel *chan, char modeChar, std::string* mo
         case 't':
             handleModeSetTopicRestriction(chan, modeChange);
             break;
+        case 'o':
+            handleModeSetOperator(chan, modeArgs, modeChange, tokens, j);
+            break;
     }
 }
 
@@ -161,6 +164,13 @@ void 		Server::handleModeSetTopicRestriction(Channel *chan, std::string* modeCha
         *modeChange += "t";
     }
 }
+
+
+void        handleModeSetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
+{
+    std::cout << "TODO !" << std::endl;
+}
+
 
 // Prefix - -> Unsets channel modes
 void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange)

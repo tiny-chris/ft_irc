@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 18:02:18 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 18:54:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Server {
     void				handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
     void				handleModeSetTopicRestriction(Channel *chan, std::string* modeChange);
+    void        handleModeSetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
 
     void				handleModeUnsetKey(Channel *chan, std::string* modeChange);
     bool				isValidModeChar( char const modeChar );
