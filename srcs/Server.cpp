@@ -306,15 +306,15 @@ void  Server::handleRequest( int clientSocket, std::string request )
   // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
   switch( commandKey )
   {
-    case CAP:     std::cout << std::endl; break;
-    case PASS:    handlePass( clientSocket, parameters ); break;
-    case NICK:    handleNick( clientSocket, parameters ); break;
-    case USER:    handleUser( clientSocket, parameters ); break;
-    case PING:    handlePing( clientSocket, parameters ); break;
-    case MODE:    handleMode( clientSocket, parameters ); break;
-    case JOIN:        std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl; break;
-    case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
-    case NAMES:   handleNames( clientSocket, parameters ); break;
+		case CAP:			std::cout << std::endl; break;
+		case PASS:		handlePass( clientSocket, parameters ); break;
+		case NICK:		handleNick( clientSocket, parameters ); break;
+		case USER:		handleUser( clientSocket, parameters ); break;
+		case PING:		handlePing( clientSocket, parameters ); break;
+		case MODE:		handleMode( clientSocket, parameters ); break;
+		case JOIN:		handleJoin( clientSocket, parameters, command ); break;
+		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+		case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '

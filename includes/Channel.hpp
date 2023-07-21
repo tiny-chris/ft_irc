@@ -37,7 +37,7 @@ class Channel
 {
     public:
 
-        typedef std::map< std::string, Client * > mapClientsPtr; 
+        typedef std::map< std::string, Client * > mapClientsPtr;
 
         // Channel(std::string const& name);
         Channel();
@@ -59,7 +59,7 @@ class Channel
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
         mapClientsPtr&   getChannelMembers( void );
-        
+
         bool        checkValidLimit(std::string limit) const;
 
         void		setChannelName( std::string& name );
@@ -73,10 +73,10 @@ class Channel
         void        addChannelOps( Client* client );
         void        addChannelMembers( Client* client );
 
-        bool        checkChannelOps( std::string & name );
+        bool        checkChannelOps( std::string name );
 
     private:
-        
+
         std::string     _channelName;
         // std::map<std::string, Client*> _connectedClients;
         mapClientsPtr   _channelOps;

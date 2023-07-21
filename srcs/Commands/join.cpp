@@ -44,7 +44,9 @@
 
 void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 {
-	std::vector<std::string>	tokens = splitString(param, ' ');
+    std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl;
+
+	std::vector< std::string >	tokens = splitString(param, ' ');
 	Client& 					client = _clients.at( clientSocket );
 
 	std::cout << ZZ_MSGTEST << "JOIN - nombre de tokens: " << tokens.size() << std::endl;
@@ -54,10 +56,10 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	** ******************************* ***
 	**	check if param is empty --> ERR_NEEDMOREPARAMS
 	*/
-	if (param.empty() || tokens.size() == 0)
+	if (param.empty() || tokens.size() == 0 || tokens[ 0 ].empty() )
 	{
 		// replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), cmd));
-		replyMsg( clientSocket, ERR_NEEDMOREPARAMS(client.getSource(), client.getNickname(), cmd));
+		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client.getSource(), client.getNickname(), cmd ) );
 		return ;
 	}
 
@@ -65,12 +67,19 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	**	- if tokens size > 15 - 1 (-1 for the command) --> too many parameters
 	*/
 	// --> revoir car on ne devrait pas avoir autant de tokens !!
+	// même indiquer que uniquement 2 params ici
 
-	if (tokens.size() > MAXPARAM - 1)
+	// if ( tokens.size() > MAXPARAM - 1 )
+	if ( tokens.size() > 2 )
 	{
 		// check if there is an existing numeric reply
 		std::cout << MSGERROR << "too many parameters for this command JOIN\n" << std::endl;
 		return ;
+	}
+
+	if ( tokens[ 0 ] == "0" )
+	{
+		std::cout << ZZ_MSGTEST << "supprimer le client de tous les canaux (utiliser PART)\n" << std::endl;
 	}
 
 	/* *************************************************** ***
@@ -89,12 +98,15 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	**	Le nom du canal peut contenir des lettres, des chiffres et certains caractères
 	**	spéciaux tels que "-", "_", et ".".
 	*/
-	std::vector<std::string>	channels = splitString(tokens[0], ',');
+	std::vector< std::string >	channels = splitString( tokens[ 0 ], ',' );
 	std::cout << ZZ_MSGTEST << "nombre de channels (dans tokens[0]): " << channels.size() << std::endl;
+	std::vector< std::string >	keys;
+	if ( tokens.size() == 2 ) {
+		keys = splitString( tokens[ 1 ], ',' );
+	}
 
-	if (validChannelNames( clientSocket, channels ) == false)
+	if ( validChannelNames( clientSocket, channels ) == false )
 		return ;
-
 
 	std::cout << ZZ_MSGTEST << "Print les valeurs de channelNames :";
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
@@ -104,34 +116,35 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	std::cout << "\n";
 
 	/* *************************************************** ***
-	** CHECK 3 - EACH CHANNEL ALREADY EXISTS               ***
+	** CHECK 3 - EACH CHANNEL ALREADY EXISTS OR NOT        ***
 	** *************************************************** ***
 	*/
 	for ( size_t i = 0; i < channels.size(); ++i )
 	{
 		if ( existingChannel( channels[ i ] ) == true )
 		{
-			if ( joinExistingChannel( requestor, channels[i] ) == false )
+			if ( joinExistingChannel( clientSocket, channels[i] ) == false )
 				return ;
 		}
 		else
 		{
 			if ( joinNonExistingChannel( clientSocket, channels[ i ] ) == false )
-			// if ( joinNonExistingChannel( requestor, channels[i] ) == false )
 				return ;
-			std::map<std::string, Channel>::iterator it;
-			for (it = _channels.begin(); it != _channels.end();++it)
-			{
-				std::cout << "nom du channel '"<< it->first << "'";
-				std::cout << " et nom dans le channel '" << it->second.getChannelName() << "'" << std::endl;
-			}
+			// std::map<std::string, Channel>::iterator it;
+			// for ( it = _channels.begin(); it != _channels.end(); ++it )
+			// {
+			// 	std::cout << "nom du channel '"<< it->first << "'";
+			// 	std::cout << " et nom dans le channel '" << it->second.getChannelName() << "'" << std::endl;
+			// }
 		}
 		// if client has been added to the channel
-		// display RPL_TOPIC and RPL_NAMES
-		// RPL_TOPIC
-		std::cout << ZZ_MSGTEST << "TO DO: DEAL RPL_TOPIC...\n";
-		// NAMES
-		std::cout << ZZ_MSGTEST << "TO DO: DEAL RPL_NAMES...\n" << std::endl;
+		replyMsg( clientSocket, RPL_JOIN( client.getSource(), client.getNickname(), channels[ i ] ) );
+		// display RPL_TOPIC (if existing) and NAMES
+		if ( 1 )// the channel has a topic
+			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), channels[ i ], "topic to be provided" ) );
+		handleNames( clientSocket, channels[ i ]);
+
+		// prevoir un broadcast pour les users du channel
 	}
 }
 
@@ -159,18 +172,17 @@ bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
 		return false ;
 	}
 
-	// je crée un nouveau channel
-	Channel newChan( channelName );
-	std::cout << MSGINFO << "recup nom channel dans joinNonexistingClient '" << newChan.getChannelName() << "'" << std::endl;
-	// je lui ajoute le client --> prévoir le chanOp
-	newChan.addConnectedClient( client );
-	// voir pour les paramètres --> opérateur, mode? dans le constructeur ?
-	// j'ajoute le channel à la liste des channels
-	_channels.insert( std::make_pair( channelName, newChan ) );
-	// j'ajoute le nom du channel dans le client (vraiment nécessaire ??)
+	// j'ajoute un nouveau channel à _channels
+	_channels.insert( std::make_pair( channelName, Channel ( channelName ) ) );
+	// j'ajoute le client à ce nouveau channel et je le mets en tant que chanOp
+	_channels[ channelName ].addChannelMembers( &client );
+	_channels[ channelName ].addChannelOps( &client );
+	// j'ajoute le nom du channel dans le vecteur 'clientChanels' du client
 	client.addChannel( channelName );
+
 	std::cout << MSGINFO << "a new channel <" << _channels[ channelName ].getChannelName() << "> is created\n";// << std::endl;
-	std::cout << ZZ_MSGTEST << client.getNickname() << " has created the channel <" << channelName << "> and is chan op (TO BE CONFIGURED)\n" << std::endl;
+	std::cout << ZZ_MSGTEST << client.getNickname() << " has created the channel <" << channelName << "> and is chan op\n" << std::endl;
+
 	return true ;
 }
 
@@ -211,8 +223,9 @@ bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
 **		2. add Channel to the list of the Client 'vector'
 **
 */
-bool	Server::joinExistingChannel( Client& requestor, std::string chanName )
+bool	Server::joinExistingChannel( int clientSocket, std::string channelName )
 {
+	Client&	client = _clients.at( clientSocket );
 	// // checkIfClientHasAlreadyThisChannel( )
 	// std::vector<Channel>::iterator it = _clients[i]._clientChannels.begin();
 	// std::vector<Channel>::iterator ite = _clients[i]._clientChannels.end();
@@ -239,8 +252,8 @@ bool	Server::joinExistingChannel( Client& requestor, std::string chanName )
 	// _clients[cid]._clientChannels.push_back( newChan );
 	// std::cout << "A new channel " << chanName << " is created\n";// << std::endl;
 	// std::cout << _clients[cid].getNickname() << " has created the channel " << chanName << " and is chan op\n" << std::endl;
-	( void ) requestor;
-	( void ) chanName;
+	( void ) client;
+	( void ) channelName;
 	std::cout << "test:\t case = joinExistingChannel\n";
 	return true ;
 }
@@ -249,17 +262,7 @@ bool	Server::joinExistingChannel( Client& requestor, std::string chanName )
 // 	** CHECK 1 - CLIENT IS ALREADY ON TOO MANY CHANNELS ***
 // 	** ************************************************ ***
 // 	*/
-// 	if (_clients[cid]._clientChannels.size() >= CHANLIMIT)
-// 	{
-// 		// RECUP LE CHAN NAME
-// 		replyMsg(cid, ERR_TOOMANYCHANNELS(_serverName, _clients[cid].getNickname(), chan));
-// 	}
-// # define ERR_TOOMANYCHANNELS 405
-// //"<nom de canal> :You have joined too many channels"
-// //Envoyé à un utilisateur quand il a atteint le nombre maximal de canaux qu'il est autorisé à accéder simultanément, s'il essaie d'en rejoindre un autre.
-
 bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& channelNames )
-// bool	Server::validChannelNames( const Client& requestor, std::vector<std::string>& channels )
 {
 	Client& client = _clients.at( clientSocket );
 	// specific case when there is no channel name (only spaces)
@@ -290,7 +293,7 @@ bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& chan
 			return false ;
 		}
 
-		channelNames[ i ] = chanName;
+		channelNames[ i ] = chanName;// // ne pas garder la valeur ??
 		std::cout << ZZ_MSGTEST << "val de chanName = " << chanName << std::endl;
 	}
 	return true ;

@@ -154,7 +154,7 @@ void		Channel::setKey( std::string const& key ) { _key = key; }
 //     return false;
 // }
 
-bool        Channel::checkChannelOps( std::string & name )
+bool        Channel::checkChannelOps( std::string name )
 {
   if (_channelOps.find(name) != _channelOps.end()) {
     return true;

@@ -64,6 +64,7 @@ class Server {
     void				handleJoin( int clientSocket, std::string param, std::string cmd );
     bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
     bool				joinNonExistingChannel( int clientSocket, std::string channelName );
+    bool				joinExistingChannel( int clientSocket, std::string channelName );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );

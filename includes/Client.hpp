@@ -35,8 +35,8 @@ class Client {
 
 	public:
 
-		typedef std::vector< Channel* >	ChannelPtr;
-	
+		// typedef std::vector< Channel* >	channelPtr;
+
 		Client();
 		Client( int socket );
 		Client( Client const & src );
@@ -55,7 +55,8 @@ class Client {
 		std::string		getUsername( void ) const;
 		std::string		getRealname( void ) const;
 		std::string		getSource( void ) const;
-		ChannelPtr		getClientChannels( void ) const;
+		// channelPtr		getClientChannels( void ) const;
+		std::vector< std::string >	getClientChannels( void ) const;
 
 		void			setPassStatus( bool const& status );
 		void			setNickStatus( bool const& status );
@@ -65,9 +66,11 @@ class Client {
 		void			setUsername( std::string const& name );
 		void			setRealname( std::string const& name );
 		void			setSource( std::string nickname, std::string username );
-		void			setClientChannels( ChannelPtr channels ) const;
+		// void			setClientChannels( channelPtr channels ) const;
+		void			setClientChannels( std::vector< std::string > channels ) const;
 
 		// bool			setChannelModes( std::string const& mode );
+		void			addChannel( std::string channelName );
 
 	private:
 
@@ -86,7 +89,8 @@ class Client {
 		std::string	_source;
 		// std::string	_userModes;
 
-		ChannelPtr	_clientChannels;
+		// channelPtr	_clientChannels;
+		std::vector< std::string >	_clientChannels;
 
 		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
 		//std::vector<Channel>	_clientChannels;
