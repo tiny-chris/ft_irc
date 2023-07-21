@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:32:52 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 18:02:18 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ class Server {
 
     void        handleKick( int clientSocket, std::string param );
     void	      kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason);
+    std::string	getReason(std::vector<std::string> &tokens);
     
     void		    handleTopic( int clientSocket, std::string param );
 

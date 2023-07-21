@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 16:41:17 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 17:43:54 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ bool        Channel::checkValidLimit(std::string limit) const {
   int	num;
 
   iss >> num;
-  if (num > 1 && num < CHANLIMIT && intToString(num) == limit)
+  if (num > 1 && num < MAXMEMBERS && intToString(num) == limit)
     return true;
   return false;
 }

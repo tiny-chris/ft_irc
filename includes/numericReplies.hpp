@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:34:38 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 17:38:42 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,4 +385,6 @@
 # define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN :" + channel + CRLF)
 # define KICKER(source, nickname, channel, reason) 			(std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
+# define KICK_REASON "bye bye looser\r\n"
+
 #endif /* __NUMERIC_REPLIES_HPP__*/
