@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/20 16:56:07 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/21 09:45:49 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,7 +376,6 @@
 # define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
-# define DEFAULTKICK(source, nickname, channel) (std::string(":") + source + " KICK " + channel + " "  + nickname + " :You have been kicked\r\n")
-# define KICKER(source, nickname, channel) (std::string(":") + source + " KICK " + channel + " "  + nickname + " : was kicked\r\n")
-
+# define KICKER(source, nickname, channel, reason) (std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
+# define DEFAULTKICK(nickname, channel, tokick, reason) (std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 #endif /* __NUMERIC_REPLIES_HPP__*/

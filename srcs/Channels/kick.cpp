@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/20 17:03:59 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/21 10:07:20 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,28 +44,32 @@ void        Server::handleKick( int clientSocket, std::string param )
 		else
 		{
 			Channel *chan = &_channels[ channelName ];
-			if ( !chan->checkChannelOps( nick ) )
+			if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges 
 			{
 				replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 				return ;
 			}
 			std::string toKick = tokens[ 1 ];
-			if ( !chan->checkChannelMembers( toKick ) )
+			if ( !chan->checkChannelMembers( toKick ) ) // checking if the client to kick is a chanmember
 			{
 				replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick, channelName ));
 				return ;
 			}
-			if ( !chan->checkChannelMembers( nick ) )
+			if ( !chan->checkChannelMembers( nick ) ) // checking if the client that makes the request is a channel member
 			{
 				replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
 				return ;
 			}
-			std::string reply = DEFAULTKICK(source, channelName, toKick);
-			int socket = chan->getChannelMembers().at(toKick)->getFd();
-			if ( tokens.size() > 3 )
-				reply = ":" + source + " KICK " + toKick + " " + channelName + " " + tokens[2];
-			replyMsg(socket, reply); // TODO revoir les msg
-			replyMsg(clientSocket, KICKER(source, toKick, channelName)); // TODO revoir les msg
+			std::string reason = "bye bye looser!"; // reason by default
+			// int socket = chan->getChannelMembers().at(toKick)->getFd();
+			if ( tokens.size() > 3 ) //checking if a reason is passed as an argument
+				reason = tokens[3];
+			int socket;
+            for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++)
+            {
+                socket = it->second->getFd();
+				replyMsg(socket, DEFAULTKICK(nick, channelName, toKick, reason));
+            }
 			// remove client from channel members and channel operators
 			chan->getChannelMembers().erase(toKick);
 			chan->getChannelOps().erase(toKick);
