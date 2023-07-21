@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 14:33:18 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 16:41:03 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,9 @@ class Channel
         void        addInvitedMember( const std::string& clientName );
         void        removeInvitedMember( const std::string& clientName );
 
-        bool        checkChannelOps( std::string & name );
+        bool        checkChannelOps( std::string name );
         bool        isInvited( std::string clientName ) const;
+        bool        checkChannelMembers( std::string name );
 
     private:
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 14:58:59 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 16:34:51 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ enum commands {
 	MODE = 109,
 	JOIN = 110,
 	PRIVMSG = 111,
+	KICK = 112,
+	TOPIC = 113,
 	NAMES = 120,
 
 	ZZ_SHUTDOWN = 1000,

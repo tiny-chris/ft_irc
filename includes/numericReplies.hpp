@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 11:38:00 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 16:34:38 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,30 +95,22 @@
 //Message d'erreur générique utilisé pour rapporter un échec d'opération de fichier durant le traitement d'un message.
 
 # define  ERR_NONICKNAMEGIVEN(source, nickname) (std::string(":") + source + " 431 " + nickname + " :No nickname given\r\n")
-// 431
-//":No nickname given"
 //Renvoyé quand un paramètre pseudonyme attendu pour une commande n'est pas fourni.
 
 # define  ERR_ERRONEUSNICKNAME(source, clientNickname, nickname) (std::string(":") + source + " 432 " + clientNickname + " :Erroneus nickname\r\n")
-// 432
-// "<pseudo> :Erroneus nickname"
 // Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.
 
 # define  ERR_NICKNAMEINUSE(source, clientNickname, nickname)(std::string(":") + source + " 433 " + clientNickname + " " + nickname + " :Nickname is already in use\r\n")
-// 433
-// "<nick> :Nickname is already in use"
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
 
 # define  ERR_NICKCOLLISION(source, clientNickname, nickname) (std::string(":") + source + " 436 " + clientNickname + " :Nickname collision KILL\r\n")
-// 436
-// "<nick> :Nickname collision KILL"
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
 
-# define  ERR_USERNOTINCHANNEL 441
-// "<pseudo> <canal> :They aren't on that channel"
+# define  ERR_USERNOTINCHANNEL(source, nickname, tokick, channel) (std::string(":") + source + " 441 " + nickname + " " + tokick + " " + channel + " :They aren't on that channel\r\n")
 // Renvoyé par un serveur pour indiquer que l'utilisateur donné n'est pas dans le canal spécifié.
 
-# define  ERR_NOTONCHANNEL 442
+# define  ERR_NOTONCHANNEL(source, nickname, channel) (std::string(":") + source + " 442 " + nickname + " " + channel + " :You're not on that channel\r\n")
+// 442
 // "<canal> :You're not on that channel"
 // Renvoyé par le serveur quand un client essaie une commande affectant un canal dont il ne fait pas partie.
 
@@ -139,18 +131,12 @@
 // Retourné en réponse à une commande USERS si la commande est désactivée. Tout serveur qui ne gère pas les USERS doit retourner cette valeur.
 
 # define  ERR_NOTREGISTERED(source, nickname) (std::string(":") + source + " 451 " + nickname + " :You have not registered\r\n")
-// 451
-// ":You have not registered"
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 
 # define  ERR_NEEDMOREPARAMS(source, nickname, command) (std::string(":") + source + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
-// 461
-// "<commande> :Not enough parameters"
 // Renvoyé par un serveur par de nombreuses commandes, afin d'indiquer que le client n'a pas fourni assez de paramètres.
 
 # define  ERR_ALREADYREGISTRED(source, nickname) (std::string(":") + source + " 462 " + nickname + " :You may not reregister\r\n")
-// 462
-// ":You may not reregister"
 // Retourné par le serveur à tout lien qui tente de changer les détails enregistrés (tels que mot de passe et détails utilisateur du second message USER)
 
 # define  ERR_NOPERMFORHOST 463
@@ -158,8 +144,6 @@
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
 # define  ERR_PASSWDMISMATCH(source, nickname) (std::string(":") + source + " 464 " + nickname + " :Password incorrect\r\n")
-// 464
-// ":Password incorrect"
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
 
 # define  ERR_YOUREBANNEDCREEP 465
@@ -172,8 +156,6 @@
 
 // # define  ERR_CHANNELISFULL(source, nickname, channel) (std::string(":") + source + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)\r\n")
 # define  ERR_CHANNELISFULL(source, channel) (std::string(":") + source + " 471 " + channel + " :Cannot join channel (+l)\r\n")
-// 471
-// "<canal> :Cannot join channel (+l)"
 // Impossible de joindre le canal (+l)
 
 # define  ERR_UNKNOWNMODE 472
@@ -195,8 +177,6 @@
 // Impossible de joindre le canal (+k).
 
 # define ERR_BADCHANMASK(source, nickname, channel) (std::string(":") + source + " 476 " + nickname + " " + channel + " :Bad Channel Mask\r\n")
-// 476
-// "<channel> :Bad Channel Mask"
 // Indicates the supplied channel name is not a valid.
 // This is similar to, but stronger than, ERR_NOSUCHCHANNEL (403), which indicates that the channel does not exist, but that it may be a valid name.
 // The text used in the last param of this message may vary
@@ -206,8 +186,6 @@
 // Toute commande qui requiert le privilège d'opérateur pour opérer doit retourner cette erreur pour indiquer son échec.
 
 # define ERR_CHANOPRIVSNEEDED(source, nickname, channel) (std::string(":") + source + " 482 " + nickname + " " + channel + " :You're not channel operator\r\n")
-// 482
-// "<canal> :You're not channel operator"
 // Toute commande qui requiert les privilèges 'chanop' (tels les messages MODE) doit retourner ce message à un client qui l'utilise sans être chanop sur le canal spécifié.
 
 # define ERR_CANTKILLSERVER 483
@@ -219,8 +197,6 @@
 // Si un client envoie un message OPER et que le serveur n'a pas été configuré pour autoriser les connexions d'opérateurs de cet hôte, cette erreur doit être retournée.
 
 # define ERR_UMODEUNKNOWNFLAG(source, nickname) (std::string(":") + source + " 501 " + nickname + " :Unknown MODE flag\r\n")
-//501
-// ":Unknown MODE flag"
 // Renvoyé par un serveur pour indiquer que le message MODE a été envoyé avec un pseudonyme et que le mode spécifié n'a pas été identifié.
 
 # define ERR_USERSDONTMATCH(source, nickname) (std::string(":") + source + " 502 " + nickname + " :Cant change mode for other users\r\n")
@@ -363,8 +339,6 @@
 // Only public channel so no use of <symbol> (public, secret, private)
 
 # define RPL_ENDOFNAMES(source, nickname, channel) (std::string(":") + source + " 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
-// 366
-// "<client> <channel> :End of /NAMES list"
 // Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.
 
 # define RPL_BANLIST 367
@@ -379,12 +353,12 @@
 // ":End of /INFO list"
 // Un serveur répondant à un message INFO doit envoyer toute sa série d'info en une suite de réponses RPL_INFO, avec un RPL_ENDOFINFO pour indiquer la fin des réponses.
 
-# define RPL_MOTDSTART 375
-// ":- <serveur> Message of the day - "
-# define RPL_MOTD 372
+# define RPL_MOTDSTART(source, nickname, server) (std::string(":") + source + " 375 " + nickname + " :- " + server + " Message of the day - \r\n")
+
+# define RPL_MOTD(source, nickname) (std::string(":") + source + " 372 " + nickname + " :")
 // ":- <texte>"
-# define RPL_ENDOFMOTD 376
-// ":End of /MOTD command"
+
+# define RPL_ENDOFMOTD(source, nickname) (std::string(":") + source + " 376 " + nickname + " :End of /MOTD command.\r\n")
 // Lorsqu'il répond à un message MOTD et que le fichier MOTD est trouvé, le fichier est affiché ligne par ligne, chaque ligne ne devant pas dépasser 80 caractères, en utilisant des réponses au format RPL_MOTD. Celles-ci doivent être encadrées par un RPL_MOTDSTART (avant les RPL_MOTDs) et un RPL_ENDOFMOTD (après).
 
 # define RPL_YOUREOPER 381
@@ -409,6 +383,6 @@
 # define RPL_NICK(oldNickname, newNickname)					(std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs)	(std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
 # define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN :" + channel + CRLF)
-
-
+# define KICKER(source, nickname, channel, reason) 			(std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
+# define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 #endif /* __NUMERIC_REPLIES_HPP__*/

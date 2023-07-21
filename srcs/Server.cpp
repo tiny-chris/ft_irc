@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 12:25:57 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 16:38:13 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ void	Server::initCommands( void )
   _commands.insert( std::make_pair( 109, "MODE" ) );
   _commands.insert( std::make_pair( 110, "JOIN" ) );
   _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
+  _commands.insert( std::make_pair( 112, "KICK" ) );
   _commands.insert( std::make_pair( 120, "NAMES" ) );
 
   // temp elements --> will be replaced by valid command
@@ -314,7 +315,9 @@ void  Server::handleRequest( int clientSocket, std::string request )
 		case MODE:		handleMode( clientSocket, parameters ); break;
 		case JOIN:		handleJoin( clientSocket, command, parameters ); break;
 		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
-		case NAMES:   handleNames( clientSocket, parameters ); break;
+    case KICK:    handleKick( clientSocket, parameters ); break;
+    case TOPIC:   handleTopic( clientSocket, parameters ); break;
+    case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '
