@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 15:50:41 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 11:38:00 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,8 @@
 // "<caractère> :is unknown mode char to me"
 // Mode inconnu.
 
-# define  ERR_INVITEONLYCHAN 473
+# define  ERR_INVITEONLYCHAN(source, channel) (std::string(":") + source + " 473 " + channel + " :Cannot join channel (+i)\r\n")
+// 473
 // "<canal> :Cannot join channel (+i)"
 // Impossible de joindre le canal (+i).
 
@@ -188,7 +189,8 @@
 // "<canal> :Cannot join channel (+b)"
 // Impossible de joindre le canal (+b).
 
-# define  ERR_BADCHANNELKEY 475
+# define  ERR_BADCHANNELKEY(source, channel) (std::string(":") + source + " 475 " + channel + " :Cannot join channel (+k)\r\n")
+// 475
 // "<canal> :Cannot join channel (+k)"
 // Impossible de joindre le canal (+k).
 

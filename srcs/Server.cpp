@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 11:31:42 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 12:25:57 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,7 +312,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
 		case USER:		handleUser( clientSocket, parameters ); break;
 		case PING:		handlePing( clientSocket, parameters ); break;
 		case MODE:		handleMode( clientSocket, parameters ); break;
-		case JOIN:		handleJoin( clientSocket, parameters, command ); break;
+		case JOIN:		handleJoin( clientSocket, command, parameters ); break;
 		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
 		case NAMES:   handleNames( clientSocket, parameters ); break;
 

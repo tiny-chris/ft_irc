@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/17 17:16:01 by cvidon           ###   ########.fr       */
+/*   Updated: 2023/07/21 11:29:19 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,11 @@ void	Server::checkRegistration( int clientSocket )
       std::string name = "#chantest";
       _channels.insert( std::pair<std::string, Channel>( name, Channel( name ) ) );
       _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
-      _channels[ name ].addChannelMembers(&_clients.at( clientSocket ) );
+      _channels[ name ].addChannelMember(&_clients.at( clientSocket ) );
     }
     if ( clientSocket == 6 )
     {
-      _channels[ "#chantest" ].addChannelMembers( &_clients.at( clientSocket ) );
+      _channels[ "#chantest" ].addChannelMember( &_clients.at( clientSocket ) );
     }
     /************************************/
   }

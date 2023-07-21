@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 15:42:56 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 12:53:56 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,21 +44,17 @@
 
 void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 {
-    std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl;
-
 	std::vector< std::string >	tokens = splitString(param, ' ');
 	Client& 					client = _clients.at( clientSocket );
 
-	std::cout << ZZ_MSGTEST << "JOIN - nombre de tokens: " << tokens.size() << std::endl;
+	std::cout << ZZ_MSGTEST << cmd << " - nombre de tokens: " << tokens.size() << std::endl;
 
 	/* ******************************* ***
 	** CHECK 1 - NOT ENOUGH PARAMETERS ***
 	** ******************************* ***
 	**	check if param is empty --> ERR_NEEDMOREPARAMS
 	*/
-	if (param.empty() || tokens.size() == 0 || tokens[ 0 ].empty() )
-	{
-		// replyMsg(cid, ERR_NEEDMOREPARAMS(_serverName, _clients[cid].getNickname(), cmd));
+	if ( param.empty() || tokens.size() == 0 ) {
 		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client.getSource(), client.getNickname(), cmd ) );
 		return ;
 	}
@@ -73,13 +69,13 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	if ( tokens.size() > 2 )
 	{
 		// check if there is an existing numeric reply
-		std::cout << MSGERROR << "too many parameters for this command JOIN\n" << std::endl;
+		std::cout << MSGERROR << cmd << ": too many parameters for this command\n" << std::endl;
 		return ;
 	}
 
-	if ( tokens[ 0 ] == "0" )
+	if ( tokens.size() == 1 && tokens[ 0 ] == "0" )
 	{
-		std::cout << ZZ_MSGTEST << "supprimer le client de tous les canaux (utiliser PART)\n" << std::endl;
+		std::cout << ZZ_MSGTEST << "TODO supprimer le client de tous les canaux (utiliser PART)\n" << std::endl;
 	}
 
 	/* *************************************************** ***
@@ -108,12 +104,12 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	if ( validChannelNames( clientSocket, channels ) == false )
 		return ;
 
-	std::cout << ZZ_MSGTEST << "Print les valeurs de channelNames :";
-	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
-	{
-		std::cout << " " << *it;
-	}
-	std::cout << "\n";
+	// std::cout << ZZ_MSGTEST << "Print les valeurs de channelNames :";
+	// for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
+	// {
+	// 	std::cout << " " << *it;
+	// }
+	// std::cout << "\n";
 
 	/* *************************************************** ***
 	** CHECK 3 - EACH CHANNEL ALREADY EXISTS OR NOT        ***
@@ -123,7 +119,7 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 	{
 		if ( existingChannel( channels[ i ] ) == true )
 		{
-			if ( joinExistingChannel( clientSocket, channels[i] ) == false )
+			if ( joinExistingChannel( clientSocket, channels[ i ] ) == false )
 				return ;
 		}
 		else
@@ -137,10 +133,14 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 			// 	std::cout << " et nom dans le channel '" << it->second.getChannelName() << "'" << std::endl;
 			// }
 		}
+
+		// j'ajoute le nom du channel dans le vecteur 'clientChanels' du client
+		client.addChannel( channels[ i ] );
+
 		// if client has been added to the channel
 		replyMsg( clientSocket, RPL_JOIN( client.getSource(), client.getNickname(), channels[ i ] ) );
 		// display RPL_TOPIC (if existing) and NAMES
-		if ( 1 )// the channel has a topic
+		if ( 1 )// the channel has a topic *** TODO  ***
 			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), channels[ i ], "topic to be provided" ) );
 		handleNames( clientSocket, channels[ i ]);
 
@@ -161,27 +161,27 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 **		3. add this new channel to the list of the Client 'vector'
 **
 */
-bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
+bool	Server::joinNonExistingChannel( int clientSocket, std::string sharpChannelName )
 // bool	Server::joinNonExistingChannel( Client& requestor, std::string chanName )
 {
-	Client&	client = _clients.at( clientSocket );
-	// penser à recoder avec une fonction sur _channels
+	Client&		client = _clients.at( clientSocket );
+	std::string	channelName = sharpChannelName.substr( 1 );
+
+	// check if the client is already on too many channels
 	if ( client.getClientChannels().size() >= CHANLIMIT )
 	{
-		replyMsg( clientSocket, ERR_TOOMANYCHANNELS( client.getSource(), client.getNickname(), channelName ) );
+		replyMsg( clientSocket, ERR_TOOMANYCHANNELS( client.getSource(), client.getNickname(), sharpChannelName ) );
 		return false ;
 	}
 
 	// j'ajoute un nouveau channel à _channels
 	_channels.insert( std::make_pair( channelName, Channel ( channelName ) ) );
 	// j'ajoute le client à ce nouveau channel et je le mets en tant que chanOp
-	_channels[ channelName ].addChannelMembers( &client );
+	_channels[ channelName ].addChannelMember( &client );
 	_channels[ channelName ].addChannelOps( &client );
-	// j'ajoute le nom du channel dans le vecteur 'clientChanels' du client
-	client.addChannel( channelName );
 
 	std::cout << MSGINFO << "a new channel <" << _channels[ channelName ].getChannelName() << "> is created\n";// << std::endl;
-	std::cout << ZZ_MSGTEST << client.getNickname() << " has created the channel <" << channelName << "> and is chan op\n" << std::endl;
+	std::cout << ZZ_MSGTEST << client.getNickname() << " has created the channel <" << sharpChannelName << "> and is chan op\n" << std::endl;
 
 	return true ;
 }
@@ -205,7 +205,7 @@ bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
 **		- if client was invited : continue
 **	- if not : continue
 **
-**	check if client is banned from this channel
+**	check if client is banned from this channel --> not handled (not compulsory)
 **	- if so --> ERR_BANNEDFROMCHAN
 **	- if not : continue
 **
@@ -223,44 +223,57 @@ bool	Server::joinNonExistingChannel( int clientSocket, std::string channelName )
 **		2. add Channel to the list of the Client 'vector'
 **
 */
-bool	Server::joinExistingChannel( int clientSocket, std::string channelName )
+bool	Server::joinExistingChannel( int clientSocket, std::string sharpChannelName )
 {
-	Client&	client = _clients.at( clientSocket );
-	// // checkIfClientHasAlreadyThisChannel( )
-	// std::vector<Channel>::iterator it = _clients[i]._clientChannels.begin();
-	// std::vector<Channel>::iterator ite = _clients[i]._clientChannels.end();
-	// for ( ; it != ite; it++ )
-	// {
-	// 	if ( chanName.compare(it->getChannelName()) == 0 )
-	// 	{
-	// 		//already exists
-	// 		std::cout << MSGINFO << chanName << _clients[cid].getNickname() << " is already on this channel\n" << std::endl;
-	// 		return ;//?? true or false... should be false
-	// 	}
-	// }
+	std::string	channelName = sharpChannelName.substr( 1 );
+	Client&		client = _clients.at( clientSocket );
+	Channel&	channel = _channels.at( channelName );
 
-	// //
-	// if ( _clients[cid]._clientChannels.size() >= CHANLIMIT )
-	// {
-	// 	replyMsg( cid, ERR_TOOMANYCHANNELS( _serverName, _clients[cid].getNickname(), chanName ) );
-	// 	return false ;
-	// }
+	// check if the client has already joined this channel
+	if ( channel.getChannelMembers().find( client.getNickname() ) != channel.getChannelMembers().end() ) 
+	{
+		std::cout << MSGINFO << client.getNickname() << " is alreay on channel " << sharpChannelName << "'\n" << std::endl;
+		return false ;
+	}
 
-	// Channel newChan( chanName );
-	// // voir pour les paramètres --> opérateur, mode? dans le constructeur ?
-	// _channels.insert( std::make_pair( chanName, newChan ) );
-	// _clients[cid]._clientChannels.push_back( newChan );
-	// std::cout << "A new channel " << chanName << " is created\n";// << std::endl;
-	// std::cout << _clients[cid].getNickname() << " has created the channel " << chanName << " and is chan op\n" << std::endl;
-	( void ) client;
-	( void ) channelName;
-	std::cout << "test:\t case = joinExistingChannel\n";
+	// check if the client is already on too many channels
+	if ( client.getClientChannels().size() >= CHANLIMIT ) 
+	{
+		replyMsg( clientSocket, ERR_TOOMANYCHANNELS( client.getSource(), client.getNickname(), sharpChannelName ) );
+		return false ;
+	}
+
+	// check if channel is full --> ***** REVOIR LES CONDITIONS AVEC LENA *****
+	if ( channel.getChannelMembers().size() >= MAXMEMBERS || channel.getLimitStatus() == true ) 
+	{
+		replyMsg( clientSocket, ERR_CHANNELISFULL( client.getSource(), sharpChannelName ) );
+		return false ;
+	}
+	
+	// check if the channel is available upon invitation
+	if ( channel.getInviteOnlyStatus() == true && !channel.isInvited( client.getNickname() ) ) 
+	{
+		replyMsg( clientSocket, ERR_INVITEONLYCHAN( client.getSource(), sharpChannelName ) );
+		return false ;
+	}
+
+	// check if the channel required password
+	if ( channel.getKeyStatus() == true )
+	{
+		// si je n'ai pas de mot de passe correspondant... 
+		// if ( )
+		replyMsg( clientSocket, ERR_BADCHANNELKEY( client.getSource(), sharpChannelName ) );
+		return false ;
+	}
+
+	_channels[ channelName ].addChannelMember( &client );
+
 	return true ;
 }
 
-// 	/* ************************************************ ***
-// 	** CHECK 1 - CLIENT IS ALREADY ON TOO MANY CHANNELS ***
-// 	** ************************************************ ***
+// 	/* ****************************** ***
+// 	** CHECK IF CHANNEL NAME IS VALID ***
+// 	** ****************************** ***
 // 	*/
 bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& channelNames )
 {
@@ -293,8 +306,8 @@ bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& chan
 			return false ;
 		}
 
-		channelNames[ i ] = chanName;// // ne pas garder la valeur ??
-		std::cout << ZZ_MSGTEST << "val de chanName = " << chanName << std::endl;
+		// channelNames[ i ] = chanName;// // ne pas garder la valeur ??
+		std::cout << ZZ_MSGTEST << "val de channelName = " << chanName << std::endl;
 	}
 	return true ;
 }

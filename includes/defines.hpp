@@ -39,7 +39,7 @@
 # define MAXCONNECTION 128
 
 // Max number of clients on a channel --> TO BE CONFIRMED
-# define MAXONCHANNEL 10
+# define MAXMEMBERS 10
 
 // # define CHANNAMELEN 100
 
