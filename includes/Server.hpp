@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 18:21:46 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 12:34:56 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,9 @@ class Server {
     void				handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
 
     void        handleKick( int clientSocket, std::string param );
+    void	      kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason);
+    
+    void		    handleTopic( int clientSocket, std::string param );
 
     std::string	getSupportToken() const;
 

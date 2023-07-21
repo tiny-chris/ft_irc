@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 18:37:05 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 10:27:59 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,6 +316,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
     case JOIN:        std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl; break;
     case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
     case KICK:    handleKick( clientSocket, parameters ); break;
+    case TOPIC:   handleTopic( clientSocket, parameters ); break;
     case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
