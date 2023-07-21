@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/19 15:41:18 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 13:32:16 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ class Channel
 {
     public:
 
-        typedef std::map< std::string, Client * > mapClientsPtr; 
+        typedef std::map< std::string, Client * >   mapClientsPtr;
+        typedef std::vector< std::string >          vecString;
 
         Channel();
         Channel(std::string const& name);
@@ -56,9 +57,10 @@ class Channel
 
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
-        mapClientsPtr&   getChannelMembers( void );
         mapClientsPtr&   getChannelOps( void );
-        
+        mapClientsPtr&   getChannelMembers( void );
+        vecString   getInvitedMembers( void ) const;
+
         bool        checkValidLimit(std::string limit) const;
 
         void		setChannelName( std::string& name );
@@ -70,16 +72,22 @@ class Channel
         void        setKey( std::string const& key );
 
         void        addChannelOps( Client* client );
-        void        addChannelMembers( Client* client );
+        void        removeChannelOp( Client* client );
+        void        addChannelMember( Client* client );
+        void        removeChannelMember( Client* client );
+        void        addInvitedMember( const std::string& clientName );
+        void        removeInvitedMember( const std::string& clientName );
 
-        bool        checkChannelOps( std::string & name );
+        bool        checkChannelOps( std::string name );
+        bool        isInvited( std::string clientName ) const;
 
     private:
-        
+
+        std::string     _channelName;
         // std::map<std::string, Client*> _connectedClients;
         mapClientsPtr   _channelOps;
         mapClientsPtr   _channelMembers;
-        std::string     _channelName;
+        vecString       _invitedMembers;
 
         bool    _keyStatus;
         bool    _limitStatus;

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 15:50:41 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 11:38:00 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@
 //"<nom de canal> :You have joined too many channels"
 //Envoyé à un utilisateur quand il a atteint le nombre maximal de canaux qu'il est autorisé à accéder simultanément, s'il essaie d'en rejoindre un autre.
 
-# define  ERR_WASNOSUCHNICK 406
+# define ERR_WASNOSUCHNICK 406
 //"<nom de canal> :There was no such nickname"
 //Renvoyé par WHOWAS pour indiquer qu'il n'y a pas d'information dans l'historique concernant ce pseudonyme.
 
-# define  ERR_TOOMANYTARGETS 407
+# define ERR_TOOMANYTARGETS 407
 //"<destination> :Duplicate recipients. No message delivered"
 //Renvoyé à un client qui essaie d'envoyer un PRIVMSG/NOTICE utilisant le format de destination utilisateur@hôte pour lequel utilisateur@hôte a plusieurs occurrences.
 
-# define  ERR_NOORIGIN(source, nickname) (std::string(":") + source + " 409 " + nickname + " :No origin specified\r\n") 
+# define ERR_NOORIGIN(source, nickname) (std::string(":") + source + " 409 " + nickname + " :No origin specified\r\n")
 //409
 //":No origin specified"
 //"<client> :No origin specified"
@@ -180,7 +180,8 @@
 // "<caractère> :is unknown mode char to me"
 // Mode inconnu.
 
-# define  ERR_INVITEONLYCHAN 473
+# define  ERR_INVITEONLYCHAN(source, channel) (std::string(":") + source + " 473 " + channel + " :Cannot join channel (+i)\r\n")
+// 473
 // "<canal> :Cannot join channel (+i)"
 // Impossible de joindre le canal (+i).
 
@@ -188,7 +189,8 @@
 // "<canal> :Cannot join channel (+b)"
 // Impossible de joindre le canal (+b).
 
-# define  ERR_BADCHANNELKEY 475
+# define  ERR_BADCHANNELKEY(source, channel) (std::string(":") + source + " 475 " + channel + " :Cannot join channel (+k)\r\n")
+// 475
 // "<canal> :Cannot join channel (+k)"
 // Impossible de joindre le canal (+k).
 
@@ -333,9 +335,11 @@
 // Sent to a client to inform them of the currently-set modes of a channel.
 
 
-# define RPL_NOTOPIC 331
+# define RPL_NOTOPIC(source, channel) (std::string(":") + source + " 331 " + channel + " :No topic is set\r\n")
+// 331
 // "<canal> :No topic is set"
-# define RPL_TOPIC 332
+# define RPL_TOPIC(source, channel, topic) (std::string(":") + source + " 332 " + channel + " :" + topic + "\r\n")
+// 332
 // "<canal> :<sujet>"
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée. Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
 # define RPL_INVITING 341
@@ -352,14 +356,14 @@
 // "<nom> :End of /WHO list"
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO. Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO. S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
 
-# define RPL_NAMREPLY(source, nickname, channel, members) (std::string(":") + source + " 353 " + nickname + " " + channel + " :" + members + "\r\n")
+# define RPL_NAMREPLY(source, nickname, channel, members) (std::string(":") + source + " 353 " + nickname + " = " + channel + " :" + members + "\r\n")
 // 353
 // "<client> <symbol> <channel> :[prefix]<nick>{ [prefix]<nick>}"
 // Sent as a reply to the NAMES command, this numeric lists the clients that are joined to <channel> and their status in that channel.
 // Only public channel so no use of <symbol> (public, secret, private)
 
 # define RPL_ENDOFNAMES(source, nickname, channel) (std::string(":") + source + " 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
-// 366 
+// 366
 // "<client> <channel> :End of /NAMES list"
 // Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.
 
@@ -401,8 +405,10 @@
 /*    CUSTOM MESSAGES NO NUMERIC REPLIES     */
 /* ***************************************** */
 
-# define KILL_MSG(source, nickname) (std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
-# define RPL_NICK(oldNickname, newNickname) (std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
-# define MSG_MODE(source, nickname, modeString, modeargs) (std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
+# define KILL_MSG(source, nickname)							(std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
+# define RPL_NICK(oldNickname, newNickname)					(std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
+# define MSG_MODE(source, nickname, modeString, modeargs)	(std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
+# define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN :" + channel + CRLF)
+
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

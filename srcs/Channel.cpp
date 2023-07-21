@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/19 15:42:12 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/21 13:36:50 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,16 @@ Channel::Channel() {}
 // }
 
 Channel::Channel(std::string const& name) :
-  _channelName(name),
-  _keyStatus(0),
-  _limitStatus(0),
-  _inviteOnlyStatus(0),
-  _topicRestrictionStatus(1),
-  _key(""),
-  _limit("")
+  _channelName( name ),
+  _channelOps(),
+  _channelMembers(),
+  _invitedMembers(),
+  _keyStatus( 0 ),
+  _limitStatus( 0 ),
+  _inviteOnlyStatus( 0 ),
+  _topicRestrictionStatus( 1 ),
+  _key( "" ),
+  _limit( "" )
 {}
 
 Channel::~Channel() {}
@@ -50,8 +53,10 @@ Channel &    Channel::operator=( Channel const& rhs ){
   if (this != &rhs)
   {
     // _connectedClients = rhs._connectedClients;
-    _channelOps = rhs._channelOps;
     _channelName = rhs._channelName;
+    _channelOps = rhs._channelOps;
+    _channelMembers = rhs._channelMembers;
+    _invitedMembers = rhs._invitedMembers;
     _keyStatus = rhs._keyStatus;
     _limitStatus = rhs._limitStatus;
     _inviteOnlyStatus = rhs._inviteOnlyStatus;
@@ -69,7 +74,19 @@ void        Channel::addChannelOps( Client* client ){
   }
 }
 
-void        Channel::addChannelMembers( Client* client )
+void        Channel::removeChannelOp( Client* client )
+{
+  Channel::mapClientsPtr::iterator it = _channelOps.begin();
+	for ( ; it != _channelOps.end(); ++it )
+	{
+		if ( it->first == client->getNickname() ) {
+		  _channelOps.erase( it );
+			break;
+    }
+	}
+}
+
+void        Channel::addChannelMember( Client* client )
 {
   if (client != NULL)
   {
@@ -77,6 +94,46 @@ void        Channel::addChannelMembers( Client* client )
   }
 }
 
+void        Channel::removeChannelMember( Client* client )
+{
+  Channel::mapClientsPtr::iterator it = _channelMembers.begin();
+	for ( ; it != _channelMembers.end(); ++it )
+	{
+		if ( it->first == client->getNickname() ) {
+		  _channelMembers.erase( it );
+			break;
+    }
+	}
+}
+
+void        Channel::addInvitedMember( const std::string& clientName )
+{
+  if ( !clientName.empty() )
+  {
+    if ( isInvited( clientName ) ) 
+    {
+      std::cout << MSGERROR << clientName << " is already invited in channel " << _channelName << std::endl;
+      return;
+    }
+    _invitedMembers.push_back( clientName );
+  }
+  else
+  {
+    std::cout << MSGERROR << "there is no client invited (empty name)" << std::endl;
+  }
+}
+
+void        Channel::removeInvitedMember( const std::string& clientName )
+{
+  std::vector< std::string >::iterator it = _invitedMembers.begin();
+	for ( ; it != _invitedMembers.end(); ++it )
+	{
+		if ( *it == clientName ) {
+		  _invitedMembers.erase( it );
+			break;
+    }
+	}
+}
 
 std::string Channel::getChannelName( void ) const { return ( _channelName ); }
 bool        Channel::getKeyStatus( void ) const { return ( _keyStatus ); }
@@ -127,6 +184,7 @@ bool        Channel::checkValidLimit(std::string limit) const {
   return false;
 }
 
+Channel::vecString   Channel::getInvitedMembers( void ) const { return _invitedMembers; }
 
 void		Channel::setChannelName( std::string& name ) { _channelName = name; }
 void    Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
@@ -140,6 +198,27 @@ bool        Channel::checkChannelOps( std::string & name )
 {
   if (_channelOps.find(name) != _channelOps.end()) {
     return true;
+  }
+  return false;
+}
+
+// bool        Channel::isChannelMember( std::string clientName )
+// {
+//   if (_channelMembers.find(clientName) != _channelMembers.end()) {
+//     return true;
+//   }
+//   return false;
+// }
+
+bool        Channel::isInvited( std::string clientName ) const
+{
+  vecString::const_iterator it = _invitedMembers.begin();
+  for ( ; it != _invitedMembers.end(); ++it )
+  {
+    if ( *it == clientName )
+    {
+      return true;
+    }
   }
   return false;
 }

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 18:21:08 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 12:25:57 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,15 +306,15 @@ void  Server::handleRequest( int clientSocket, std::string request )
   // If a command is not implemented, it MUST return the ERR_UNKNOWNCOMMAND (421) numeric.
   switch( commandKey )
   {
-    case CAP:     std::cout << std::endl; break;
-    case PASS:    handlePass( clientSocket, parameters ); break;
-    case NICK:    handleNick( clientSocket, parameters ); break;
-    case USER:    handleUser( clientSocket, parameters ); break;
-    case PING:    handlePing( clientSocket, parameters ); break;
-    case MODE:    handleMode( clientSocket, parameters ); break;
-    case JOIN:        std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle JOIN command" << std::endl; break;
-    case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
-    case NAMES:   handleNames( clientSocket, parameters ); break;
+		case CAP:			std::cout << std::endl; break;
+		case PASS:		handlePass( clientSocket, parameters ); break;
+		case NICK:		handleNick( clientSocket, parameters ); break;
+		case USER:		handleUser( clientSocket, parameters ); break;
+		case PING:		handlePing( clientSocket, parameters ); break;
+		case MODE:		handleMode( clientSocket, parameters ); break;
+		case JOIN:		handleJoin( clientSocket, command, parameters ); break;
+		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
+		case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '
@@ -469,6 +469,8 @@ void Server::handleNewClient( void ) {
   std::cout << std::endl;
 
   _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
+  // Client client( clientSocket );
+  // _clients[ clientSocket ] = client;
 
   // std::cout << "<" << _clients.at( clientSocket ).getFd();
   // std::cout << " joined the channel>\n";

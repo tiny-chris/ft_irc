@@ -21,6 +21,7 @@ SRCS		:=	\
 				Server.cpp \
 				Utility.cpp \
 				utils.cpp \
+				Commands/join.cpp \
 				Commands/mode.cpp \
 				Commands/names.cpp \
 				Commands/nick.cpp \

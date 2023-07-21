@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:23:45 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/13 17:33:41 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/19 14:07:08 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,19 @@ bool	isValidParam( std::string name )
   {
     char c = name[ i ];
     if ( !( isalnum(c) || c == '*' || c == '.' || c == '_' || c == '-' ) )
+      return false;
+  }
+  return true;
+}
+
+bool    isValidToken(std::string name)
+{
+  if (name.empty())
+    return false;
+  for (size_t i = 0; i < name.size(); i++)
+  {
+    char c = name[i];
+    if (!(isalnum(c) || c == '.' || c == '_' || c == '-'))
       return false;
   }
   return true;

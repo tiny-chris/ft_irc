@@ -23,6 +23,7 @@
 // The value MUST be specified and MUST be a positive integer.
 // # define USERLEN 18
 
+// Max number of parameters authorised in a request
 # define MAXPARAM 15
 
 // Password minimum length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
@@ -38,7 +39,7 @@
 # define MAXCONNECTION 128
 
 // Max number of clients on a channel --> TO BE CONFIRMED
-# define MAXONCHANNEL 10
+# define MAXMEMBERS 10
 
 // # define CHANNAMELEN 100
 
