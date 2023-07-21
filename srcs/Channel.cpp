@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 13:36:50 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:33:11 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ Channel::Channel( Channel const & src ) {
 Channel &    Channel::operator=( Channel const& rhs ){
   if (this != &rhs)
   {
-    // _connectedClients = rhs._connectedClients;
     _channelName = rhs._channelName;
     _channelOps = rhs._channelOps;
     _channelMembers = rhs._channelMembers;

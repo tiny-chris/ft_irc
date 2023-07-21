@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/18 17:49:10 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:19:37 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 
 void	Server::handleNames( int clientSocket, std::string param )
 {
-	// std::cout << "ZZ_test:\t " << "on entre dans handleNames\n" << std::endl;
 	mapChannels::iterator		chanIt;
 	// std::string					chanMembers;
 	std::vector<std::string>	tokens = splitString( param, ',' );

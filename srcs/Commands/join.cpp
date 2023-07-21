@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/21 12:53:56 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:35:32 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
  *
  */
 
-void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
+void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 {
 	std::vector< std::string >	tokens = splitString(param, ' ');
 	Client& 					client = _clients.at( clientSocket );
@@ -135,19 +135,19 @@ void	Server::handleJoin( int clientSocket, std::string param, std::string cmd )
 		}
 
 		// j'ajoute le nom du channel dans le vecteur 'clientChanels' du client
-		client.addChannel( channels[ i ] );
+		std::string	channelName = channels[ i ].substr( 1 );
+		client.addChannel( channelName );
 
 		// if client has been added to the channel
 		replyMsg( clientSocket, RPL_JOIN( client.getSource(), client.getNickname(), channels[ i ] ) );
 		// display RPL_TOPIC (if existing) and NAMES
 		if ( 1 )// the channel has a topic *** TODO  ***
 			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), channels[ i ], "topic to be provided" ) );
-		handleNames( clientSocket, channels[ i ]);
+		handleNames( clientSocket, channelName);
 
 		// prevoir un broadcast pour les users du channel
 	}
 }
-
 
 /* ************************************ ***
 ** CHANNEL DOES NOT EXIST YET           ***
@@ -260,7 +260,7 @@ bool	Server::joinExistingChannel( int clientSocket, std::string sharpChannelName
 	// check if the channel required password
 	if ( channel.getKeyStatus() == true )
 	{
-		// si je n'ai pas de mot de passe correspondant... 
+		// si je n'ai pas de mot de passe correspondant... TODO
 		// if ( )
 		replyMsg( clientSocket, ERR_BADCHANNELKEY( client.getSource(), sharpChannelName ) );
 		return false ;
@@ -277,7 +277,7 @@ bool	Server::joinExistingChannel( int clientSocket, std::string sharpChannelName
 // 	*/
 bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& channelNames )
 {
-	Client& client = _clients.at( clientSocket );
+	Client&	client = _clients.at( clientSocket );
 	// specific case when there is no channel name (only spaces)
 	if ( !channelNames.size() )
 	{

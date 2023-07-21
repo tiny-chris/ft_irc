@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 13:32:16 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:33:18 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ class Channel
         void        addInvitedMember( const std::string& clientName );
         void        removeInvitedMember( const std::string& clientName );
 
-        bool        checkChannelOps( std::string name );
+        bool        checkChannelOps( std::string & name );
         bool        isInvited( std::string clientName ) const;
 
     private:
