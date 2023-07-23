@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 18:55:45 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:43:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
             if (modePrefix == '+')
                 handleChannelModeSet(chan, modeChar, &modeArgs, &modeChange, tokens, &j);
             else if (modePrefix == '-' && modeString.size() >= 1)
-                handleChannelModeUnset(chan, modeChar, &modeChange);
+                handleChannelModeUnset(chan, modeChar, &modeArgs, &modeChange, tokens, &j);
         }
         // Displaying channel modes changes to every channel client
         if (modeChange.size() > 1)
@@ -89,7 +89,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
                 socket = it->second->getFd();
                 replyMsg(socket, MSG_MODE(_clients.at( socket ).getSource(), _clients.at( socket ).getNickname(), modeChange, modeArgs));
             }
-        }   //
+        }
     }
 }
 
@@ -165,15 +165,22 @@ void 		Server::handleModeSetTopicRestriction(Channel *chan, std::string* modeCha
     }
 }
 
-
-void        handleModeSetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
+// Sets the designated user as a channop
+void        Server::handleModeSetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j)
 {
-    std::cout << "TODO !" << std::endl;
+    if (tokens.size() > *j && chan->checkChannelOps(tokens[*j]) == false && chan->checkChannelMembers(tokens[*j]) == true)
+    {
+        *modeChange += "o";
+        *modeArgs += tokens[*j];
+        Client *toAdd = chan->getChannelMembers().at(tokens[*j]);
+        chan->addChannelOps(toAdd);
+    }
+    (*j)++;
 }
 
-
 // Prefix - -> Unsets channel modes
-void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange)
+void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string>& tokens, size_t *j)
 {
     switch(modeChar)
     {
@@ -188,6 +195,9 @@ void		Server::handleChannelModeUnset(Channel *chan, char modeChar, std::string* 
             break;
         case 't':
             handleModeUnsetTopicRestriction(chan, modeChange);
+            break;
+        case 'o':
+            handleModeUnsetOperator(chan, modeArgs, modeChange, tokens, j);
             break;
     }
 }
@@ -232,6 +242,17 @@ void		Server::handleModeUnsetTopicRestriction(Channel *chan, std::string* modeCh
         chan->setTopicRestrictionStatus(false);
         *modeChange += "t";
     }
+}
+
+void        Server::handleModeUnsetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j)
+{
+    if (tokens.size() > *j && chan->getChannelOps().size() > 1 && chan->checkChannelOps(tokens[*j]) == true && chan->checkChannelMembers(tokens[*j]) == true)
+    {
+        *modeChange += "o";
+        *modeArgs += tokens[*j];
+        chan->getChannelOps().erase(tokens[*j]);
+    }
+    (*j)++;
 }
 
 // CHANGING USER MODE (only one mode +i)
@@ -302,7 +323,7 @@ char	Server::getModePrefix( std::string const& token )
 // Checks if the mode is a valid mode k,l,i,t
 bool		Server::isValidModeChar( char const modeChar )
 {
-    if (modeChar == 'k' || modeChar == 'l' || modeChar == 'i' || modeChar == 't')
+    if (modeChar == 'k' || modeChar == 'l' || modeChar == 'i' || modeChar == 't' || modeChar == 'o')
         return true;
     return false;
 }

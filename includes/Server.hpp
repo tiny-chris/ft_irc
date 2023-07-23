@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 18:54:35 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/23 19:37:01 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ class Server {
     void				handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> &tokens );
     bool				existingChannel( std::string param );
     void				handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
-    void				handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeChange);
-
+    void        handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
+    
     void				handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
@@ -87,6 +87,7 @@ class Server {
     void				handleModeUnsetLimit(Channel *chan, std::string* modeChange);
     void				handleModeUnsetInviteOnly(Channel *chan, std::string* modeChange);
     void				handleModeUnsetTopicRestriction(Channel *chan, std::string* modeChange);
+    void        handleModeUnsetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
 
     void        handleKick( int clientSocket, std::string param );
     void	      kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason);
