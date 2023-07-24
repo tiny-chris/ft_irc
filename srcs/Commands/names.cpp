@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/21 16:40:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 13:01:28 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 {
 	Channel::mapClientsPtr&					chanMembers = channel.getChannelMembers();
 	Channel::mapClientsPtr::const_iterator	it;
-	// bool									requestorIsOnChannel = false;
 	std::string								listMembers;
 
 
@@ -50,9 +49,6 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 
 	std::cout << ZZ_MSGTEST << "Current channel = '" << channel.getChannelName() << "'" << std::endl;
 	bool requestorIsOnChannel = ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) ? true : false;
-	// if ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) {
-	// 	requestorIsOnChannel = true ;
-	// }
 	std::cout << ZZ_MSGTEST << "requestor client = '" << _clients.at( clientSocket ).getNickname() << "' is on channel : " << requestorIsOnChannel << std::endl;
 	for ( it = chanMembers.begin(); it != chanMembers.end(); it++ )
 	{

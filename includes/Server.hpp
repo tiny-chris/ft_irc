@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 17:40:02 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 13:16:29 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ class Server {
 
     void				handleJoin( int clientSocket, std::string cmd, std::string param );
     bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
+    bool        checkPreAddChan( int clientSocket, std::vector< std::string > tokens, size_t index, bool chanExists );
     // bool				joinNonExistingChannel( int clientSocket, std::string sharpChannelName );
     // bool				joinExistingChannel( int clientSocket, std::string sharpChannelName );
     bool				joinNonExistingChannel( int clientSocket, std::string channelName );
@@ -96,6 +97,8 @@ class Server {
 
     std::string	getSupportToken() const;
 
+    void        channelMsgToAll( int clientSocket, std::string channelName, std::string message );
+    void        channelMsgNotClient( int clientSocket, std::string channelName, std::string message );
 
   public:
 
