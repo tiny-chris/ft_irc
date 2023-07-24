@@ -21,15 +21,15 @@ SRCS		:=	\
 				Server.cpp \
 				Utility.cpp \
 				utils.cpp \
-				Commands/join.cpp \
+				Channels/kick.cpp \
+				Channels/join.cpp \
+				Channels/topic.cpp \
 				Commands/mode.cpp \
 				Commands/names.cpp \
 				Commands/nick.cpp \
 				Commands/pass.cpp \
 				Commands/ping.cpp \
 				Commands/user.cpp \
-				Channels/kick.cpp \
-				Channels/topic.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs

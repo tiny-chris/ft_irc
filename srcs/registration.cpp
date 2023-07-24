@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/23 22:29:14 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 14:42:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,17 @@ void	Server::checkRegistration( int clientSocket )
     // UNE AUTRE FONCTION DU SERVEUR CA NE MARCHE PAS LA SIZE DE MA MAP EST A 0 .....
     // CHAT GPT DIT QUE Les objets std::map sont stockés en tant que paires de clé-valeur et lorsqu'une paire est insérée,
     // une copie des objets est effectuée. Contrairement au std::vector
-    std::string name = "#chantest";
-    if ( clientSocket == 5 )
-    {
-      _channels.insert( std::pair<std::string, Channel>( name, Channel( name ) ) );
-      _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
-      _channels[ name ].addChannelMember(&_clients.at( clientSocket ) );
-    }
-    if ( clientSocket == 7 )
-    {
-      _channels[ name ].addChannelMember( &_clients.at( clientSocket ) );
-    }
+    // std::string name = "#chantest";
+    // if ( clientSocket == 5 )
+    // {
+    //   _channels.insert( std::pair<std::string, Channel>( name, Channel( name ) ) );
+    //   _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
+    //   _channels[ name ].addChannelMember(&_clients.at( clientSocket ) );
+    // }
+    // if ( clientSocket == 6 )
+    // {
+    //   _channels[ name ].addChannelMember( &_clients.at( clientSocket ) );
+    // }
     /************************************/
   }
 }

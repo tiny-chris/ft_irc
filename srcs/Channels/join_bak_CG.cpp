@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join.cpp                                           :+:      :+:    :+:   */
+/*   join_bak_CG.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 11:53:08 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 14:47:14 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 		replyMsg( clientSocket, RPL_JOIN( client.getSource(), client.getNickname(), channels[ i ] ) );
 		// display RPL_TOPIC (if existing) and NAMES
 		if ( 1 )// the channel has a topic *** TODO  ***
-			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), client.getNickname(), channels[ i ], "topic to be provided" ) );
+			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), channels[ i ], "topic to be provided" ) );
 		handleNames( clientSocket, channelName);
 
 		// prevoir un broadcast pour les users du channel

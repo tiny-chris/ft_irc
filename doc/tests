@@ -1,0 +1,7 @@
+server :
+./ircserv 6667 password
+
+
+irssi client :
+irssi
+/connect localhost 6667 password
