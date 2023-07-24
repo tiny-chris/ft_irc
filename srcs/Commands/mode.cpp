@@ -132,18 +132,36 @@ void		Server::handleModeSetKey(Channel *chan, std::string* modeArgs, std::string
 }
 
 // Sets limit mode +l <modearg>
-void 		Server::handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange,\
-    const std::vector<std::string> &tokens, size_t *j)
+void 		Server::handleModeSetLimit( Channel *chan, std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string> &tokens, size_t *j )
 {
-    if (tokens.size() > *j && chan->getLimitStatus() == false && chan->checkValidLimit(tokens[*j]) == true)
+    if ( tokens.size() > *j && chan->getLimitStatus() == false && chan->checkValidLimit(tokens[*j]) == true )
     {
-        chan->setLimitStatus(true);
-        chan->setLimit(tokens[*j]);
+        chan->setLimitStatus( true );
+        chan->setLimitBis( StringToInt( tokens[ *j ] ) );
+        chan->setLimit( tokens[ *j ] );
         *modeChange += "l";
-        *modeArgs += tokens[*j];
+        *modeArgs += tokens[ *j ];
     }
-    (*j)++;
+    ( *j )++;
 }
+// // old version
+// void 		Server::handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange,const std::vector<std::string> &tokens, size_t *j)
+// {
+//     if (tokens.size() > *j && chan->getLimitStatus() == false && chan->checkValidLimit(tokens[*j]) == true)
+//     {
+//         std::stringstream   strLimit( tokens[*j] );
+//         int                 numLimit;
+
+//         strLimit >> numLimit;
+//         chan->setLimitStatus(true);
+//         chan->setLimitBis( numLimit );
+//         chan->setLimit(tokens[*j]);
+//         *modeChange += "l";
+//         *modeArgs += tokens[*j];
+//     }
+//     (*j)++;
+// }
 
 // Sets invite only mode +i
 void 		Server::handleModeSetInviteOnly(Channel *chan, std::string* modeChange)

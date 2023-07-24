@@ -65,6 +65,7 @@ bool						isValidParam( std::string name );
 bool						isValidToken(std::string name);
 
 std::string					intToString( int number );
+int							StringToInt( std::string str );
 
 std::vector<std::string>	splitString( std::string params, char splitter );
 std::string					getCurrentDate( void );

@@ -38,6 +38,7 @@ Channel::Channel(std::string const& name) :
   _limitStatus( 0 ),
   _inviteOnlyStatus( 0 ),
   _topicRestrictionStatus( 1 ),
+  _limitBis( 0 ),
   _key( "" ),
   _limit( "" ),
   _topic( "" ),
@@ -63,6 +64,7 @@ Channel &    Channel::operator=( Channel const& rhs ){
     _limitStatus = rhs._limitStatus;
     _inviteOnlyStatus = rhs._inviteOnlyStatus;
     _topicRestrictionStatus = rhs._topicRestrictionStatus;
+    _limitBis = rhs._limitBis;
     _key = rhs._key;
     _limit = rhs._limit;
     _topic = rhs._topic;
@@ -115,7 +117,7 @@ void        Channel::addInvitedMember( const std::string& clientName )
 {
   if ( !clientName.empty() )
   {
-    if ( isInvited( clientName ) ) 
+    if ( isInvited( clientName ) )
     {
       std::cout << MSGERROR << clientName << " is already invited in channel " << _channelName << std::endl;
       return;
@@ -145,6 +147,7 @@ bool        Channel::getKeyStatus( void ) const { return ( _keyStatus ); }
 bool        Channel::getLimitStatus( void ) const { return ( _limitStatus ); }
 bool        Channel::getInviteOnlyStatus( void ) const { return ( _inviteOnlyStatus ); }
 bool        Channel::getTopicRestrictionStatus( void ) const { return ( _topicRestrictionStatus ); }
+int         Channel::getLimitBis( void ) const { return ( _limitBis ); }
 std::string	Channel::getLimit( void ) const { return (_limit ); }
 std::string	Channel::getKey( void ) const { return ( _key ); }
 std::string Channel::getTopic( void ) const { return ( _topic ); }
@@ -200,6 +203,7 @@ void    Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
 void    Channel::setLimitStatus( bool const& status ) { _limitStatus = status; }
 void    Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus = status; }
 void    Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
+void		Channel::setLimitBis( int const& limit ) { _limitBis = limit; }
 void		Channel::setLimit( std::string const& limit ) { _limit = limit; }
 void		Channel::setKey( std::string const& key ) { _key = key; }
 void    Channel::setTopic( std::string const& topic ) { _topic = topic; }

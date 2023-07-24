@@ -25,6 +25,17 @@ std::string intToString( int number ) {
   return oss.str();
 }
 
+/**
+ * @brief       String to Int
+ */
+
+int         StringToInt( std::string str ) {
+  std::stringstream iss( str );
+  int               number;
+  iss >> number;
+  return number;
+}
+
 // /**
 //  * @brief       Forbidden gai_strerror implementation
 //  */

@@ -70,7 +70,7 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 	** CHECK 2 - FORMAT CHANNEL: EACH ONE STARTS WITH '#' AND IS VALID ***
 	** *************************************************************** ***
 	**	Let's consider tokens[0] to get the channels
-	**	- if there is 0 channel 
+	**	- if there is 0 channel
 	**		--> reject the request as not aligned with our convention (there must be at least a channel starting with #)
 	**	- if a channel is empty or if it does not start with # or if it is invalid
 	**		--> ERR_BADCHANMASK (476) + leave
@@ -99,7 +99,7 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 		if ( checkPreAddChan( clientSocket, tokens, i, chanExists ) == false ) {
 			continue ;
 		}
-		
+
 		// autrement si existing : on cree
 		if ( !chanExists ) {
 			// j'ajoute un nouveau channel à _channels
@@ -117,9 +117,9 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 		channelMsgToAll( clientSocket, channelName, RPL_JOIN( client.getSource(), client.getNickname(), channelName ) );
 
 		// display RPL_TOPIC (if existing - should not at creation) and NAMES
-		// if ( !_channels[ channelName ].getTopic().empty() ) {
-		// 	replyMsg( clientSocket, RPL_TOPIC( client.getSource(), channelName, _channels[ channelName ].getTopic() ) );
-		// }			
+		if ( !_channels[ channelName ].getTopic().empty() ) {
+			replyMsg( clientSocket, RPL_TOPIC( client.getSource(), client.getNickname(), channelName, _channels[ channelName ].getTopic() ) );
+		}
 		handleNames( clientSocket, channelName );
 	}
 }
@@ -139,14 +139,15 @@ bool	Server::checkPreAddChan( int clientSocket, std::vector< std::string > token
 	Client&						client = _clients.at( clientSocket );
 	std::vector< std::string >	tokenChannels = splitString( tokens[ 0 ], ',' );
 	std::string					channelName = tokenChannels[ index ];
-	Channel						existingChannel;
+	Channel						channel;
 
 
 	if ( chanExists ) {
-		existingChannel = _channels.at( channelName );
+		channel = _channels.at( channelName );
+
 	}
 
-	if ( chanExists && existingChannel.getChannelMembers().find( client.getNickname() ) != existingChannel.getChannelMembers().end() ) {
+	if ( chanExists && channel.getChannelMembers().find( client.getNickname() ) != channel.getChannelMembers().end() ) {
 		std::cout << MSGINFO << client.getNickname() << " is alreay on channel " << channelName << "'\n" << std::endl;
 		return false ;
 	}
@@ -154,19 +155,19 @@ bool	Server::checkPreAddChan( int clientSocket, std::vector< std::string > token
 		replyMsg( clientSocket, ERR_TOOMANYCHANNELS( client.getSource(), client.getNickname(), channelName ) );
 		return false ;
 	}
-	if ( chanExists && ( existingChannel.getChannelMembers().size() >= MAXMEMBERS
-		|| ( existingChannel.getLimitStatus() == true && existingChannel.getChannelMembers().size() >= 10 ) ) ) {// to change TODO (Limit en int)
+	if ( chanExists && ( channel.getChannelMembers().size() >= MAXMEMBERS
+		|| ( channel.getLimitStatus() == true &&  static_cast<int>( channel.getChannelMembers().size() ) >= channel.getLimitBis() ) ) ) {
 		replyMsg( clientSocket, ERR_CHANNELISFULL( client.getSource(), channelName ) );
 		return false ;
 	}
-	if ( chanExists && existingChannel.getInviteOnlyStatus() == true && !existingChannel.isInvited( client.getNickname() ) ) {
-		replyMsg( clientSocket, ERR_INVITEONLYCHAN( client.getSource(), channelName) );//.substr( 1 ) ) );// CHECK ICI 
+	if ( chanExists && channel.getInviteOnlyStatus() == true && !channel.isInvited( client.getNickname() ) ) {
+		replyMsg( clientSocket, ERR_INVITEONLYCHAN( client.getSource(), channelName) );//.substr( 1 ) ) );// CHECK ICI
 		return false ;
 	}
-	if ( chanExists && existingChannel.getKeyStatus() == true ) {
+	if ( chanExists && channel.getKeyStatus() == true ) {
 		if ( tokens.size() == 2 ) {
 			std::vector< std::string > keys = splitString( tokens[ 1 ], ',' );
-			if ( keys[ index ] == existingChannel.getKey() ) {
+			if ( keys[ index ] == channel.getKey() ) {
 				return true;
 			}
 		}
@@ -185,7 +186,7 @@ bool	Server::checkPreAddChan( int clientSocket, std::vector< std::string > token
 bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& channelNames )
 {
 	Client&	client = _clients.at( clientSocket );
-	
+
 	if ( !channelNames.size() ) {
 		replyMsg( clientSocket, ERR_BADCHANMASK( client.getSource(), client.getNickname(), "<empty>" ) );
 		return false;
