@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 16:13:35 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 23:05:28 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ class Server {
     void		    handleInvite( int clientSocket, std::string param );
     void        inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan );
 
+    void        handleWho( int clientSocket, std::string param );
+    
     std::string	getSupportToken() const;
 
     void        channelMsgToAll( int clientSocket, std::string channelName, std::string message );
@@ -134,6 +136,7 @@ class Server {
     void        updateChannelMemberNick( std::string &oldNickname, std::string nickName );
     void        updateChannelOpsNick( std::string &oldNickname, std::string nickName );
 
+    bool        existingClient(std::string clientName);
 
     size_t				  	_port;
     std::string				_password;

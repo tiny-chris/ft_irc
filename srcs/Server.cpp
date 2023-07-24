@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 13:04:27 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 18:44:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ void	Server::initCommands( void )
   _commands.insert( std::make_pair( 113, "TOPIC" ) );
   _commands.insert( std::make_pair( 114, "INVITE" ) );
   _commands.insert( std::make_pair( 120, "NAMES" ) );
+  _commands.insert( std::make_pair( 121, "WHO" ) );
 
   // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "/shutdown" ) );
@@ -321,6 +322,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
     case TOPIC:   handleTopic( clientSocket, parameters ); break;
     case INVITE:  handleInvite( clientSocket, parameters ); break;
     case NAMES:   handleNames( clientSocket, parameters ); break;
+    case WHO:     handleWho( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN: stop(); break;                          // ' /shutdown '

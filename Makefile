@@ -31,6 +31,7 @@ SRCS		:=	\
 				Commands/pass.cpp \
 				Commands/ping.cpp \
 				Commands/user.cpp \
+				Commands/who.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
