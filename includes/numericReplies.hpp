@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 17:38:42 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 10:51:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,13 +311,14 @@
 // Sent to a client to inform them of the currently-set modes of a channel.
 
 
-# define RPL_NOTOPIC(source, channel) (std::string(":") + source + " 331 " + channel + " :No topic is set\r\n")
-// 331
-// "<canal> :No topic is set"
-# define RPL_TOPIC(source, channel, topic) (std::string(":") + source + " 332 " + channel + " :" + topic + "\r\n")
-// 332
-// "<canal> :<sujet>"
+# define RPL_NOTOPIC(source, nick, channel) (std::string(":") + source + " 331 " + nick + " " + channel + " :No topic is set\r\n")
+
+# define RPL_TOPIC(source, nick, channel, topic) (std::string(":") + source + " 332 " + nick + " " + channel + " :" + topic + "\r\n")
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée. Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
+
+# define RPL_TOPICWHOTIME(source, client, channel, nick, setat) (std::string(":") + source + " 333 " + client + " " + channel + " " + nick + " " + setat + "\r\n")
+// Sent to a client to let them know who set the topic (<nick>) and when they set it (<setat> is a unix timestamp). Sent after RPL_TOPIC (332).
+
 # define RPL_INVITING 341
 // "<canal> <pseudo>"
 // Renvoyé par un serveur pour indiquer que le message INVITE a été enregistré, et est en cours de transmission au client final.

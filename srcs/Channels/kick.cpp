@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 18:41:39 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 11:40:15 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,5 +113,7 @@ std::string		Server::getReason(std::vector<std::string> &tokens)
 	}
 	else
 		reason = KICK_REASON;
+	if (reason.size() > KICKLEN)
+		reason = reason.substr(0, KICKLEN);
 	return (reason);
 }

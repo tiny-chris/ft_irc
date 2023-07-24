@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:23:45 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 14:07:08 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 10:37:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,4 +129,13 @@ bool    isValidToken(std::string name)
       return false;
   }
   return true;
+}
+
+// Returns a human readable string of the current date
+std::string	getCurrentDate()
+{
+ 	std::time_t time = std::time(0);
+	std::stringstream	timeStream;
+	timeStream << time;
+	return timeStream.str();
 }

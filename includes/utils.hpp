@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:34:51 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 10:38:07 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,6 @@ std::string					intToString( int number );
 // std::string					gaiStrerror( int errorCode );
 
 std::vector<std::string>	splitString( std::string params, char splitter );
+std::string					getCurrentDate( void );
 
 #endif

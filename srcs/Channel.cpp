@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 17:43:54 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 10:44:56 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,10 @@ Channel::Channel(std::string const& name) :
   _inviteOnlyStatus( 0 ),
   _topicRestrictionStatus( 1 ),
   _key( "" ),
-  _limit( "" )
+  _limit( "" ),
+  _topic( "" ),
+  _topicSetter( "" ),
+  _topicDate( "" )
 {}
 
 Channel::~Channel() {}
@@ -62,6 +65,9 @@ Channel &    Channel::operator=( Channel const& rhs ){
     _topicRestrictionStatus = rhs._topicRestrictionStatus;
     _key = rhs._key;
     _limit = rhs._limit;
+    _topic = rhs._topic;
+    _topicSetter = rhs._topicSetter;
+    _topicDate = rhs._topicDate;
   }
   return (*this);
 }
@@ -141,6 +147,10 @@ bool        Channel::getInviteOnlyStatus( void ) const { return ( _inviteOnlySta
 bool        Channel::getTopicRestrictionStatus( void ) const { return ( _topicRestrictionStatus ); }
 std::string	Channel::getLimit( void ) const { return (_limit ); }
 std::string	Channel::getKey( void ) const { return ( _key ); }
+std::string Channel::getTopic( void ) const { return ( _topic ); }
+std::string Channel::getTopicSetter( void ) const { return ( _topicSetter ); }
+std::string Channel::getTopicDate( void ) const { return ( _topicDate ); }
+
 
 std::string	Channel::getModes( void ) const {
   std::string modes;
@@ -192,6 +202,9 @@ void    Channel::setInviteOnlyStatus( bool const& status ) { _inviteOnlyStatus =
 void    Channel::setTopicRestrictionStatus( bool const& status ) { _topicRestrictionStatus = status; }
 void		Channel::setLimit( std::string const& limit ) { _limit = limit; }
 void		Channel::setKey( std::string const& key ) { _key = key; }
+void    Channel::setTopic( std::string const& topic ) { _topic = topic; }
+void    Channel::setTopicSetter( std::string const& topicSetter ) { _topicSetter = topicSetter; }
+void    Channel::setTopicDate( std::string const& topicDate ) { _topicDate = topicDate; }
 
 bool        Channel::checkChannelOps( std::string name )
 {

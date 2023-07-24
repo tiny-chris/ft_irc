@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/23 19:37:01 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 11:17:25 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,11 @@ class Server {
     void        handleModeUnsetOperator(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
 
     void        handleKick( int clientSocket, std::string param );
-    void	      kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason);
-    std::string	getReason(std::vector<std::string> &tokens);
+    void	      kickUser( int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason );
+    std::string	getReason( std::vector<std::string> &tokens );
     
     void		    handleTopic( int clientSocket, std::string param );
+    std::string getNewTopic( std::vector<std::string> &tokens );
 
     std::string	getSupportToken() const;
 

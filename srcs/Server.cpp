@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/21 16:38:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 11:56:59 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ void	Server::initCommands( void )
   _commands.insert( std::make_pair( 110, "JOIN" ) );
   _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
   _commands.insert( std::make_pair( 112, "KICK" ) );
+  _commands.insert( std::make_pair( 113, "TOPIC" ) );
   _commands.insert( std::make_pair( 120, "NAMES" ) );
 
   // temp elements --> will be replaced by valid command

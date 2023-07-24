@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/21 16:41:03 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 10:42:55 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ class Channel
         bool        getTopicRestrictionStatus( void ) const;
         std::string getLimit( void ) const;
         std::string getKey( void ) const;
+        std::string getTopic( void )const;
+        std::string getTopicSetter( void )const;
+        std::string getTopicDate( void )const;
 
         std::string getModes( void ) const;
         std::string getModesArgs( void ) const;
@@ -70,6 +73,9 @@ class Channel
         void        setTopicRestrictionStatus( bool const& status );
         void        setLimit( std::string const& limit );
         void        setKey( std::string const& key );
+        void        setTopic( std::string const& topic );
+        void        setTopicSetter( std::string const& topicSetter );
+        void        setTopicDate( std::string const& topicDate );
 
         void        addChannelOps( Client* client );
         void        removeChannelOp( Client* client );
@@ -97,6 +103,9 @@ class Channel
 
         std::string _key;
         std::string _limit;
+        std::string _topic;
+        std::string _topicSetter;
+        std::string _topicDate;
 };
 
 #endif /* __CHANNEL_HPP__ */
