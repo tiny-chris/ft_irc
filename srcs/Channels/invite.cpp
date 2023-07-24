@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 13:05:13 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/24 16:59:00 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 17:25:51 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,27 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-
+/**
+   Checks if the client has the rights to invite an other client to a channel, 
+   if the channels and the client to add exist, 
+   and if the client to add is not already on the channel
+   Then adds the client to the invited client vector.
+**/
 void    Server::handleInvite( int clientSocket, std::string param )
 {
     std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
-    // if no param are entered then a need more params err msg is displayed
-    std::vector<std::string> tokens = splitString( param, ' ' );
-    if ( param.empty() || tokens.size() < 2 )
+    std::vector<std::string> tokens = splitString( param, ' ' ); 
+    
+    if ( param.empty() || tokens.size() < 2 ) // if no param are entered then a need more params err msg is displayed
     {
         replyMsg(clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK"));
         return ;
     }
     std::string channelName = tokens[ 1 ];
-	// cropping the first param (channel name) if its length is over the define CHANNELLEN
-	if (channelName.size() > CHANNELLEN)
+	if (channelName.size() > CHANNELLEN) // cropping the first param (channel name) if its length is over the define CHANNELLEN
 		channelName = channelName.substr(0, CHANNELLEN);
-	// if the channel entered doesn't exist no such Channel error displayed
-	if (!existingChannel( channelName ))
+	if (!existingChannel( channelName )) // if the channel entered doesn't exist no such Channel error displayed
     {
 		replyMsg(clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName));
         return ;
@@ -50,8 +53,10 @@ void    Server::handleInvite( int clientSocket, std::string param )
         replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
         return ;
     }
-    std::string toInvite = tokens[ 0 ];
-    if ( chan->checkChannelMembers( toInvite ) ) // checking if the client to invite is already chanmember
+    std::string toInvite = tokens[ 0 ]; // checks that the name of the client to invite is not too long
+    if (toInvite.size() > NICKLEN)
+        toInvite.substr(0, NICKLEN);
+    if ( chan->checkChannelMembers( toInvite ) ) // checking if the client to invite is not already chanmember
     {
         replyMsg(clientSocket, ERR_USERONCHANNEL(source, nick, toInvite, channelName ));
         return ;
@@ -59,7 +64,10 @@ void    Server::handleInvite( int clientSocket, std::string param )
     inviteClientToChannel( clientSocket, nick, toInvite, chan );
 }
 
-
+/* 
+    Adding the client to the invited vector if he exists
+    Sending an invite reply to the client
+*/
 void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan )
 {
     Client *toAdd = NULL;

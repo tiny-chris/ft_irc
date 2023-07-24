@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 16:36:48 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:22:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		Server::handleNick( int clientSocket, std::string param )
   // if no param to a nick command -> No nickname given error
   // OPTION WE TRUNC PARAM IF ITS TOO LONG
   if (param.size() > NICKLEN)
-    param.erase(NICKLEN, param.size() - NICKLEN);
+    param = param.substr(0, NICKLEN);
   if (param.compare("") == 0)
   {
     replyMsg(clientSocket, ERR_NONICKNAMEGIVEN(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname()));
