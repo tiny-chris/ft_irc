@@ -61,10 +61,28 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 		std::cout << MSGERROR << cmd << " : too many parameters for this command\n" << std::endl;
 		return ;
 	}
-	if ( tokens.size() == 1 && tokens[ 0 ] == "0" )
-	{
-		std::cout << ZZ_MSGTEST << "TODO supprimer le client de tous les canaux (utiliser PART)\n" << std::endl;
-	}
+	// 	// Not operational yet
+	// if ( tokens.size() == 1 && tokens[ 0 ] == "0" )//.size() == 1 && tokens[ 0 ][ 0 ] == '0' )
+	// {
+	// 	std::cout << ZZ_MSGTEST << cmd << " : on rentre dans le cas token = 1\n" << std::endl;
+
+	// 	// if ( client.getClientChannels().size() > 0 )
+	// 	// {
+	// 	// 	std::cout << ZZ_MSGTEST << "channels list [" << client.getClientChannels().size() <<"] for client " << _clients.at( clientSocket ).getNickname() << ":";
+	// 	// 	std::vector< std::string >::iterator itChan = _clients.at( clientSocket ).getClientChannels().begin();;
+	// 	// 	for ( ; itChan != client.getClientChannels().end(); ++itChan ) {
+	// 	// 		std::cout << " " << *itChan;
+	// 	// 	}
+	// 	// 	std::cout << std::endl;
+	// 	// }
+	// 	// std::cout << " TEST FIN REQUETE " << std::endl;
+
+	// 	std::vector< std::string >::iterator it;
+	// 	for ( it = client.getClientChannels().begin(); it != client.getClientChannels().begin(); ++it ) {
+	// 		leaveChannel( clientSocket, *it, "" );
+	// 	}
+	// 	return ;
+	// }
 
 	/* *************************************************************** ***
 	** CHECK 2 - FORMAT CHANNEL: EACH ONE STARTS WITH '#' AND IS VALID ***
@@ -110,6 +128,11 @@ void	Server::handleJoin( int clientSocket, std::string cmd, std::string param )
 		// et j'ajoute le client au channel
 		_channels[ channelName ].addChannelMember( &client );
 
+		// si le client était sur invit, alors le supprimer de la liste d'invit
+		if ( _channels[ channelName ].getInviteOnlyStatus() == true ) {
+			_channels[ channelName ].removeInvitedMember( client.getNickname() );
+		}
+
 		// j'ajoute le nom du channel dans le vecteur 'clientChannels' du client
 		client.addChannel( channelName );
 
@@ -144,7 +167,6 @@ bool	Server::checkPreAddChan( int clientSocket, std::vector< std::string > token
 
 	if ( chanExists ) {
 		channel = _channels.at( channelName );
-
 	}
 
 	if ( chanExists && channel.getChannelMembers().find( client.getNickname() ) != channel.getChannelMembers().end() ) {
@@ -223,7 +245,7 @@ bool	Server::validChannelNames( int clientSocket, std::vector<std::string>& chan
 void	Server::channelMsgToAll( int clientSocket, std::string channelName, std::string message )
 {
 	channelMsgNotClient( clientSocket, channelName, message );
-	replyMsg( clientSocket, message );
+	replyMsg( clientSocket, message, 0 );
 }
 
 /* ******************************************** ***

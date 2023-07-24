@@ -70,6 +70,8 @@ class Server {
     bool				joinExistingChannel( int clientSocket, std::string channelName );
 
     void				handlePart( int clientSocket, std::string param );
+    void				leaveChannel ( int clientSocket, std::string channelName, std::string reason );
+    bool				checkPrePartChan( int clientSocket, std::string channelName );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );

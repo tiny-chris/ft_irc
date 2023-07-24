@@ -32,20 +32,20 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 	std::string								listMembers;
 
 
-/*  ****************************************  */
-/*  POUR CHECKER LES CLIENTS DANS CHANNEL !!  */
-/*  ****************************************  */
+// /*  ****************************************  */
+// /*  POUR CHECKER LES CLIENTS DANS CHANNEL !!  */
+// /*  ****************************************  */
 
-		std::cout << ZZ_MSGTEST << "\n";
-		int n = 0;
-		for (Channel::mapClientsPtr::const_iterator	testIt = chanMembers.begin(); testIt != chanMembers.end(); testIt++)
-		{
-			std::cout << "\t\t channel member [" << n << "] named '" << testIt->second->getNickname();
-			std::cout << "' with status 'is invisible' = " << testIt->second->getUserModes() << "\n";
-			n++;
-		}
-/*  ****************************************  */
-/*  ****************************************  */
+// 		std::cout << ZZ_MSGTEST << "\n";
+// 		int n = 0;
+// 		for (Channel::mapClientsPtr::const_iterator	testIt = chanMembers.begin(); testIt != chanMembers.end(); testIt++)
+// 		{
+// 			std::cout << "\t\t channel member [" << n << "] named '" << testIt->second->getNickname();
+// 			std::cout << "' with status 'is invisible' = " << testIt->second->getUserModes() << "\n";
+// 			n++;
+// 		}
+// /*  ****************************************  */
+// /*  ****************************************  */
 
 	std::cout << ZZ_MSGTEST << "Current channel = '" << channel.getChannelName() << "'" << std::endl;
 	bool requestorIsOnChannel = ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) ? true : false;
@@ -57,7 +57,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 		if ( it != chanMembers.begin() ) {
 			listMembers += " ";
 		}
-//		si le members est un operateur, alors mettre @ sinon mettre +
+		//	si le members est un operateur, alors mettre @ sinon ne rien mettre (ou + ?)
 		if ( channel.checkChannelOps( it->second->getNickname() ) == true ) {
 			listMembers += "@";
 		}
@@ -84,7 +84,6 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 void	Server::handleNames( int clientSocket, std::string param )
 {
 	mapChannels::iterator		chanIt;
-	// std::string					chanMembers;
 	std::vector<std::string>	tokens = splitString( param, ',' );
 
 	// if there is no param: display all channels' name (one channel by one)

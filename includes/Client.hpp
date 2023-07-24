@@ -91,15 +91,6 @@ class Client {
 
 		// channelPtr	_clientChannels;
 		std::vector< std::string >	_clientChannels;
-
-		/* 	TMP IN ORDER TO TEST MODE CMD -> WAITING FOR CLEM CHANGES	*/
-		//std::vector<Channel>	_clientChannels;
-
-		// penser a :
-		/*
-		bool				_welcomeStatus;
-		std::string			_serverName;
-		*/
 };
 
 #endif /* __CLIENT_HPP__ */

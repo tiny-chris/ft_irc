@@ -17,7 +17,7 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-// The TOPIC command is used to change or view the topic of the given channel. 
+// The TOPIC command is used to change or view the topic of the given channel.
 void		Server::handleTopic( int clientSocket, std::string param )
 {
     std::string source = _clients.at( clientSocket ).getSource();
@@ -50,9 +50,9 @@ void		Server::handleTopic( int clientSocket, std::string param )
                 replyMsg(clientSocket, RPL_TOPIC(source, nick, channelName, chan->getTopic()));
                 replyMsg(clientSocket, RPL_TOPICWHOTIME(source, nick, channelName, chan->getTopicSetter(), chan->getTopicDate()));
             }
-            return ; 
+            return ;
         }
-		else if ( chan->getTopicRestrictionStatus() == true && !chan->checkChannelOps( nick ) ) // error if the client doesn't have chanops privileges 
+		else if ( chan->getTopicRestrictionStatus() == true && !chan->checkChannelOps( nick ) ) // error if the client doesn't have chanops privileges
 		{
 			replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 			return ;
@@ -76,7 +76,7 @@ void		Server::handleTopic( int clientSocket, std::string param )
 
 std::string Server::getNewTopic( std::vector<std::string> &tokens )
 {
-    std::string newTopic = ""; 
+    std::string newTopic = "";
     if ( tokens.size() >= 2 && tokens[1].find(':', 0) != std::string::npos)
     {
         while (tokens[1].find(':', 0) != std::string::npos)

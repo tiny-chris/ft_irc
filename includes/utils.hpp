@@ -68,6 +68,8 @@ std::string					intToString( int number );
 int							StringToInt( std::string str );
 
 std::vector<std::string>	splitString( std::string params, char splitter );
+bool						splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2);
+
 std::string					getCurrentDate( void );
 
 #endif

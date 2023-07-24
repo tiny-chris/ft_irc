@@ -23,7 +23,7 @@ void        Server::handleKick( int clientSocket, std::string param )
 {
 	std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
-	
+
 	// if no param are entered then a need more params err msg is displayed
     std::vector<std::string> tokens = splitString( param, ' ' );
     if ( param.empty() || tokens.size() < 2 )
@@ -46,7 +46,7 @@ void        Server::handleKick( int clientSocket, std::string param )
 			replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
 			return ;
 		}
-		if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges 
+		if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges
 		{
 			replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 			return ;
@@ -66,7 +66,7 @@ void        Server::handleKick( int clientSocket, std::string param )
 void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason )
 {
 	// check if Client is the last operator on the channel
-	// - if he is the last one is he the only one ? 
+	// - if he is the last one is he the only one ?
 	//		- if yes delete the channel
 	//		- if not display error msg
 	if (chan->getChannelOps().size() == 1)

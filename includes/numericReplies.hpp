@@ -383,9 +383,10 @@
 # define KILL_MSG(source, nickname)							(std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname)					(std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs)	(std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
-# define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN :" + channel + CRLF)
+# define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN " + channel + CRLF)
 # define KICKER(source, nickname, channel, reason) 			(std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
+# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
