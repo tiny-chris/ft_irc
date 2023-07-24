@@ -69,13 +69,15 @@ class Server {
     bool				joinNonExistingChannel( int clientSocket, std::string channelName );
     bool				joinExistingChannel( int clientSocket, std::string channelName );
 
+    void				handlePart( int clientSocket, std::string param );
+
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );
     void				handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> &tokens );
     bool				existingChannel( std::string param );
     void				handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
     void        handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
-    
+
     void				handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
@@ -93,7 +95,7 @@ class Server {
     void        handleKick( int clientSocket, std::string param );
     void	      kickUser( int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason );
     std::string	getReason( std::vector<std::string> &tokens );
-    
+
     void		    handleTopic( int clientSocket, std::string param );
     std::string getNewTopic( std::vector<std::string> &tokens );
 

@@ -40,12 +40,12 @@ enum commands {
 	KICK = 112,
 	TOPIC = 113,
 	NAMES = 120,
+	PART = 130,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,
 	ZZ_MSG = 1003,
 };
-// 	// PART,
 // 	// NOTICE,
 // 	// LIST,
 // 	// INVITE,
