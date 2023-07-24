@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 15:24:05 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 15:39:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class Client {
 
 		// bool			setChannelModes( std::string const& mode );
 		void			addChannel( std::string channelName );
+		void			removeClientChannel( std::string chanName);
 
 	private:
 

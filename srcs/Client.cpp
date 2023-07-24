@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/19 15:03:20 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 15:47:24 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,17 @@ void		Client::setSource( std::string nickname, std::string username ) {
 void		Client::addChannel( std::string channelName ) {
 	if ( !channelName.empty() ) {
 		_clientChannels.push_back( channelName );
+	}
+}
+
+void		Client::removeClientChannel( std::string chanName )
+{
+	for (size_t i = 0; i < _clientChannels.size(); i++)
+    {
+		if (_clientChannels[i] == chanName)
+		{
+			_clientChannels.erase(_clientChannels.begin() + i );
+			break;
+		}
 	}
 }

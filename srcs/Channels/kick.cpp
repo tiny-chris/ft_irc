@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 11:40:15 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 15:48:21 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 		replyMsg(socket, DEFAULTKICK(nick, chan->getChannelName(), toKick, reason));
 	}
 	// remove client from channel members and channel operators
+	Client *tmp = chan->getChannelMembers().at(toKick);
+	tmp->removeClientChannel(chan->getChannelName());
 	chan->getChannelMembers().erase(toKick);
 	chan->getChannelOps().erase(toKick);
 }

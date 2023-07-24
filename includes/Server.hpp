@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:39:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 14:46:04 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 16:13:35 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,9 @@ class Server {
     
     void		    handleTopic( int clientSocket, std::string param );
     std::string getNewTopic( std::vector<std::string> &tokens );
+
+    void		    handleInvite( int clientSocket, std::string param );
+    void        inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan );
 
     std::string	getSupportToken() const;
 

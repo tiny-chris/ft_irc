@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 14:47:02 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/24 13:03:42 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ enum commands {
 	PRIVMSG = 111,
 	KICK = 112,
 	TOPIC = 113,
+	INVITE = 114,
 	NAMES = 120,
 
 	ZZ_SHUTDOWN = 1000,

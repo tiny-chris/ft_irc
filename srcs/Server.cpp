@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 11:56:59 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 13:04:27 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,7 @@ void	Server::initCommands( void )
   _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
   _commands.insert( std::make_pair( 112, "KICK" ) );
   _commands.insert( std::make_pair( 113, "TOPIC" ) );
+  _commands.insert( std::make_pair( 114, "INVITE" ) );
   _commands.insert( std::make_pair( 120, "NAMES" ) );
 
   // temp elements --> will be replaced by valid command
@@ -318,6 +319,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
 		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
     case KICK:    handleKick( clientSocket, parameters ); break;
     case TOPIC:   handleTopic( clientSocket, parameters ); break;
+    case INVITE:  handleInvite( clientSocket, parameters ); break;
     case NAMES:   handleNames( clientSocket, parameters ); break;
 
                       // keeping Clement's initial commands just in case... - START

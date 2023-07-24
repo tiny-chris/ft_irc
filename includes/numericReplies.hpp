@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 10:51:53 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 16:18:58 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,9 @@
 // Renvoyé par un serveur pour indiquer que l'utilisateur donné n'est pas dans le canal spécifié.
 
 # define  ERR_NOTONCHANNEL(source, nickname, channel) (std::string(":") + source + " 442 " + nickname + " " + channel + " :You're not on that channel\r\n")
-// 442
-// "<canal> :You're not on that channel"
 // Renvoyé par le serveur quand un client essaie une commande affectant un canal dont il ne fait pas partie.
 
-# define  ERR_USERONCHANNEL 443
-// "<utilisateur> <channel> :is already on channel"
+# define  ERR_USERONCHANNEL(source, nickname, toinvite, channel) (std::string(":") + source + " 443 " + nickname + " " + toinvite + " " + channel + " :is already on channel\r\n")
 // Renvoyé quand un client essaie d'inviter un utilisateur sur un canal où il est déjà.
 
 # define  ERR_NOLOGIN 444
@@ -319,8 +316,7 @@
 # define RPL_TOPICWHOTIME(source, client, channel, nick, setat) (std::string(":") + source + " 333 " + client + " " + channel + " " + nick + " " + setat + "\r\n")
 // Sent to a client to let them know who set the topic (<nick>) and when they set it (<setat> is a unix timestamp). Sent after RPL_TOPIC (332).
 
-# define RPL_INVITING 341
-// "<canal> <pseudo>"
+# define RPL_INVITING(source, nick, toinvite, channel) (std::string(":") + source + " 341 " + nick + " " + toinvite + " " + channel + "\r\n")
 // Renvoyé par un serveur pour indiquer que le message INVITE a été enregistré, et est en cours de transmission au client final.
 
 # define RPL_VERSION 351
@@ -387,5 +383,6 @@
 # define KICKER(source, nickname, channel, reason) 			(std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
+# define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
