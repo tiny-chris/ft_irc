@@ -19,18 +19,42 @@
 #include "Server.hpp"
 #include "Utility.hpp"
 
-/* ----------------------- CONSTRUCTORS & DESTRUCTOR ------------------------ */
+/*  CANON ------------------------------------------- */
+
+Server::Server( void )
+  : _port( 0 ),
+    _password( "" ),
+    _serverName( "" ),
+    _serverSocket( -1 ),
+    _epollFd( -1 ) {
+  initCommands();  // TODO any vars there to init / copy ??
+  createServerSocket();
+  return;
+}
 
 Server::Server( size_t port, const char* password, std::string serverName )
   : _port( port ),
     _password( password ),
-    _serverName( serverName ) {
-  _serverSocket = -1;
-  _epollFd = -1;
+    _serverName( serverName ),
+    _serverSocket( -1 ),
+    _epollFd( -1 ) {
   initCommands();
-
   createServerSocket();
   return;
+}
+
+Server::Server( const Server& src )
+  : _port( src._port ),
+    _password( src._password ),
+    _serverName( src._serverName ),
+    _serverSocket( src._serverSocket ),
+    _epollFd( src._epollFd ) {
+  std::map<int, Client>::const_iterator it;
+
+  for( it = src._clients.begin(); it != src._clients.end(); ++it ) {
+    _clients[it->first] = Client( it->second );
+  }
+  _disconnectedClients = src._disconnectedClients;
 }
 
 Server::~Server( void ) {
@@ -38,15 +62,23 @@ Server::~Server( void ) {
   std::cout << MSGINFO << "Server shutting down...\n";
 }
 
-/* ---------------------- MEMBER FUNCTIONS: ACCESSORS ----------------------- */
+Server& Server::operator=( Server const& rhs ) {
+  std::map<int, Client>::const_iterator it;
 
-size_t      Server::getPort( void ) const { return _port; }
-std::string Server::getPassword( void ) const { return _password; }
-
-void Server::setPort( size_t& port ) { _port = port; }
-void Server::setPassword( std::string& password ) { _password = password; }
-
-/* -------------------- MEMBER FUNCTIONS: TO BE DEFINED --------------------- */
+  if( this == &rhs ) {
+    return *this;
+  }
+  _port = rhs._port;
+  _password = rhs._password;
+  _serverName = rhs._serverName;
+  _serverSocket = rhs._serverSocket;
+  _epollFd = rhs._epollFd;
+  for( it = rhs._clients.begin(); it != rhs._clients.end(); ++it ) {
+    _clients[it->first] = Client( it->second );
+  }
+  _disconnectedClients = rhs._disconnectedClients;
+  return *this;
+}
 
 void Server::print( std::ostream& o ) const {
   o << "Server:";
@@ -55,68 +87,78 @@ void Server::print( std::ostream& o ) const {
   o << "  Disconnected Clients: " << _disconnectedClients.size() << "\n";
 }
 
-/**
- * @brief      Removes disconnected clients from the server.
- */
-
-void Server::removeDisconnectedClients( void ) {
-  std::size_t totalDisconnectedClients = _disconnectedClients.size();
-  size_t      totalClients = _clients.size();
-
-  for( std::size_t i = 0; i < totalDisconnectedClients; ++i ) {
-    _clients.erase( _disconnectedClients[i] );
-    Utility::closeFd( _disconnectedClients[i] );
-  }
-  // DEV_BEG
-  if( totalDisconnectedClients ) {
-    std::cout << MSGINFO << "<" << totalDisconnectedClients << "/"
-              << totalClients;
-    std::cout << "_clients removed>\n";
-  }
-  // END_END
-  _disconnectedClients.clear();
+std::ostream& operator<<( std::ostream& o, Server const& i ) {
+  i.print( o );
+  return o;
 }
+
+/*  ACCESSORS --------------------------------------- */
+
+void   Server::setPort( size_t& port ) { _port = port; }
+size_t Server::getPort( void ) const { return _port; }
+
+void Server::setPassword( std::string& password ) { _password = password; }
+std::string Server::getPassword( void ) const { return _password; }
+
+/*  IMPLEMENTATION ---------------------------------- */
+
+/**
+ * @brief       Stop the server.
+ */
 
 void Server::stop( void ) {
   disconnectAllClients();
   removeDisconnectedClients();
-  /* _clients.clear(); */
   Utility::closeFd( _epollFd );
   Utility::closeFd( _serverSocket );
 }
 
 /**
- * @brief      Disconnects a client at the specified index.
- *
- * @param[in]  index The index of the client to disconnect.
+ * @brief      Removes disconnected clients from the server.
  */
 
-void Server::disconnectAClient( int clientSocket ) {
-  std::cout << MSGINFO << "<client on socket "
-            << _clients.at( clientSocket ).getFd();
-  std::cout << " disconnected>\n";
-  _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
+void Server::removeDisconnectedClients( void ) {
+  std::size_t disconnectCientsNumber = _disconnectedClients.size();
+  size_t      clientsNumber = _clients.size();
+
+  for( std::size_t i = 0; i < disconnectCientsNumber; ++i ) {
+    _clients.erase( _disconnectedClients[i] );
+    Utility::closeFd( _disconnectedClients[i] );
+  }
+  if( disconnectCientsNumber != 0 ) {
+    std::cout << MSGINFO << "<" << disconnectCientsNumber << "/"
+              << clientsNumber << "_clients removed>\n";
+  }
+  _disconnectedClients.clear();
 }
 
 /**
- * @brief      Disconnects all the clients
+ * @brief      Disconnects all the clients.
  */
 
 void Server::disconnectAllClients() {
   std::map<int, Client>::const_iterator it;
 
   for( it = _clients.begin(); it != _clients.end(); ++it ) {
-    std::cout << MSGINFO << "< client on socket " << it->second.getNickname();
+    std::cout << MSGINFO << "<" << it->second.getNickname();
     std::cout << " disconnected>\n";
     _disconnectedClients.push_back( it->first );
   }
 }
 
 /**
- * @brief       Broadcasts a message to all connected clients except the sender
- *
- * @param[in]   msg The message to broadcast.
- * @param[in]   clientSocket The client socket
+ * @brief      Disconnects a client at the specified index.
+ */
+
+void Server::disconnectAClient( int clientSocket ) {
+  std::cout << MSGINFO << "<" << _clients.at( clientSocket ).getNickname();
+  std::cout << " disconnected>\n";
+  _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
+}
+
+/**
+ * @brief       Broadcasts a message to all connected clients except the
+ *              sender
  */
 
 void Server::broadcastMsg( std::string& msg, int clientSocket ) {
@@ -137,39 +179,11 @@ void Server::broadcastMsg( std::string& msg, int clientSocket ) {
 }
 
 /**
- * @brief       Initialize the commands to be handled in IRC into a
- * map<int,std::string>
- */
-
-void Server::initCommands( void ) {
-  _commands.insert( std::make_pair( 0, "UNDEFINED" ) );
-  _commands.insert( std::make_pair( 99, "CAP" ) );
-  _commands.insert( std::make_pair( 100, "PASS" ) );
-  _commands.insert( std::make_pair( 101, "NICK" ) );
-  _commands.insert( std::make_pair( 102, "USER" ) );
-  _commands.insert( std::make_pair( 103, "PING" ) );
-  _commands.insert( std::make_pair( 109, "MODE" ) );
-  _commands.insert( std::make_pair( 110, "JOIN" ) );
-  _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
-  _commands.insert( std::make_pair( 112, "KICK" ) );
-  _commands.insert( std::make_pair( 113, "TOPIC" ) );
-  _commands.insert( std::make_pair( 114, "INVITE" ) );
-  _commands.insert( std::make_pair( 120, "NAMES" ) );
-  _commands.insert( std::make_pair( 130, "PART" ) );
-
-  // temp elements --> will be replaced by valid command
-  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
-  _commands.insert( std::make_pair( 1001, "/quit" ) );
-  _commands.insert( std::make_pair( 1003, "/msg" ) );
-  return;
-}
-
-/**
  * @brief       Send message to the client with all specific parameter (incl.
- * numeric replies) and copy it on the server side if flag is 1 (otherwise, do
- * nothing on the server)
- *
+ *              numeric replies) and copy it on the server side if flag is 1
+ *              (otherwise, do nothing on the server)
  */
+
 void Server::replyMsg( int clientSocket, std::string reply,
                        bool copyToServer ) {
   if( copyToServer == true ) {
@@ -292,8 +306,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   //  authentifier (PASS, NICK, USER) or QUIT and if client is not registered
   //  yet --> ERR_NOTREGISTERED
   //
-  //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem pour
-  //    potentiel shutdown
+  //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem
+  //    pour potentiel shutdown
   //
   if( commandKey != UNDEFINED && commandKey != CAP ) {
     if( command != "PASS"
@@ -314,8 +328,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   /* ACTION 5   - handle command */
   /* ********************************* */
   // This message is not required for a server implementation to work, but
-  // SHOULD be implemented. If a command is not implemented, it MUST return the
-  // ERR_UNKNOWNCOMMAND (421) numeric.
+  // SHOULD be implemented. If a command is not implemented, it MUST return
+  // the ERR_UNKNOWNCOMMAND (421) numeric.
   switch( commandKey ) {
     case CAP:
       std::cout << std::endl;
@@ -405,15 +419,22 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   /*  ************************************  */
 }
 
+/**
+ * @brief       Handles communication with existing clients.
+ *
+ * TODO ask chris for explanation
+ */
+
 void Server::handleExistingClient( int clientSocket ) {
-  int  checkClear = 0;
-  char buf[BUFMAXLEN];                         // Buffer for client data
-                                               // TODO A REFAIRE !!!
-  static std::string bufs[MAXCONNECTION + 1];  // TODO plus de client 0
+  static std::string bufs[MAXCONNECTION + 1];
+  char               buf[BUFMAXLEN];
+  bool               isClear = false;
+  ssize_t            bytesRead;
+
+  // TODO REDO
+  // DEPRECATED + 1 cause NO _clients[0] ANYMORE
   memset( buf, 0, sizeof( buf ) );
-
-  ssize_t bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
-
+  bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
   if( bytesRead < 0 ) {
     std::string message = "recv: " + std::string( strerror( errno ) );
     throw std::runtime_error( message );
@@ -424,17 +445,48 @@ void Server::handleExistingClient( int clientSocket ) {
   // Turn "^M\n" into "\0" TODO OS compatibility
   // faire un pour verifier que ca finit bien par un
   bufs[clientSocket] += buf;
-  // std::cout << "|INFO| initial buf: " << bufs[clientSocket] << std::endl;
+  // std::cout << "|INFO| initial buf: " << bufs[clientSocket] <<
+  // std::endl;
   while( bufs[clientSocket].size() >= 2
          && bufs[clientSocket].find( CRLF ) != std::string::npos ) {
-    checkClear = 1;
+    isClear = true;
     handleRequest( clientSocket, bufs[clientSocket].substr(
                                    0, bufs[clientSocket].find( CRLF ) ) );
     bufs[clientSocket].erase( 0, bufs[clientSocket].find( CRLF ) + 2 );
   }
-  if( checkClear == 1 ) {
+  if( isClear == true ) {
     bufs[clientSocket].clear();
   }
+}
+
+/**
+ * @brief       Handles new client connections.
+ */
+
+void Server::handleNewClient( void ) {
+  sockaddr_storage clientAddress;
+  socklen_t        clientAddressLength;
+  int              clientSocket;
+
+  clientAddressLength = sizeof( clientAddress );
+  clientSocket = accept( _serverSocket,
+                         reinterpret_cast<struct sockaddr*>( &clientAddress ),
+                         &clientAddressLength );
+  if( clientSocket < 0 ) {
+    std::cerr << "accept: " << strerror( errno ) << "\n";
+    return;
+  }
+  std::cout << "New connection from " << Utility::ntop( clientAddress ) << "\n";
+  struct epoll_event event;
+  memset( &event, 0, sizeof( event ) );
+  event.events = EPOLLIN;
+  event.data.fd = clientSocket;
+  if( epoll_ctl( _epollFd, EPOLL_CTL_ADD, event.data.fd, &event ) < 0 ) {
+    std::string message = "epoll_ctl: " + std::string( strerror( errno ) );
+    throw std::runtime_error( message );
+  }
+  _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
+  std::cout << "<New connection via socket " << clientSocket << ">\n";
 }
 
 /**
@@ -442,7 +494,7 @@ void Server::handleExistingClient( int clientSocket ) {
  */
 
 void Server::createServerSocket( void ) {
-  int             opt = 1;  // For setsockopt() SO_REUSEADDR, below
+  int             opt = 1;
   int             status;
   struct addrinfo hints, *res, *p;
 
@@ -450,8 +502,10 @@ void Server::createServerSocket( void ) {
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
-  status = getaddrinfo( NULL, Utility::intToString( getPort() ).c_str(), &hints,
-                        &res );
+
+  status = getaddrinfo(
+    NULL, Utility::intToString( static_cast<int>( getPort() ) ).c_str(), &hints,
+    &res );
   if( status != 0 ) {
     std::string message = "selectserver: " + Utility::gaiStrerror( status );
     throw std::runtime_error( message );
@@ -480,88 +534,62 @@ void Server::createServerSocket( void ) {
   if( listen( _serverSocket, 10 ) == -1 ) {
     throw std::runtime_error( "Error listening on socket" );
   }
-  // connection
-  std::cout << "Welcome on " << _serverName << "!\n" << std::endl;
-  std::cout << "  hostname:\t\t"
-            << "127.0.0.1 (localhost)" << std::endl;
-  std::cout << "  port:\t\t\t" << _port << std::endl;
-  std::cout << "  server socket:\t" << _serverSocket << std::endl << std::endl;
-
   return;
 }
 
 /**
- * @brief       Handles new client connections.
+ * @brief       Initialize the commands to be handled in IRC into a
+ *              map<int,std::string>
  */
 
-void Server::handleNewClient( void ) {
-  sockaddr_storage clientAddress;
-  socklen_t        clientAddressLength;
-  int              clientSocket;
-
-  clientAddressLength = sizeof( clientAddress );
-  clientSocket = accept( _serverSocket,
-                         reinterpret_cast<struct sockaddr*>( &clientAddress ),
-                         &clientAddressLength );
-  if( clientSocket < 0 ) {
-    std::cerr << "accept: " << strerror( errno ) << "\n";
-    return;
-  }
-  // std::cout << "New connection from " << Utility::ntop( clientAddress );
-  // /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
-  // std::cout << std::endl;
-
-  struct epoll_event event;
-  memset( &event, 0, sizeof( event ) );
-  event.events = EPOLLIN;  // TODO EPOLLIN | EPOLLONESHOT
-  event.data.fd = clientSocket;
-  if( epoll_ctl( _epollFd, EPOLL_CTL_ADD, event.data.fd, &event ) < 0 ) {
-    std::string message = "epoll_ctl: " + std::string( strerror( errno ) );
-    throw std::runtime_error( message );
-  }
-
-  std::cout << "--------------------" << std::endl;
-  std::cout << "New connection from " << Utility::ntop( clientAddress );
-  std::cout << " accepted on client socket " << clientSocket << std::endl;
-  /* std::cout << ":" << ntohs( clientAddress.sin_port ) << std::endl; */
-  std::cout << std::endl;
-
-  _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
-  // Client client( clientSocket );
-  // _clients[ clientSocket ] = client;
-
-  // std::cout << "<" << _clients.at( clientSocket ).getFd();
-  // std::cout << " joined the channel>\n";
-
-  // std::cout << "-------------------" << std::endl;
-  // std::cout << Utility::fdIsValid(_clients.find( clientSocket )->first) <<
-  // "\n"; std::cout << Utility::fdIsValid(_clients.at( clientSocket ).getFd())
-  // << "\n"; std::cout << "-------------------" << std::endl;
+void Server::initCommands( void ) {
+  _commands.insert( std::make_pair( 0, "UNDEFINED" ) );
+  _commands.insert( std::make_pair( 99, "CAP" ) );
+  _commands.insert( std::make_pair( 100, "PASS" ) );
+  _commands.insert( std::make_pair( 101, "NICK" ) );
+  _commands.insert( std::make_pair( 102, "USER" ) );
+  _commands.insert( std::make_pair( 103, "PING" ) );
+  _commands.insert( std::make_pair( 109, "MODE" ) );
+  _commands.insert( std::make_pair( 110, "JOIN" ) );
+  _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
+  _commands.insert( std::make_pair( 112, "KICK" ) );
+  _commands.insert( std::make_pair( 113, "TOPIC" ) );
+  _commands.insert( std::make_pair( 114, "INVITE" ) );
+  _commands.insert( std::make_pair( 120, "NAMES" ) );
+  _commands.insert( std::make_pair( 130, "PART" ) );
+  // temp elements --> will be replaced by valid command
+  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
+  _commands.insert( std::make_pair( 1001, "/quit" ) );
+  _commands.insert( std::make_pair( 1003, "/msg" ) );
+  return;
 }
 
 /**
  * @brief       Start listening.
  */
 
-#define MAX_EVENTS 10  // TODO
-
 void Server::start( void ) {
   int                eventsSize;
   struct epoll_event events[MAX_EVENTS];
+  struct epoll_event event;
 
   _epollFd = epoll_create( 1 );
   if( _epollFd < 0 ) {
     std::string message = "epoll_create: " + std::string( strerror( errno ) );
     throw std::runtime_error( message );
   }
-  struct epoll_event event;
   memset( &event, 0, sizeof( event ) );
-  event.events = EPOLLIN;  // TODO | EPOLLONESHOT ?
+  event.events = EPOLLIN;
   event.data.fd = _serverSocket;
   if( epoll_ctl( _epollFd, EPOLL_CTL_ADD, event.data.fd, &event ) < 0 ) {
     std::string message = "epoll_ctl: " + std::string( strerror( errno ) );
     throw std::runtime_error( message );
   }
+  std::cout << "Welcome on " << _serverName << "!\n\n";
+  std::cout << "  hostname:\t\t"
+            << "127.0.0.1 (localhost)\n";
+  std::cout << "  port:\t\t\t" << _port << "\n";
+  std::cout << "  server socket:\t" << _serverSocket << "\n\n";
   while( _serverSocket != -1 ) {
     eventsSize = epoll_wait( _epollFd, events, MAX_EVENTS, -1 );  // 3.
     if( eventsSize == -1 ) {
@@ -579,9 +607,4 @@ void Server::start( void ) {
     }
     removeDisconnectedClients();
   }
-}
-
-std::ostream& operator<<( std::ostream& o, Server const& i ) {
-  i.print( o );
-  return o;
 }
