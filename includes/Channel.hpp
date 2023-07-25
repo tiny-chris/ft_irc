@@ -62,7 +62,7 @@ class Channel
         std::string	getModesArgs( void ) const;
         mapClientsPtr&	getChannelOps( void );
         mapClientsPtr&	getChannelMembers( void );
-        vecString	getInvitedMembers( void ) const;
+        vecString&	getInvitedMembers( void );
 
         bool		checkValidLimit(std::string limit) const;
 

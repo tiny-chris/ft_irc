@@ -29,6 +29,7 @@ class Server {
   typedef std::map<int, Client>          mapClients;
   typedef std::map<std::string, Channel> mapChannels;
   typedef std::map<int, std::string>     mapCommands;
+  typedef std::vector< std::string >     vecString;
 
   void checkRegistration( int clientSocket );
   void sendWelcomeMsg( int clientSocket );
@@ -124,6 +125,7 @@ class Server {
   void updateChannelMemberNick( std::string& oldNickname,
                                 std::string  nickName );
   void updateChannelOpsNick( std::string& oldNickname, std::string nickName );
+  void updateInvitedMembersNick( std::string &oldNickname, std::string nickName );
 
   //
   //

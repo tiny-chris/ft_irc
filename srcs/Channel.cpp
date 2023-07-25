@@ -196,7 +196,7 @@ bool        Channel::checkValidLimit(std::string limit) const {
   return false;
 }
 
-Channel::vecString   Channel::getInvitedMembers( void ) const { return _invitedMembers; }
+Channel::vecString&   Channel::getInvitedMembers( void ) { return _invitedMembers; }
 
 void		Channel::setChannelName( std::string& name ) { _channelName = name; }
 void    Channel::setKeyStatus( bool const& status ) { _keyStatus = status; }
