@@ -64,10 +64,13 @@ class Server {
     void				displayNames( int clientSocket, Channel& channel );
 
     void				handleJoin( int clientSocket, std::string cmd, std::string param );
-    bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
+    bool				isValidChanName( int clientSocket, std::string channelName );
+    // bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
     bool        checkPreAddChan( int clientSocket, std::vector< std::string > tokens, size_t index, bool chanExists );
-    bool				joinNonExistingChannel( int clientSocket, std::string channelName );
-    bool				joinExistingChannel( int clientSocket, std::string channelName );
+
+    void				handlePart( int clientSocket, std::string param );
+    void				leaveChannel ( int clientSocket, std::string channelName, std::string reason );
+    bool				checkPrePartChan( int clientSocket, std::string channelName );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );
@@ -75,7 +78,7 @@ class Server {
     bool				existingChannel( std::string param );
     void				handleChannelModeSet(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
     void        handleChannelModeUnset(Channel *chan, char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t *j);
-    
+
     void				handleModeSetKey(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetLimit(Channel *chan, std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j);
     void				handleModeSetInviteOnly(Channel *chan, std::string* modeChange);
@@ -93,7 +96,7 @@ class Server {
     void        handleKick( int clientSocket, std::string param );
     void	      kickUser( int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason );
     std::string	getReason( std::vector<std::string> &tokens );
-    
+
     void		    handleTopic( int clientSocket, std::string param );
     std::string getNewTopic( std::vector<std::string> &tokens );
 

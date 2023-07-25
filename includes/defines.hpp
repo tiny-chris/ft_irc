@@ -73,7 +73,7 @@ they do or do not take when using them with the MODE command. */
 
 /* The NICKLEN parameter indicates the maximum length of a nickname that a client may set.
 Clients on the network MAY have longer nicks than this.*/
-# define NICKLEN 9
+# define NICKLEN 15
 
 /* Within channels, clients can have different statuses, denoted by single-character prefixes.
 The PREFIX parameter specifies these prefixes and the channel mode characters that they are mapped to. */

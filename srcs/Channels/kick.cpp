@@ -23,7 +23,7 @@ void        Server::handleKick( int clientSocket, std::string param )
 {
 	std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
-	
+
 	// if no param are entered then a need more params err msg is displayed
     std::vector<std::string> tokens = splitString( param, ' ' );
     if ( param.empty() || tokens.size() < 2 )
@@ -46,13 +46,13 @@ void        Server::handleKick( int clientSocket, std::string param )
 			replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
 			return ;
 		}
-		if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges 
+		if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges
 		{
 			replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 			return ;
 		}
 		std::string toKick = tokens[ 1 ];
-		if ( !chan->checkChannelMembers( toKick ) ) // checking if the client to kick is a chanmember
+		if ( !chan->checkChannelMembers( toKick ) ) // checking if the client to kick is a chan member
 		{
 			replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick, channelName ));
 			return ;
@@ -65,8 +65,9 @@ void        Server::handleKick( int clientSocket, std::string param )
 // Kicks user if not the last chanops, displays action to all chanmembers, and deletes channel if needed.
 void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason )
 {
+	Client	*tmp = chan->getChannelMembers().at(toKick);
 	// check if Client is the last operator on the channel
-	// - if he is the last one is he the only one ? 
+	// - if he is the last one is he the only one ?
 	//		- if yes delete the channel
 	//		- if not display error msg
 	if (chan->getChannelOps().size() == 1)
@@ -75,6 +76,8 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 		{
 			_channels.erase( chan->getChannelName() ); // delete the Channel
 			// TO DO ERASE CHANNEL IN CLIENTS VECTORS
+			tmp->removeClientChannel(chan->getChannelName());
+
 			replyMsg(clientSocket, DEFAULTKICK(nick, chan->getChannelName(), toKick, reason));
 			replyMsg(clientSocket, chan->getChannelName() + " was deleted\r\n");
 			return ;
@@ -92,7 +95,7 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 		replyMsg(socket, DEFAULTKICK(nick, chan->getChannelName(), toKick, reason));
 	}
 	// remove client from channel members and channel operators
-	Client *tmp = chan->getChannelMembers().at(toKick);
+	// Client *tmp = chan->getChannelMembers().at(toKick);
 	tmp->removeClientChannel(chan->getChannelName());
 	chan->getChannelMembers().erase(toKick);
 	chan->getChannelOps().erase(toKick);

@@ -23,6 +23,7 @@ SRCS		:=	\
 				utils.cpp \
 				Channels/kick.cpp \
 				Channels/join.cpp \
+				Channels/part.cpp \
 				Channels/topic.cpp \
 				Channels/invite.cpp \
 				Commands/mode.cpp \

@@ -39,7 +39,7 @@
 //"<nom de canal> :Cannot send to channel"
 //Envoyé à un utilisateur qui (a) soit n'est pas dans un canal en mode +n ou (b) n'est pas opérateur (ou mode +v) sur un canal en mode +m ; et essaie d'envoyer un PRIVMSG à ce canal.
 
-# define ERR_TOOMANYCHANNELS(source, nickname, channel) (std::string(":") + source + " 405 " + nickname + " " + channel + ":You have joined too many channels\r\n")
+# define ERR_TOOMANYCHANNELS(source, nickname, channel) (std::string(":") + source + " 405 " + nickname + " " + channel + " :You have joined too many channels\r\n")
 // 405
 //"<nom de canal> :You have joined too many channels"
 //Envoyé à un utilisateur quand il a atteint le nombre maximal de canaux qu'il est autorisé à accéder simultanément, s'il essaie d'en rejoindre un autre.
@@ -379,10 +379,11 @@
 # define KILL_MSG(source, nickname)							(std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname)					(std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs)	(std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
-# define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN :" + channel + CRLF)
+# define RPL_JOIN(source, nickname, channel)				(std::string(":") + source + " JOIN " + channel + CRLF)
 # define KICKER(source, nickname, channel, reason) 			(std::string(":") + source + " KICK " + channel + " "  + nickname + " :" + reason + "\r\n")
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
+# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

@@ -47,30 +47,32 @@ class Channel
 
         Channel & operator=(Channel const & rhs);
 
-        std::string getChannelName( void ) const;
-        bool        getKeyStatus( void ) const;
-        bool        getLimitStatus( void ) const;
-        bool        getInviteOnlyStatus( void ) const;
-        bool        getTopicRestrictionStatus( void ) const;
-        std::string getLimit( void ) const;
-        std::string getKey( void ) const;
-        std::string getTopic( void )const;
-        std::string getTopicSetter( void )const;
-        std::string getTopicDate( void )const;
+		std::string	getChannelName( void ) const;
+		bool		getKeyStatus( void ) const;
+		bool		getLimitStatus( void ) const;
+		bool		getInviteOnlyStatus( void ) const;
+		bool		getTopicRestrictionStatus( void ) const;
+		int			getLimitBis( void ) const;
+		std::string	getLimit( void ) const;
+		std::string	getKey( void ) const;
+		std::string	getTopic( void )const;
+		std::string	getTopicSetter( void )const;
+		std::string	getTopicDate( void )const;
 
-        std::string getModes( void ) const;
-        std::string getModesArgs( void ) const;
-        mapClientsPtr&   getChannelOps( void );
-        mapClientsPtr&   getChannelMembers( void );
-        vecString   getInvitedMembers( void ) const;
+        std::string	getModes( void ) const;
+        std::string	getModesArgs( void ) const;
+        mapClientsPtr&	getChannelOps( void );
+        mapClientsPtr&	getChannelMembers( void );
+        vecString	getInvitedMembers( void ) const;
 
-        bool        checkValidLimit(std::string limit) const;
+        bool		checkValidLimit(std::string limit) const;
 
         void		setChannelName( std::string& name );
         void        setKeyStatus( bool const& status );
         void        setLimitStatus( bool const& status );
         void        setInviteOnlyStatus( bool const& status );
         void        setTopicRestrictionStatus( bool const& status );
+        void        setLimitBis( int const& limit );
         void        setLimit( std::string const& limit );
         void        setKey( std::string const& key );
         void        setTopic( std::string const& topic );
@@ -91,7 +93,6 @@ class Channel
     private:
 
         std::string     _channelName;
-        // std::map<std::string, Client*> _connectedClients;
         mapClientsPtr   _channelOps;
         mapClientsPtr   _channelMembers;
         vecString       _invitedMembers;
@@ -101,6 +102,7 @@ class Channel
         bool    _inviteOnlyStatus;
         bool    _topicRestrictionStatus;
 
+        int         _limitBis;
         std::string _key;
         std::string _limit;
         std::string _topic;

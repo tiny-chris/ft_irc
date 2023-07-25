@@ -41,12 +41,12 @@ enum commands {
 	TOPIC = 113,
 	INVITE = 114,
 	NAMES = 120,
+	PART = 130,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,
 	ZZ_MSG = 1003,
 };
-// 	// PART,
 // 	// NOTICE,
 // 	// LIST,
 // 	// INVITE,
@@ -66,8 +66,11 @@ bool						isValidParam( std::string name );
 bool						isValidToken(std::string name);
 
 std::string					intToString( int number );
+int							StringToInt( std::string str );
 
 std::vector<std::string>	splitString( std::string params, char splitter );
+bool						splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2);
+
 std::string					getCurrentDate( void );
 
 #endif

@@ -25,6 +25,17 @@ std::string intToString( int number ) {
   return oss.str();
 }
 
+/**
+ * @brief       String to Int
+ */
+
+int         StringToInt( std::string str ) {
+  std::stringstream iss( str );
+  int               number;
+  iss >> number;
+  return number;
+}
+
 // /**
 //  * @brief       Forbidden gai_strerror implementation
 //  */
@@ -81,6 +92,29 @@ std::vector<std::string>  splitString( std::string params, char splitter )
       // }
     }
     return ( tokens );
+}
+
+/**
+ * @brief       Split a string into two and store each substring into str1 and str2
+ *              Delimiter is a specific mentionned 'char'
+ */
+
+bool	splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2 )
+{
+	size_t	splitter = strToSplit.find( delimiter, 0 );
+
+	if ( strToSplit.empty() ) {
+		return false ;
+	}
+	if ( splitter != std::string::npos ) {
+		*str1 = strToSplit.substr( 0, splitter );
+		*str2 = strToSplit.substr ( splitter + 1 );
+	}
+	else {
+		*str1 = strToSplit;
+		*str2 = "";
+	}
+	return true ;
 }
 
 /**
