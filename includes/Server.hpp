@@ -60,6 +60,8 @@ class Server {
                      const std::string& reason );
   bool checkChanPrePart( int clientSocket, const std::string& channelName );
 
+  void handlePrivmsg( int clientSocket, std::string param );
+
   void handleMode( int clientSocket, std::string param );
   void handleUserMode( int clientSocket, std::vector<std::string>& tokens );
   void handleChannelMode( int clientSocket, std::string& channelName,

@@ -87,9 +87,13 @@ void	Server::handleNames( int clientSocket, std::string param )
 	mapChannels::iterator		chanIt;
 	std::vector<std::string>	tokens = splitString( param, ',' );
 
-	// if there is no param: display all channels' name (one channel by one)
+	// if there is no param: display all channels' name (one channel by one), if existing
 	if ( param.empty() || !tokens.size() )
 	{
+		if ( _channels.empty() ) {
+			std::cout << MSGINFO << "there is no channel created yet" << std::endl;
+			return ;
+		}
 		for ( chanIt = _channels.begin(); chanIt != _channels.end(); ++chanIt )
 		{
 			Channel&	channel = chanIt->second;

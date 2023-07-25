@@ -364,8 +364,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       handleJoin( clientSocket, parameters );
       break;
     case PRIVMSG:
-      std::cout << "client " << _clients.at( clientSocket ).getNickname()
-                << " - use function to handle PRIVMSG command" << std::endl;
+      handlePrivmsg( clientSocket, parameters );
       break;
     case KICK:
       handleKick( clientSocket, parameters );

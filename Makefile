@@ -24,6 +24,7 @@ SRCS		:=	\
 				Channels/kick.cpp \
 				Channels/join.cpp \
 				Channels/part.cpp \
+				Channels/privmsg.cpp \
 				Channels/topic.cpp \
 				Channels/invite.cpp \
 				Commands/mode.cpp \
