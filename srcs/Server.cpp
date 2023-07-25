@@ -361,7 +361,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       handleMode( clientSocket, parameters );
       break;
     case JOIN:
-      handleJoin( clientSocket, command, parameters );
+      handleJoin( clientSocket, parameters );
       break;
     case PRIVMSG:
       std::cout << "client " << _clients.at( clientSocket ).getNickname()
@@ -380,7 +380,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       handleNames( clientSocket, parameters );
       break;
     case WHO:
-      handleWho( clientSocket, parameters ); 
+      handleWho( clientSocket, parameters );
       break;
     case PART:
       handlePart( clientSocket, parameters );

@@ -16,7 +16,7 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-void	Server::leaveChannel ( int clientSocket, std::string channelName, std::string reason )
+void	Server::leaveChannel ( int clientSocket, const std::string& channelName, const std::string& reason )
 {
 	Client		*client = &_clients.at( clientSocket );
 	Channel		*channel = &_channels.at( channelName );
@@ -29,7 +29,7 @@ void	Server::leaveChannel ( int clientSocket, std::string channelName, std::stri
 			replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
 		}
 		else {
-			replyMsg( clientSocket, "Error: Cannot delete last operator while other members remaining\r\n");
+			replyMsg( clientSocket, ERR_CANNOTPART( client->getSource(), channelName, " Error: Cannot delete last operator while other members remaining" ) );
 		}
 	}
 	else {// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
@@ -39,35 +39,6 @@ void	Server::leaveChannel ( int clientSocket, std::string channelName, std::stri
 		client->removeClientChannel( channelName );
 	}
 }
-// {
-// 	Client&		client = _clients.at( clientSocket );
-// 	Channel&	channel = _channels.at( channelName );
-
-// 	if ( channel.checkChannelOps( client.getNickname() ) == true && channel.getChannelOps().size() == 1 ) {
-// 		if ( channel.getChannelMembers().size() == 1 ) {
-// 			_channels.erase( channelName );
-// 			// TO DO ERASE CHANNEL IN CLIENTS VECTORS
-// 			// client.removeClientChannel( channelName );
-
-// 			// faire un message pour fermeture de channel ???
-// 			replyMsg( clientSocket, RPL_PART( client.getSource(), client.getNickname(), channelName, reason ) );
-// 		}
-// 		else {
-// 			replyMsg( clientSocket, "Error: Cannot delete last operator while other members remaining\r\n");
-// 		}
-// 	}
-// 	else {// chanOps mais il y en a d'autres ou pas chanOps
-// 		// remove client from channel members and channel operators
-// 		channelMsgToAll( clientSocket, channelName, RPL_PART( client.getSource(), client.getNickname(), channelName, reason ) );
-// 		channel.removeChannelOp( &client );
-// 		channel.removeChannelMember( &client );
-// 		// TO DO ERASE CHANNEL IN CLIENTS VECTORS
-// 		// client.removeClientChannel( channelName );
-
-// 		// channel.getChannelOps().erase( client.getNickname() );
-// 		// channel.getChannelMembers().erase( client.getNickname() );
-// 	}
-// }
 
 /*
 For each channel in the parameter of this command, if the channel exists and the client is not joined to it,
@@ -91,7 +62,7 @@ void	Server::handlePart( int clientSocket, std::string param )
 		std::string	channelName = channelNames[ i ];
 
 		// faire les checks
-		if ( checkPrePartChan( clientSocket, channelName ) == false ) {
+		if ( checkChanPrePart( clientSocket, channelName ) == false ) {
 			continue ;
 		}
 
@@ -123,7 +94,7 @@ void	Server::handlePart( int clientSocket, std::string param )
 	}
 }
 
-bool	Server::checkPrePartChan( int clientSocket, std::string channelName )
+bool	Server::checkChanPrePart( int clientSocket, const std::string& channelName )
 {
 	Client&	client = _clients.at( clientSocket );
 

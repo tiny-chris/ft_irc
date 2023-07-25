@@ -27,6 +27,7 @@
 
 void	Server::displayNames( int clientSocket, Channel& channel )
 {
+	Client									*client = &_clients.at( clientSocket );
 	Channel::mapClientsPtr&					chanMembers = channel.getChannelMembers();
 	Channel::mapClientsPtr::const_iterator	it;
 	std::string								listMembers;
@@ -48,7 +49,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 // /*  ****************************************  */
 
 	// std::cout << ZZ_MSGTEST << "Current channel = '" << channel.getChannelName() << "'" << std::endl;
-	bool requestorIsOnChannel = ( chanMembers.find( _clients.at( clientSocket ).getNickname() ) != chanMembers.end() ) ? true : false;
+	bool requestorIsOnChannel = ( chanMembers.find( client->getNickname() ) != chanMembers.end() ) ? true : false;
 	// std::cout << ZZ_MSGTEST << "requestor client = '" << _clients.at( clientSocket ).getNickname() << "' is on channel : " << requestorIsOnChannel << std::endl;
 	for ( it = chanMembers.begin(); it != chanMembers.end(); it++ )
 	{
@@ -66,9 +67,8 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 		// }
 		listMembers += it->first;
 	}
-
-	replyMsg( clientSocket, RPL_NAMREPLY( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), channel.getChannelName(), listMembers ) );
-	replyMsg( clientSocket, RPL_ENDOFNAMES( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), channel.getChannelName() ) );
+	replyMsg( clientSocket, RPL_NAMREPLY( client->getSource(), client->getNickname(), channel.getChannelName(), listMembers ) );
+	replyMsg( clientSocket, RPL_ENDOFNAMES( client->getSource(), client->getNickname(), channel.getChannelName() ) );
 }
 
 /**
@@ -83,6 +83,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 
 void	Server::handleNames( int clientSocket, std::string param )
 {
+	Client						*client = &_clients.at( clientSocket );
 	mapChannels::iterator		chanIt;
 	std::vector<std::string>	tokens = splitString( param, ',' );
 
@@ -115,7 +116,7 @@ void	Server::handleNames( int clientSocket, std::string param )
 			else
 			{
 				// std::cout << ZZ_MSGTEST << "'" << tokens[i] << "' n'est pas dans la liste des channels" << std::endl;
-				replyMsg( clientSocket, RPL_ENDOFNAMES( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), tokens[ i ] ) );
+				replyMsg( clientSocket, RPL_ENDOFNAMES( client->getSource(), client->getNickname(), tokens[ i ] ) );
 			}
 		}
 	}
