@@ -1,32 +1,19 @@
-# Prerequisites
-*.d
+# @file     .gitignore
+# @brief    Files to be ignored by git.
+# @author   clemedon (Clément Vidon)
 
-# Compiled Object files
-*.slo
-*.lo
+# Build
+
+*
+!/**/
+!*.*
+!Makefile
+
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
+*.d
 *.out
-*.app
+*.gch
+
+# Editor
+
+tags
