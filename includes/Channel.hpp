@@ -24,7 +24,6 @@
 # include <arpa/inet.h>	// inet_ntoa
 # include <netdb.h>		// recv, send, sockaddr, accept, addrinfo, getaddrinfo, socket, setsockopt, bind, freeaddrinfo, listen
 # include <poll.h>		// pollfd, poll
-# include <stdlib.h>	// exit
 # include <unistd.h>	// close
 
 # include "Client.hpp"

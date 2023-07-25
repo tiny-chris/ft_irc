@@ -31,8 +31,9 @@ void Utility::closeFd( int& fd ) {
     if( ::close( fd ) != -1 ) {
       fd = -1;
     } else {
-      std::cerr << "close fd" << fd << ":" << strerror( errno ) << "\n";
-      exit( 1 );
+      std::string message = "close fd" + intToString( fd ) + ":";
+      message += std::string( strerror( errno ) );
+      throw std::runtime_error( message );
     }
   } else {
     std::cout << __func__ << ": fd already close." << std::endl;
@@ -94,10 +95,10 @@ std::string Utility::ntop( const struct sockaddr_storage& socket ) {
     const uint8_t*            addr;
     sockaddr = reinterpret_cast<const struct sockaddr_in*>( &socket );
     addr = reinterpret_cast<const uint8_t*>( &sockaddr->sin_addr.s_addr );
-    ss << static_cast<int>( addr[ 0 ] ) << ".";
-    ss << static_cast<int>( addr[ 1 ] ) << ".";
-    ss << static_cast<int>( addr[ 2 ] ) << ".";
-    ss << static_cast<int>( addr[ 3 ] );
+    ss << static_cast<int>( addr[0] ) << ".";
+    ss << static_cast<int>( addr[1] ) << ".";
+    ss << static_cast<int>( addr[2] ) << ".";
+    ss << static_cast<int>( addr[3] );
     return ss.str();
   } else if( socket.ss_family == AF_INET6 ) {
     const struct sockaddr_in6* sockaddr;
@@ -108,7 +109,7 @@ std::string Utility::ntop( const struct sockaddr_storage& socket ) {
       if( i > 0 && i % 2 == 0 ) {
         ss << "::";
       }
-      ss << static_cast<int>( addr[ i ] );
+      ss << static_cast<int>( addr[i] );
     }
     return ss.str();
   } else {
