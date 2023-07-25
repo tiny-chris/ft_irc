@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 13:03:42 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 18:43:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ enum commands {
 	INVITE = 114,
 	NAMES = 120,
 	PART = 130,
+	WHO = 121,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,

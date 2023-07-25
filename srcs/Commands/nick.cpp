@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 17:38:01 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/25 12:53:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void		Server::handleNick( int clientSocket, std::string param )
   if (newNick.size() > NICKLEN)
     newNick = newNick.substr(0, NICKLEN);
   // else if there are invalid char in the nickname, an erroneus nickname message is sent
-  else if (!isValidNick(newNick))
+  if (!isValidNick(newNick))
     replyMsg(clientSocket, ERR_ERRONEUSNICKNAME(source, nick, newNick));
   // else if the nickname is the same nickname as another client
   else if (existingNick(newNick))

@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 16:18:58 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/25 12:29:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,9 +323,10 @@
 // "<version>.<debuglevel> <serveur> :<commentaires>"
 // Réponse du serveur indiquant les détails de sa version. <version> est la version actuelle du programme utilisé (comprenant le numéro de mise à jour) et <debuglevel> est utilisé pour indiquer si le serveur fonctionne en mode débugage.
 // Le champ <commentaire> peut contenir n'importe quel commentaire au sujet de la version, ou des détails supplémentaires sur la version.
-# define RPL_WHOREPLY 352
+# define RPL_WHOREPLY(source, client, channel, username, host, servername, flags, realname) (std::string(":") + source + " 352 " + client + " " + channel + " " + username + " " + host + " " + servername + " " + nick + " " + flags + " :0 " + realname + "\r\n")
 // "<canal> <utilisateur> <hôte> <serveur> <pseudo> <H|G>[*][@|+] :<compteur de distance> <vrai nom>"
-# define RPL_ENDOFWHO 315
+# define RPL_ENDOFWHO(source, client, mask) (std::string(":") + source + " 315 " + client + " " + mask + " :End of WHO list\r\n")
+// 315
 // "<nom> :End of /WHO list"
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO. Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO. S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
 
@@ -340,8 +341,7 @@
 
 # define RPL_BANLIST 367
 // "<canal> <identification de bannissement>"
-# define RPL_ENDOFBANLIST 368
-// "<canal> :End of channel ban list"
+# define RPL_ENDOFBANLIST(source, nickname, channel) (std::string(":") + source + " 368 " + nickname + " " + channel + " :End of channel ban list\r\n")
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST. Un RPL_BANLIST différent doit être utilisé pour chaque identification de bannissement. Après avoir listé les identifications de bannissement (s'il y en a), un RPL_ENDOFBANLIST doit être renvoyé.
 
 # define RPL_INFO 371

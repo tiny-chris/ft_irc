@@ -2,6 +2,17 @@
 /* Created: 230725 07:55:18 by clem@spectre */
 /* Updated: 230725 07:55:18 by clem@spectre */
 /* Maintainer: Clément Vidon */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
+/*   Updated: 2023/07/24 18:44:22 by codespace        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <netdb.h>
 #include <sys/epoll.h>
@@ -184,9 +195,38 @@ void Server::broadcastMsg( std::string& msg, int clientSocket ) {
  *              (otherwise, do nothing on the server)
  */
 
-void Server::replyMsg( int clientSocket, std::string reply,
-                       bool copyToServer ) {
-  if( copyToServer == true ) {
+void	Server::initCommands( void )
+{
+  _commands.insert( std::make_pair( 0, "UNDEFINED" ) );
+  _commands.insert( std::make_pair( 99, "CAP" ) );
+  _commands.insert( std::make_pair( 100, "PASS" ) );
+  _commands.insert( std::make_pair( 101, "NICK" ) );
+  _commands.insert( std::make_pair( 102, "USER" ) );
+  _commands.insert( std::make_pair( 103, "PING" ) );
+  _commands.insert( std::make_pair( 109, "MODE" ) );
+  _commands.insert( std::make_pair( 110, "JOIN" ) );
+  _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
+  _commands.insert( std::make_pair( 112, "KICK" ) );
+  _commands.insert( std::make_pair( 113, "TOPIC" ) );
+  _commands.insert( std::make_pair( 114, "INVITE" ) );
+  _commands.insert( std::make_pair( 120, "NAMES" ) );
+
+  // temp elements --> will be replaced by valid command
+  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
+  _commands.insert( std::make_pair( 1001, "/quit" ) );
+  _commands.insert( std::make_pair( 1003, "/msg" ) );
+  return ;
+}
+
+/**
+ * @brief       Send message to the client with all specific parameter (incl. numeric replies)
+ *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
+ *
+ */
+void	Server::replyMsg( int clientSocket, std::string reply, bool copyToServer )
+{
+  if ( copyToServer == true )
+  {
     std::cout << MSGREPLY << reply << std::endl;
   }
   send( clientSocket, reply.c_str(), reply.length(), 0 );
@@ -367,6 +407,9 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       break;
     case NAMES:
       handleNames( clientSocket, parameters );
+      break;
+    case WHO:
+      handleWho( clientSocket, parameters ); 
       break;
     case PART:
       handlePart( clientSocket, parameters );
@@ -557,6 +600,7 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 114, "INVITE" ) );
   _commands.insert( std::make_pair( 120, "NAMES" ) );
   _commands.insert( std::make_pair( 130, "PART" ) );
+  _commands.insert( std::make_pair( 131, "WHO" ) );
   // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "/shutdown" ) );
   _commands.insert( std::make_pair( 1001, "/quit" ) );

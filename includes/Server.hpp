@@ -111,7 +111,9 @@ class Server {
   void inviteClientToChannel( int clientSocket, std::string clientNick,
                               std::string nameInvitee, Channel* chan );
 
-  std::string getSupportToken() const;
+    void        handleWho( int clientSocket, std::string param );
+    
+    std::string	getSupportToken() const;
 
   void channelMsgToAll( int clientSocket, std::string channelName,
                         std::string message );
@@ -158,6 +160,7 @@ class Server {
   void handleNewClient( void );
   void createServerSocket( void );
   void initCommands( void );  // TODO --->>> class Command constructor
+    bool        existingClient(std::string clientName);
 
  public:
   void start( void );
