@@ -27,6 +27,7 @@
 
 void				Server::handleUser( int clientSocket, std::string param )
 {
+  Client                    *client = &_clients.at( clientSocket );
   std::string               realname = "";
   size_t                    colon;
   std::vector<std::string>  tokens;
@@ -37,9 +38,9 @@ void				Server::handleUser( int clientSocket, std::string param )
   ** check if Client is already registered (i.e. PASS, NICK, USER are already set)
 	** if so, cannot use the USER command again --> send ERR_ALREADYREGISTERED numeric reply
   */
-  if ( _clients.at( clientSocket ).getIfRegistered() == true )
+  if ( client->getIfRegistered() == true )
   {
-    replyMsg( clientSocket, ERR_ALREADYREGISTRED(_serverName, _clients.at( clientSocket ).getNickname() ) );
+    replyMsg( clientSocket, ERR_ALREADYREGISTRED(_serverName, client->getNickname() ) );
     return ;
   }
 
@@ -64,11 +65,11 @@ void				Server::handleUser( int clientSocket, std::string param )
   colon = param.find( ':', 0 );
   if ( param.empty() || colon == std::string::npos || colon == 0 || colon == param.length() - 1 )
   {
-    replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, _clients.at( clientSocket ).getNickname(), "USER" ) );
+    replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, client->getNickname(), "USER" ) );
     return ;
   }
   realname = param.substr( colon + 1, param.length() - ( colon + 1 ) );
-  _clients.at( clientSocket ).setRealname( realname );
+  client->setRealname( realname );
 
   /* *********************************************** ***
   ** CHECK 4 - MUST BE 3 VALID PARAMETERS before ':' ***
@@ -85,7 +86,7 @@ void				Server::handleUser( int clientSocket, std::string param )
   tokens = splitString( param.substr( 0, colon ), ' ' );
   if ( tokens.size() < 3 || tokens[ 0 ].length() < 1 )
   {
-    replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, _clients.at( clientSocket ).getNickname(), "USER" ) );
+    replyMsg( clientSocket, ERR_NEEDMOREPARAMS( _serverName, client->getNickname(), "USER" ) );
     return ;
   }
   else if ( tokens.size() > 3 || isValidUser( tokens[ 0 ] ) == false
@@ -94,27 +95,11 @@ void				Server::handleUser( int clientSocket, std::string param )
     std::cout << MSGERROR << "wrong parameters with USER command\n" << std::endl;
     return ;
   }
-  _clients.at( clientSocket ).setUsername( tokens[ 0 ].substr( 0, USERLEN ) );
+  client->setUsername( tokens[ 0 ].substr( 0, USERLEN ) );
   std::cout << MSGINFO << "user and real names provided!" << std::endl;
 
-  if ( _clients.at( clientSocket ).getIfRegistered() == false ) {
+  if ( client->getIfRegistered() == false ) {
     checkRegistration( clientSocket );
   }
   std::cout << std::endl;
-
-  // /* ******************************************************* ***
-  // ** CHECK IF CLIENT IS REGISTERED & DISPLAY WELCOME MESSAGE ***
-  // ** ******************************************************* ***
-  // */
-  // if (_clients.at( clientSocket ).getPassStatus() == true && _clients.at( clientSocket ).getNickStatus() == true && !_clients.at( clientSocket ).getUsername().empty())
-  // {
-  //   _clients.at( clientSocket ).setIfRegistered(true);
-  //   _clients.at( clientSocket ).->setrce(_clients.at( clientSocket ).getNickname(), _clients.at( clientSocket ).getUsername());
-  //   std::cout << MSGINFO << _clients.at( clientSocket ).getNickname() << " is now registered!\n" << std::endl;
-  //   // DISPLAY WELCOME MESSAGES
-  //   sendWelcomeMsg( clientSocket );
-  //   // EQUIVALENT OF LUSERS received
-  //   sendLusersMsg( clientSocket );
-  //   std::cout << MSGINFO << "welcome message displayed\n" << std::endl;
-  // }
 }

@@ -63,14 +63,15 @@ class Server {
     void				handleNames( int clientSocket, std::string param );
     void				displayNames( int clientSocket, Channel& channel );
 
-    void				handleJoin( int clientSocket, std::string cmd, std::string param );
-    bool				isValidChanName( int clientSocket, std::string channelName );
-    // bool				validChannelNames( int clientSocket, std::vector<std::string>& channelNames );
-    bool        checkPreAddChan( int clientSocket, std::vector< std::string > tokens, size_t index, bool chanExists );
+    void				handleJoin( int clientSocket, std::string param );
+    bool				handleJoinZero( int clientSocket, const std::vector< std::string >& tokens );
+    bool				checkChanPreJoin( int clientSocket, const std::vector< std::string >& tokens, size_t index );
+    bool				isValidChanName( int clientSocket, const std::string& channelName );
+    void				createChanWithOp( int clientSocket, const std::string& channelName );
 
     void				handlePart( int clientSocket, std::string param );
-    void				leaveChannel ( int clientSocket, std::string channelName, std::string reason );
-    bool				checkPrePartChan( int clientSocket, std::string channelName );
+    void				leaveChannel ( int clientSocket, const std::string& channelName, const std::string& reason );
+    bool				checkChanPrePart( int clientSocket, const std::string& channelName );
 
     void				handleMode( int clientSocket, std::string param );
     void				handleUserMode (int clientSocket, std::vector<std::string> &tokens );

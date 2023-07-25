@@ -316,7 +316,7 @@ void  Server::handleRequest( int clientSocket, std::string request )
 		case USER:		handleUser( clientSocket, parameters ); break;
 		case PING:		handlePing( clientSocket, parameters ); break;
 		case MODE:		handleMode( clientSocket, parameters ); break;
-		case JOIN:		handleJoin( clientSocket, command, parameters ); break;
+		case JOIN:		handleJoin( clientSocket, parameters ); break;
 		case PRIVMSG:     std::cout << "client " << _clients.at( clientSocket ).getNickname() << " - use function to handle PRIVMSG command" << std::endl; break;
     case KICK:    handleKick( clientSocket, parameters ); break;
     case TOPIC:   handleTopic( clientSocket, parameters ); break;

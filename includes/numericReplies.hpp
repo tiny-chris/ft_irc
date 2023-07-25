@@ -385,5 +385,6 @@
 # define KICK_REASON "bye bye looser\r\n"
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
+# define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + channel + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
