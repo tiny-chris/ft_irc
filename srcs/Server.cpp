@@ -190,35 +190,6 @@ void Server::broadcastMsg( std::string& msg, int clientSocket ) {
 }
 
 /**
- * @brief       Send message to the client with all specific parameter (incl.
- *              numeric replies) and copy it on the server side if flag is 1
- *              (otherwise, do nothing on the server)
- */
-
-void	Server::initCommands( void )
-{
-  _commands.insert( std::make_pair( 0, "UNDEFINED" ) );
-  _commands.insert( std::make_pair( 99, "CAP" ) );
-  _commands.insert( std::make_pair( 100, "PASS" ) );
-  _commands.insert( std::make_pair( 101, "NICK" ) );
-  _commands.insert( std::make_pair( 102, "USER" ) );
-  _commands.insert( std::make_pair( 103, "PING" ) );
-  _commands.insert( std::make_pair( 109, "MODE" ) );
-  _commands.insert( std::make_pair( 110, "JOIN" ) );
-  _commands.insert( std::make_pair( 111, "PRIVMSG" ) );
-  _commands.insert( std::make_pair( 112, "KICK" ) );
-  _commands.insert( std::make_pair( 113, "TOPIC" ) );
-  _commands.insert( std::make_pair( 114, "INVITE" ) );
-  _commands.insert( std::make_pair( 120, "NAMES" ) );
-
-  // temp elements --> will be replaced by valid command
-  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
-  _commands.insert( std::make_pair( 1001, "/quit" ) );
-  _commands.insert( std::make_pair( 1003, "/msg" ) );
-  return ;
-}
-
-/**
  * @brief       Send message to the client with all specific parameter (incl. numeric replies)
  *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
  *

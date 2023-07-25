@@ -41,7 +41,7 @@ enum commands {
 	INVITE = 114,
 	NAMES = 120,
 	PART = 130,
-	WHO = 121,
+	WHO = 131,
 
 	ZZ_SHUTDOWN = 1000,
 	ZZ_QUIT = 1001,
