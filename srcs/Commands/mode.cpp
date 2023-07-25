@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/23 22:43:40 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/25 12:32:38 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,11 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         Channel *chan = &_channels[channelName];
         std::string clientName = _clients.at( clientSocket ).getNickname();
         // if the user is not a channel operator, then an error msg is returned and the command is ignored
+        if (tokens[1] == "b")
+        {
+            replyMsg(clientSocket, RPL_ENDOFBANLIST(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), tokens[0]));
+            return ; 
+        }
         if (!chan->checkChannelOps(clientName))
         {
             replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), channelName));

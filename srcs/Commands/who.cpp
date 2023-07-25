@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 18:42:25 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/24 23:09:15 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/24 23:16:28 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@
 
 void    Server::handleWho( int clientSocket, std::string param )
 {
-    std::cout << "clientSocket " << clientSocket << std::endl;
-    std::cout << "param " << param << std::endl;
-    
     std::vector<std::string> tokens = splitString( param, ' ' );
     if (tokens.size() >= 1)
     {

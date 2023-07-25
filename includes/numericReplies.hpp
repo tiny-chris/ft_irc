@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 22:59:57 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/25 12:29:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,8 +341,7 @@
 
 # define RPL_BANLIST 367
 // "<canal> <identification de bannissement>"
-# define RPL_ENDOFBANLIST 368
-// "<canal> :End of channel ban list"
+# define RPL_ENDOFBANLIST(source, nickname, channel) (std::string(":") + source + " 368 " + nickname + " " + channel + " :End of channel ban list\r\n")
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST. Un RPL_BANLIST différent doit être utilisé pour chaque identification de bannissement. Après avoir listé les identifications de bannissement (s'il y en a), un RPL_ENDOFBANLIST doit être renvoyé.
 
 # define RPL_INFO 371
