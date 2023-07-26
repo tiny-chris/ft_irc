@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 13:23:47 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:22:15 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,11 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 		return ;
 	}
 
-	textToBeSent = " :" + textToBeSent;
+	// std::cout << ZZ_MSGTEST << "destination(all): " << targetList << std::endl;
+	// std::cout << ZZ_MSGTEST << "textToBeSent: " << textToBeSent << std::endl;
+
+	if (textToBeSent.at(0) == ':')
+		textToBeSent.erase(0, 1);
 	std::vector< std::string >	targetNames = splitString( targetList, ',' );
 	// std::vector< std::string >	targets;
 	for ( size_t i = 0; i < targetNames.size(); ++i ) {
@@ -63,17 +67,20 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			std::string reply = RPL_PRIVMSG( source, nickname, target, textToBeSent );
 
 			// if CHANNEL (#)
-			if ( sharp != std::string::npos) {
-				if ( existingChannel( target.substr( sharp ) ) ) {
-					Channel	channel = _channels.at( target.substr( sharp ) );
+			if ( sharp != std::string::npos && ( sharp == 0 || sharp == 1 )) {
 
-					// if client is not on Channel --> cannot send to channel
-					if (  !channel.checkChannelMembers( nickname ) ) {
-						replyMsg( clientSocket, ERR_CANNOTSENDTOCHAN( source, nickname, target ));
-						continue ;
-					}
+				Channel	channel = _channels.at( target.substr( sharp ) );
+
+				// if channel does not exist
+				if ( !existingChannel( target.substr( sharp ) ) ) {
+					replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
+					continue ;
+				}
+
+				// if client is on Channel 
+				if (  channel.checkChannelMembers( nickname ) ) {
 					// it start with '@#' --> text to be sent to chanops only
-					else if ( target.find( "@#" ) == 0 ) {
+					if ( target.find( "@#" ) == 0 ) {
 						channelMsgToChanOps( clientSocket, target.substr( 1 ), reply );
 						continue ;
 					}
@@ -83,21 +90,28 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 						continue ;
 					}
 				}
+				// client is not on the channel or channel prefixes is not '#' neither "@#"
+				replyMsg( clientSocket, ERR_CANNOTSENDTOCHAN( source, nickname, target  ));
+				continue ;// ??????????
 			}
-			else {// if CLIENT
-				if ( existingClient( target ) ) {
-					mapClients::iterator	it;
+			// if CLIENT
+			else if ( existingClient( target ) ) {
+				mapClients::iterator	it;
 
-					for ( it = _clients.begin() ; it != _clients.end(); ++it) {
-						if ( it->second.getNickname() == target ) {
-							replyMsg( it->second.getFd(), reply );
-							continue ;
-						}
+				for ( it = _clients.begin() ; it != _clients.end(); ++it) {
+					if ( it->second.getNickname() == target ) {
+						replyMsg( it->second.getFd(), reply );
+						continue ;
 					}
 				}
 			}
+			else {
+				replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
+				continue ;
+			}
+		}
+		else {
 			replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
 		}
-		replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/26 13:50:29 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/26 14:29:44 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,6 +389,6 @@
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
-# define RPL_PRIVMSG(source, nickname, destination, text)	(std::string(":") + source + " " + nickname + " PRIVMSG " + destination + text + CRLF)
+# define RPL_PRIVMSG(source, nickname, destination, text)	(std::string(":") + source + " " + nickname + " PRIVMSG " + destination + " :" + text + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
