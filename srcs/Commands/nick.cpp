@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/25 12:53:06 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/26 15:00:38 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,17 +146,12 @@ void  Server::updateInvitedMembersNick( std::string &oldNickname, std::string ni
     std::vector< std::string >	&invitedmembers = it->second.getInvitedMembers();
     for (size_t i = 0; i < invitedmembers.size() ; ++i)
     {
-      std::cout << "invited members " << invitedmembers.at(i) << std::endl;
       if (invitedmembers.at(i) == oldNickname)
       {
         invitedmembers.erase(invitedmembers.begin() + i);
         invitedmembers.push_back(nickName);
         break ;
       }
-    }
-    for (size_t i = 0; i < invitedmembers.size() ; ++i)
-    {
-      std::cout << "invited members after modifs " << invitedmembers.at(i) << std::endl;
     }
   }
 }

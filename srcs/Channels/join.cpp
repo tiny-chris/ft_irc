@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 13:23:47 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:08:56 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ bool	Server::handleJoinZero( int clientSocket, const std::vector< std::string >&
 
 			// std::cout << ZZ_MSGTEST << client->getNickname() << " has joined [" << client->getClientChannels().size() <<"] channels\n";
 			for ( size_t i = 0; i < copyClientChannels.size(); i++ ) {
-				leaveChannel( clientSocket, copyClientChannels[ i ], "" );
+				leaveChannel( clientSocket, copyClientChannels[ i ], "" , "PART");
 			}
 		}
 		return true ;

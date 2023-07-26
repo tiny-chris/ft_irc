@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 18:43:39 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/26 16:12:06 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ enum commands {
 	NAMES = 120,
 	PART = 130,
 	WHO = 131,
+	QUIT = 1001,
 
 	ZZ_SHUTDOWN = 1000,
-	ZZ_QUIT = 1001,
 	ZZ_MSG = 1003,
 };
 // 	// NOTICE,
