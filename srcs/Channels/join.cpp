@@ -246,17 +246,39 @@ bool	Server::isValidChanName( int clientSocket, const std::string& channelName )
 ** CHANNEL MESSAGE TO ALL MEMBERS ***
 ** ****************************** ***
 */
-void	Server::channelMsgToAll( int clientSocket, std::string channelName, std::string message )
+void	Server::channelMsgToAll( int clientSocket, const std::string& channelName, const std::string& message )
 {
 	channelMsgNotClient( clientSocket, channelName, message );
 	replyMsg( clientSocket, message, 0 );
 }
 
+/* ******************************* ***
+** CHANNEL MESSAGE TO CHANOPS ONLY ***
+** ******************************* ***
+*/
+void	Server::channelMsgToChanOps( int clientSocket, const std::string& channelName, const std::string& message )
+{
+	Channel&							channel = _channels.at( channelName );
+	Channel::mapClientsPtr::iterator	it;
+	int									socket;
+
+	for ( it = channel.getChannelOps().begin() ; it != channel.getChannelOps().end() ; ++it )
+	{
+		socket = it->second->getFd();
+		if ( socket != clientSocket ) {
+			replyMsg( socket, message, 0 );
+		}
+	}
+	// displays reply message on the server only once
+	std::cout << MSGREPLY << message << std::endl;
+}
+
+
 /* ******************************************** ***
 ** CHANNEL MESSAGE TO ALL MEMBERS EXCEPT CLIENT ***
 ** ******************************************** ***
 */
-void	Server::channelMsgNotClient( int clientSocket, std::string channelName, std::string message )
+void	Server::channelMsgNotClient( int clientSocket, const std::string& channelName, const std::string& message )
 {
 	Channel&							channel = _channels.at( channelName );
 	Channel::mapClientsPtr::iterator	it;

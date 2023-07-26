@@ -57,8 +57,7 @@ void	Server::handlePart( int clientSocket, std::string param )
 
 	reason = ( reason.empty() == true ) ? "" : " :" + reason;
 	channelNames = splitString( channelList, ',' );
-	for ( size_t i = 0; i < channelNames.size(); ++i )
-	{
+	for ( size_t i = 0; i < channelNames.size(); ++i ) {
 		std::string	channelName = channelNames[ i ];
 
 		// faire les checks
@@ -67,30 +66,6 @@ void	Server::handlePart( int clientSocket, std::string param )
 		}
 
 		leaveChannel( clientSocket, channelName, reason );
-
-		// Channel&	channel = _channels.at( channelName );
-		// if ( channel.checkChannelOps( client.getNickname() ) == true && channel.getChannelOps().size() == 1 ) {
-		// 	if ( channel.getChannelMembers().size() == 1 ) {
-		// 		_channels.erase( channelName );
-		// 		// TO DO ERASE CHANNEL IN CLIENTS VECTORS
-		// 		// faire un message pour fermeture de channel ???
-		// 		replyMsg( clientSocket, RPL_PART( client.getSource(), client.getNickname(), channelName, reason ) );
-		// 	}
-		// 	else {
-		// 		replyMsg( clientSocket, "Error: Cannot delete last operator while other members remaining\r\n");
-		// 		continue ;
-		// 	}
-		// }
-		// else {// chanOps mais il y en a d'autres ou pas chanOps
-		// 	// remove client from channel members and channel operators
-		// 	channelMsgToAll( clientSocket, channelName, RPL_PART( client.getSource(), client.getNickname(), channelName, reason ) );
-		// 	channel.removeChannelOp( &client );
-		// 	channel.removeChannelMember( &client );
-		// 	client.
-		// 	// channel.getChannelOps().erase( client.getNickname() );
-		// 	// channel.getChannelMembers().erase( client.getNickname() );
-		// 	// TO DO ERASE CHANNEL IN CLIENTS VECTORS
-		// }
 	}
 }
 

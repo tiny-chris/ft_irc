@@ -35,7 +35,7 @@
 // "<client> <channel> :No such channel"
 // Indicates that no channel can be found for the supplied channel name.
 
-# define ERR_CANNOTSENDTOCHAN 404
+# define ERR_CANNOTSENDTOCHAN(source, nickname, channel) (std::string(":") + source + " 404 " + nickname + " " + channel + " :Cannot send to channel\r\n" )
 //"<nom de canal> :Cannot send to channel"
 //Envoyé à un utilisateur qui (a) soit n'est pas dans un canal en mode +n ou (b) n'est pas opérateur (ou mode +v) sur un canal en mode +m ; et essaie d'envoyer un PRIVMSG à ce canal.
 
@@ -48,7 +48,7 @@
 //"<nom de canal> :There was no such nickname"
 //Renvoyé par WHOWAS pour indiquer qu'il n'y a pas d'information dans l'historique concernant ce pseudonyme.
 
-# define ERR_TOOMANYTARGETS 407
+# define ERR_TOOMANYTARGETS(source, destination) (std::string(":") + source + " 407 " + destination + " :Duplicate recipients. Ne message delivered" + CRLF)
 //"<destination> :Duplicate recipients. No message delivered"
 //Renvoyé à un client qui essaie d'envoyer un PRIVMSG/NOTICE utilisant le format de destination utilisateur@hôte pour lequel utilisateur@hôte a plusieurs occurrences.
 
@@ -59,11 +59,11 @@
 //Message PING ou PONG sans le paramètre origine qui est obligatoire puisque ces commandes doivent marcher sans préfixe.
 //Indicates a PING or PONG message missing the originator parameter which is required by old IRC servers. Nowadays, this may be used by some servers when the PING <token> is empty.
 
-# define  ERR_NORECIPIENT 411
+# define ERR_NORECIPIENT(source, nickname, command) (std::string(":") + source + " 411 " + nickname + " :No recipient given (" + command + ")" + CRLF)
 //":No recipient given (<commande>)"
 //Pas de destinataire.
 
-# define  ERR_NOTEXTTOSEND 412
+# define ERR_NOTEXTTOSEND(source, nickname) (std::string(":") + source + " 412 " + nickname + " :No text to send" + CRLF)
 //":No text to send"
 //Pas de texte à envoyer.
 
@@ -384,7 +384,8 @@
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
-# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
+# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
+# define RPL_PRIVMSG(source, nickname, destination, text)	(std::string(":") + source + " " + nickname + " PRIVMSG " + destination + text + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

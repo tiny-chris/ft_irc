@@ -117,10 +117,17 @@ class Server {
 
     std::string	getSupportToken() const;
 
-  void channelMsgToAll( int clientSocket, std::string channelName,
-                        std::string message );
-  void channelMsgNotClient( int clientSocket, std::string channelName,
-                            std::string message );
+  void channelMsgToAll( int clientSocket, const std::string& channelName,
+                        const std::string& message );
+  void channelMsgNotClient( int clientSocket, const std::string& channelName,
+                            const std::string& message );
+  void channelMsgToChanOps( int clientSocket, const std::string& channelName,
+                            const std::string& message );
+  // void channelMsgToAll( int clientSocket, std::string channelName,
+  //                       std::string message );
+  // void channelMsgNotClient( int clientSocket, std::string channelName,
+  //                           std::string message );
+  // void channelMsgToChanOps( int clientSocket, std::string channelName, std::string message );
 
  public:
   void updateChannelMemberNick( std::string& oldNickname,
