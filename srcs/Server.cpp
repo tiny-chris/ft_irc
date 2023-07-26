@@ -384,15 +384,14 @@ void Server::handleRequest( int clientSocket, std::string request ) {
     case PART:
       handlePart( clientSocket, parameters );
       break;
+    case QUIT:
+      handleQuit( clientSocket, parameters );
+      break;
 
       // keeping Clement's initial commands just in case... - START
     case ZZ_SHUTDOWN:
       stop();
       break;  // ' /shutdown '
-    case ZZ_QUIT:
-      disconnectAClient( clientSocket );
-      break;  // ' /quit '
-
     case ZZ_MSG:
       broadcastMsg( parameters, clientSocket );
       break;  // ' /msg <message to broadcast>'
@@ -573,7 +572,7 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 131, "WHO" ) );
   // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "/shutdown" ) );
-  _commands.insert( std::make_pair( 1001, "/quit" ) );
+  _commands.insert( std::make_pair( 1001, "QUIT" ) );
   _commands.insert( std::make_pair( 1003, "/msg" ) );
   return;
 }

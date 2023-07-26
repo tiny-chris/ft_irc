@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 13:23:47 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:30:36 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-void	Server::leaveChannel ( int clientSocket, const std::string& channelName, const std::string& reason )
+void	Server::leaveChannel ( int clientSocket, const std::string& channelName, const std::string& reason, std::string cmd )
 {
 	Client		*client = &_clients.at( clientSocket );
 	Channel		*channel = &_channels.at( channelName );
@@ -26,14 +26,20 @@ void	Server::leaveChannel ( int clientSocket, const std::string& channelName, co
 			_channels.erase( channelName );
 			client->removeClientChannel( channelName );
 			// faire un message pour fermeture de channel ???
-			replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+			if (cmd == "PART")
+				replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+			else if (cmd == "QUIT")
+				replyMsg( clientSocket, RPL_QUIT( client->getNickname(), reason ));
 		}
 		else {
 			replyMsg( clientSocket, ERR_CANNOTPART( client->getSource(), channelName, " Error: Cannot delete last operator while other members remaining" ) );
 		}
 	}
 	else {// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
-		channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+		if (cmd == "PART")
+			channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+		else if (cmd == "QUIT")
+			channelMsgToAll( clientSocket, channelName, RPL_QUIT( client->getNickname(), reason ) );			
 		channel->removeChannelOp( client );
 		channel->removeChannelMember( client );
 		client->removeClientChannel( channelName );
@@ -65,7 +71,7 @@ void	Server::handlePart( int clientSocket, std::string param )
 			continue ;
 		}
 
-		leaveChannel( clientSocket, channelName, reason );
+		leaveChannel( clientSocket, channelName, reason, "PART" );
 	}
 }
 

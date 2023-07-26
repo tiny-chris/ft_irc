@@ -58,7 +58,7 @@ class Server {
 
   void handlePart( int clientSocket, std::string param );
   void leaveChannel ( int clientSocket, const std::string& channelName,
-                     const std::string& reason );
+                     const std::string& reason, std::string cmd );
   bool checkChanPrePart( int clientSocket, const std::string& channelName );
 
   void handlePrivmsg( int clientSocket, std::string param );
@@ -117,6 +117,11 @@ class Server {
   void        handleWho( int clientSocket, std::string param );
 
   void	      handleQuit( int clientSocket, std::string param );
+  // void        removeClientFromChannelMembers( Client *client );
+  // void        removeClientFromChannelOps( Client *client );
+  // void        removeClientFromInvitedMembers( Client *client );
+
+
 
     std::string	getSupportToken() const;
 
