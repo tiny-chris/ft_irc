@@ -112,7 +112,9 @@ class Server {
   void inviteClientToChannel( int clientSocket, std::string clientNick,
                               std::string nameInvitee, Channel* chan );
 
-    void        handleWho( int clientSocket, std::string param );
+  void        handleWho( int clientSocket, std::string param );
+
+  void	      handleQuit( int clientSocket, std::string param );
 
     std::string	getSupportToken() const;
 
