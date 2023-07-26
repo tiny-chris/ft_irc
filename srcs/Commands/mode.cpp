@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/25 12:32:38 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/26 13:51:35 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
             for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++)
             {
                 socket = it->second->getFd();
-                replyMsg(socket, MSG_MODE(_clients.at( socket ).getSource(), _clients.at( socket ).getNickname(), modeChange, modeArgs));
+                // replyMsg(socket, MSG_MODE(_clients.at( socket ).getSource(), _clients.at( socket ).getNickname(), modeChange, modeArgs));
+                replyMsg(socket, MSG_MODE_CUSTOM(_clients.at( socket ).getSource(), channelName, modeChange + " " + modeArgs));
+
             }
         }
     }

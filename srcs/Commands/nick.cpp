@@ -80,6 +80,7 @@ void		Server::handleNick( int clientSocket, std::string param )
       _clients.at( clientSocket ).setSource( newNick, _clients.at( clientSocket ).getUsername() );
       updateChannelMemberNick( nick, newNick );
       updateChannelOpsNick( nick, newNick );
+      updateInvitedMembersNick( nick, newNick );
     }
     std::cout << std::endl;
   }
@@ -134,6 +135,28 @@ void  Server::updateChannelOpsNick( std::string &oldNickname, std::string nickNa
       Client *tmp = elem->second;
       mapClients.erase( oldNickname );
       mapClients.insert(std::make_pair(nickName, tmp));
+    }
+  }
+}
+
+void  Server::updateInvitedMembersNick( std::string &oldNickname, std::string nickName )
+{
+  for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+  {
+    std::vector< std::string >	&invitedmembers = it->second.getInvitedMembers();
+    for (size_t i = 0; i < invitedmembers.size() ; ++i)
+    {
+      std::cout << "invited members " << invitedmembers.at(i) << std::endl;
+      if (invitedmembers.at(i) == oldNickname)
+      {
+        invitedmembers.erase(invitedmembers.begin() + i);
+        invitedmembers.push_back(nickName);
+        break ;
+      }
+    }
+    for (size_t i = 0; i < invitedmembers.size() ; ++i)
+    {
+      std::cout << "invited members after modifs " << invitedmembers.at(i) << std::endl;
     }
   }
 }
