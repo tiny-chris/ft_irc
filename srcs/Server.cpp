@@ -190,14 +190,14 @@ void Server::broadcastMsg( std::string& msg, int clientSocket ) {
 }
 
 /**
- * @brief       Send message to the client with all specific parameter (incl. numeric replies)
- *              and copy it on the server side if flag is 1 (otherwise, do nothing on the server)
+ * @brief       Send message to the client with all specific parameter (incl.
+ * numeric replies) and copy it on the server side if flag is 1 (otherwise, do
+ * nothing on the server)
  *
  */
-void	Server::replyMsg( int clientSocket, std::string reply, bool copyToServer )
-{
-  if ( copyToServer == true )
-  {
+void Server::replyMsg( int clientSocket, std::string reply,
+                       bool copyToServer ) {
+  if( copyToServer == true ) {
     std::cout << MSGREPLY << reply << std::endl;
   }
   send( clientSocket, reply.c_str(), reply.length(), 0 );
@@ -530,6 +530,7 @@ void Server::createServerSocket( void ) {
     if( setsockopt( _serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt,
                     sizeof( int ) )
         != 0 ) {
+      freeaddrinfo( res );
       std::string message = "setsockopt: " + std::string( strerror( errno ) );
       throw std::runtime_error( message );
     }
