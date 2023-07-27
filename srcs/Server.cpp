@@ -257,8 +257,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   //           << _clients.at( clientSocket ).getNickStatus() << ">\n";
   // std::cout << "\t client's getIfRegistered <"
   //           << _clients.at( clientSocket ).getIfRegistered() << ">\n";
-  // std::cout << "\t client's getUserModes <"
-  //           << _clients.at( clientSocket ).getUserModes() << ">\n";
+  // std::cout << "\t client's getInvisibleMode <"
+  //           << _clients.at( clientSocket ).getInvisibleMode() << ">\n";
 
   // std::cout << "\t client's getNickname <"
   //           << _clients.at( clientSocket ).getNickname() << ">\n";
@@ -416,8 +416,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   //           << _clients.at( clientSocket ).getNickStatus() << ">\n";
   // std::cout << "\t client's getIfRegistered <"
   //           << _clients.at( clientSocket ).getIfRegistered() << ">\n";
-  // std::cout << "\t client's getUserModes <"
-  //           << _clients.at( clientSocket ).getUserModes() << ">\n";
+  // std::cout << "\t client's getInvisibleMode <"
+  //           << _clients.at( clientSocket ).getInvisibleMode() << ">\n";
 
   // std::cout << "\t client's getNickname <"
   //           << _clients.at( clientSocket ).getNickname() << ">\n";

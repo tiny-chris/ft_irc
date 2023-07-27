@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 15:39:11 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/27 16:44:17 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 #include "Channel.hpp"
 #include "deepCopyUtils.hpp"
+#include "numericReplies.hpp"
+#include "Server.hpp"
 
 class Channel;
 
@@ -36,7 +38,9 @@ class Client {
   bool        getPassStatus( void ) const;
   bool        getNickStatus( void ) const;
   bool        getIfRegistered( void ) const;
-  bool        getUserModes( void ) const;
+  bool        getInvisibleMode( void ) const;
+  bool        getOperatorMode( void ) const;
+  std::string	getModes( void ) const;
   std::string getNickname( void ) const;
   std::string getUsername( void ) const;
   std::string getRealname( void ) const;
@@ -47,7 +51,8 @@ class Client {
   void setPassStatus( bool const& status );
   void setNickStatus( bool const& status );
   void setIfRegistered( bool const& status );
-  void setUserModes( bool const& status );
+  void setInvisibleMode( bool const& status );
+  void setOperatorMode( bool const& status );
   void setNickname( std::string const& name );
   void setUsername( std::string const& name );
   void setRealname( std::string const& name );
@@ -59,21 +64,24 @@ class Client {
   void addChannel( std::string channelName );
   void removeClientChannel( std::string chanName );
 
+  void  handleUserModeSet( char modeChar, std::string *modechange );
+  void  handleUserModeUnset( char modeChar, std::string *modechange );
+
  private:
   int _fd;
 
   bool _passStatus;
   bool _nickStatus;
   bool _isRegistered;
-  bool _userModes;
-
-  std::string _name;  //  TODO delete
+  
+  /* ******* USER MODES ****** */
+  bool _invisibleMode;
+  bool _operatorMode;
 
   std::string _nickname;
   std::string _username;
   std::string _realname;
   std::string _source;
-  // std::string	_userModes;
 
   // channelPtr	_clientChannels;
   std::vector<std::string> _clientChannels;

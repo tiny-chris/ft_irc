@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/26 17:52:41 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/26 18:07:22 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,6 +389,6 @@
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
-# define RPL_QUIT(quitter, reason)							(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
