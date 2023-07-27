@@ -418,6 +418,9 @@ void Server::handleRequest( int clientSocket, std::string request ) {
     case QUIT:
       handleQuit( clientSocket, parameters );
       break;
+    case KILL:
+      handleKill( clientSocket, parameters );
+      break;
     case SQUIT:// ' /shutdown '
       handleSQuit( clientSocket, parameters );
       break;
@@ -595,9 +598,9 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 120, "NAMES" ) );
   _commands.insert( std::make_pair( 130, "PART" ) );
   _commands.insert( std::make_pair( 131, "WHO" ) );
-  // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "SQUIT" ) );//ex- /shutdown
   _commands.insert( std::make_pair( 1001, "QUIT" ) );
+  _commands.insert( std::make_pair( 1002, "KILL" ) );
   return;
 }
 

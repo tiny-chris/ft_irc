@@ -28,6 +28,7 @@ SRCS		:=	\
 				Channels/privmsg.cpp \
 				Channels/topic.cpp \
 				Channels/invite.cpp \
+				Commands/kill.cpp \
 				Commands/mode.cpp \
 				Commands/names.cpp \
 				Commands/nick.cpp \

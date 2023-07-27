@@ -95,8 +95,10 @@ class Server {
   void        handleWho( int clientSocket, std::string param );
   /* ********* QUIT CMD ******* */
   void	      handleQuit( int clientSocket, std::string param );
-
+  /* ********* SQUIT CMD ******* */
   void  handleSQuit( int clientSocket, std::string param );
+  /* ********* KILL CMD ******* */
+  void	handleKill( int clientSocket, std::string param )
 
 
   std::string	getSupportToken() const;
