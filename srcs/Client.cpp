@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 15:47:24 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/27 16:36:27 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ Client::Client( int socket )
     _passStatus( false ),
     _nickStatus( false ),
     _isRegistered( false ),
-    _userModes( true ),
+    _invisibleMode( true ),
+    _operatorMode( false ),
     _nickname( "" ),
     _username( "" ),
     _realname( "" ),
@@ -45,7 +46,8 @@ Client& Client::operator=( Client const& rhs ) {
     _passStatus = rhs.getPassStatus();
     _nickStatus = rhs.getNickStatus();
     _isRegistered = rhs.getIfRegistered();
-    _userModes = rhs.getUserModes();
+    _invisibleMode = rhs.getInvisibleMode();
+    _operatorMode = rhs.getOperatorMode();
     _nickname = rhs.getNickname();
     _username = rhs.getUsername();
     _realname = rhs.getRealname();
@@ -61,7 +63,19 @@ int         Client::getFd( void ) const { return _fd; }
 bool        Client::getPassStatus( void ) const { return _passStatus; }
 bool        Client::getNickStatus( void ) const { return _nickStatus; }
 bool        Client::getIfRegistered( void ) const { return _isRegistered; }
-bool        Client::getUserModes( void ) const { return _userModes; }
+bool        Client::getInvisibleMode( void ) const { return _invisibleMode; }
+bool        Client::getOperatorMode( void ) const { return _operatorMode; }
+std::string	Client::getModes( void ) const
+{
+  std::string mode = "";
+  if (getInvisibleMode())
+    mode += "i";
+  if (getOperatorMode())
+    mode += "o";
+  if (mode.size() != 0)
+    mode = "+" + mode;
+  return mode;
+}
 std::string Client::getNickname( void ) const { return _nickname; }
 std::string Client::getUsername( void ) const { return _username; }
 std::string Client::getRealname( void ) const { return _realname; }
@@ -78,7 +92,8 @@ std::vector<std::string> Client::getClientChannels( void ) const {
 void Client::setPassStatus( bool const& status ) { _passStatus = status; }
 void Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
-void Client::setUserModes( bool const& mode ) { _userModes = mode; }
+void Client::setInvisibleMode( bool const& mode ) { _invisibleMode = mode; }
+void Client::setOperatorMode( bool const& mode ) { _operatorMode = mode; }
 void Client::setNickname( std::string const& name ) { _nickname = name; }
 void Client::setUsername( std::string const& name ) { _username = name; }
 void Client::setRealname( std::string const& name ) { _realname = name; }
@@ -102,5 +117,47 @@ void Client::removeClientChannel( std::string chanName ) {
       _clientChannels.erase( _clientChannels.begin() + i );
       break;
     }
+  }
+}
+
+void  Client::handleUserModeSet( char modeChar, std::string *modechange )
+{
+  switch (modeChar)
+  {
+    case 'i':
+      if ( !getInvisibleMode() )
+      {
+        setInvisibleMode(true);
+        *modechange += "i";
+      }
+      break;
+    case 'o':
+      if ( !getOperatorMode() )
+      {
+        setOperatorMode(true);
+        *modechange += "o";
+      }
+      break;
+  }
+}
+
+void  Client::handleUserModeUnset( char modeChar, std::string *modechange )
+{
+  switch (modeChar)
+  {
+    case 'i':
+      if ( getInvisibleMode() )
+      {
+        setInvisibleMode( false );
+        *modechange += "i";
+      }
+      break;
+    case 'o':
+      if ( getOperatorMode() )
+      {
+        setOperatorMode( false );
+        *modechange += "o";
+      }
+      break;
   }
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 14:42:10 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:28:19 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,11 @@ void Server::checkRegistration( int clientSocket ) {
     sendWelcomeMsg( clientSocket );
     sendLusersMsg( clientSocket );  // EQUIVALENT OF LUSERS received
     sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD command received
-
+    if (_clients.size() == 1)
+    {
+      handleMode( clientSocket, _clients.at( clientSocket ).getNickname() + " +o");
+      std::cout << "operator mode = " << _clients.at( clientSocket ).getOperatorMode() << std::endl;
+    }
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
   }
 }

@@ -12,6 +12,7 @@ CPPFLAGS	:=	-I./includes
 
 RM 			:=	rm -f
 DIR_DUP		= mkdir -p $(@D)
+MAKEFLAGS   := --no-print-directory --jobs -C
 
 SRCS		:=	\
 				Channel.cpp \
@@ -67,7 +68,23 @@ fclean:		clean
 	$(RM) $(NAME)
 	$(info REMOVED : binary file)
 
-re: 		fclean all
+re:
+	$(MAKE) clean
+	$(MAKE) all
+
+
+# Debug Rules
+
+LEAKS		:= valgrind -q --leak-check=yes --show-leak-kinds=all
+CXXFLAGS    := -Wall -Wextra -Werror -std=c++98
+DEVFLAGS    := -Wconversion -Wsign-conversion -pedantic
+DEVFLAGS    += -fno-omit-frame-pointer -Og -D DEV
+.PHONY:		leak
+leak:
+	$(MAKE) re CXXFLAGS="$(CXXFLAGS)"
+	echo "Makefile message: PASS is 12341234"
+	-$(LEAKS) ./$(NAME) "6667" "12341234"
+
 
 .PHONY: 	all clean fclean re
 .SILENT:

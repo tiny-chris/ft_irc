@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/24 10:44:56 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/27 17:00:50 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,10 +230,182 @@ bool        Channel::isInvited( std::string clientName ) const
   }
   return false;
 }
+
 bool        Channel::checkChannelMembers( std::string name )
 {
   if (_channelMembers.find(name) != _channelMembers.end()) {
     return true;
   }
   return false;
+}
+
+// Prefix + -> Sets new channel modes
+void		Channel::handleChannelModeSet( char modeChar, std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string>& tokens, size_t *j )
+{
+    switch (modeChar)
+    {
+        case 'k':
+            handleModeSetKey(modeArgs, modeChange, tokens, j);
+            break;
+        case 'l':
+            handleModeSetLimit(modeArgs, modeChange, tokens, j);
+            break;
+        case 'i':
+            handleModeSetInviteOnly(modeChange);
+            break;
+        case 't':
+            handleModeSetTopicRestriction(modeChange);
+            break;
+        case 'o':
+            handleModeSetOperator(modeArgs, modeChange, tokens, j);
+            break;
+    }
+}
+
+// Sets key mode +k <modearg>
+void		Channel::handleModeSetKey( std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string> &tokens, size_t *j )
+{
+    if (tokens.size() > *j && getKeyStatus() == false && isValidParam(tokens[*j]) == true)
+    {
+        setKeyStatus(true);
+        setKey(tokens[*j]);
+        *modeChange += "k";
+        *modeArgs += tokens[*j];
+    }
+    (*j)++;
+}
+
+// Sets limit mode +l <modearg>
+void 		Channel::handleModeSetLimit( std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string> &tokens, size_t *j )
+{
+    if ( tokens.size() > *j && getLimitStatus() == false && checkValidLimit(tokens[*j]) == true )
+    {
+        setLimitStatus( true );
+        setLimitBis( StringToInt( tokens[ *j ] ) );
+        setLimit( tokens[ *j ] );
+        *modeChange += "l";
+        *modeArgs += tokens[ *j ];
+    }
+    ( *j )++;
+}
+
+// Sets invite only mode +i
+void 		Channel::handleModeSetInviteOnly(std::string* modeChange)
+{
+    if (getInviteOnlyStatus() == false)
+    {
+        setInviteOnlyStatus(1);
+        *modeChange += "i";
+    }
+}
+
+// Sets topic restriction change mode +t
+void 		Channel::handleModeSetTopicRestriction(std::string* modeChange)
+{
+    if (getTopicRestrictionStatus() == false)
+    {
+        setTopicRestrictionStatus(1);
+        *modeChange += "t";
+    }
+}
+
+// Sets the designated user as a channop
+void        Channel::handleModeSetOperator(std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j)
+{
+    if (tokens.size() > *j && checkChannelOps(tokens[*j]) == false && checkChannelMembers(tokens[*j]) == true)
+    {
+        *modeChange += "o";
+        *modeArgs += tokens[*j];
+        Client *toAdd = getChannelMembers().at(tokens[*j]);
+        addChannelOps(toAdd);
+    }
+    (*j)++;
+}
+
+// Prefix - -> Unsets channel modes
+void		Channel::handleChannelModeUnset(char modeChar, std::string* modeArgs, std::string* modeChange,\
+    const std::vector<std::string>& tokens, size_t *j)
+{
+    switch(modeChar)
+    {
+        case 'k':
+            handleModeUnsetKey(modeChange);
+            break;
+        case 'l':
+            handleModeUnsetLimit(modeChange);
+            break;
+        case 'i':
+            handleModeUnsetInviteOnly(modeChange);
+            break;
+        case 't':
+            handleModeUnsetTopicRestriction(modeChange);
+            break;
+        case 'o':
+            handleModeUnsetOperator(modeArgs, modeChange, tokens, j);
+            break;
+    }
+}
+
+// Unsets key mode
+void		Channel::handleModeUnsetKey(std::string* modeChange)
+{
+    if (getKeyStatus() == true)
+    {
+        setKeyStatus(false);
+        setKey("");
+        *modeChange += "k";
+    }
+}
+
+// Unsets limit mode
+void		Channel::handleModeUnsetLimit(std::string* modeChange)
+{
+    if (getLimitStatus() == true)
+    {
+        setLimitStatus(false);
+        setLimit("");
+        *modeChange += "l";
+    }
+}
+
+// Unsets invite only mode
+void		Channel::handleModeUnsetInviteOnly(std::string* modeChange)
+{
+    if (getInviteOnlyStatus() == true)
+    {
+        setInviteOnlyStatus(false);
+        *modeChange += "i";
+    }
+}
+
+// Unsetstopic restriction mode
+void		Channel::handleModeUnsetTopicRestriction(std::string* modeChange)
+{
+    if (getTopicRestrictionStatus() == true)
+    {
+        setTopicRestrictionStatus(false);
+        *modeChange += "t";
+    }
+}
+
+void        Channel::handleModeUnsetOperator( std::string* modeArgs, std::string* modeChange, const std::vector<std::string> &tokens, size_t *j)
+{
+    if (tokens.size() > *j && getChannelOps().size() > 1 && checkChannelOps(tokens[*j]) == true && checkChannelMembers(tokens[*j]) == true)
+    {
+        *modeChange += "o";
+        *modeArgs += tokens[*j];
+        getChannelOps().erase(tokens[*j]);
+    }
+    (*j)++;
+}
+
+// Checks if the mode is a valid mode k,l,i,t
+bool		Channel::isValidModeChar( char const modeChar )
+{
+    if (modeChar == 'k' || modeChar == 'l' || modeChar == 'i' || modeChar == 't' || modeChar == 'o')
+        return true;
+    return false;
 }

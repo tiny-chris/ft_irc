@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 15:47:57 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:44:45 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,7 +391,7 @@
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
-# define RPL_QUIT(quitter, reason)							(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
 # define RPL_SQUIT(source, reason)							(std::string(":") + source + " SQUIT " + ":" + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

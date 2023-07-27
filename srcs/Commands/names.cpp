@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/24 13:01:28 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 15:05:29 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 // 		for (Channel::mapClientsPtr::const_iterator	testIt = chanMembers.begin(); testIt != chanMembers.end(); testIt++)
 // 		{
 // 			std::cout << "\t\t channel member [" << n << "] named '" << testIt->second->getNickname();
-// 			std::cout << "' with status 'is invisible' = " << testIt->second->getUserModes() << "\n";
+// 			std::cout << "' with status 'is invisible' = " << testIt->second->getInvisibleMode() << "\n";
 // 			n++;
 // 		}
 // /*  ****************************************  */
@@ -53,7 +53,7 @@ void	Server::displayNames( int clientSocket, Channel& channel )
 	// std::cout << ZZ_MSGTEST << "requestor client = '" << _clients.at( clientSocket ).getNickname() << "' is on channel : " << requestorIsOnChannel << std::endl;
 	for ( it = chanMembers.begin(); it != chanMembers.end(); it++ )
 	{
-		if ( it->second->getUserModes() == true && requestorIsOnChannel == false )
+		if ( it->second->getInvisibleMode() == true && requestorIsOnChannel == false )
 			continue ;
 		if ( it != chanMembers.begin() ) {
 			listMembers += " ";
