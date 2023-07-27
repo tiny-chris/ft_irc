@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/27 17:03:16 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 17:58:44 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ void		Server::handleMode( int clientSocket, std::string param )
 // Types B and C modes need a valid mode argument otherwise they are ignored
 void		Server::handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> & tokens )
 {
+    Client *client = &_clients.at( clientSocket );
+    std::string source = client->getSource();
+    std::string clientName = client->getNickname();
     std::string modeChange;
     std::string modeArgs;
 
@@ -46,27 +49,26 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         channelName = channelName.substr(0, CHANNELLEN);
     // if the channel entered doesn't exist no such Channel error displayed
     if (!existingChannel(channelName))
-        replyMsg(clientSocket, ERR_NOSUCHCHANNEL(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), channelName));
+        replyMsg(clientSocket, ERR_NOSUCHCHANNEL(source, clientName, channelName));
     // else if a valid Channel is entered but no param the modes set are displayed
     else if (tokens.size() < 2)
     {
         modeChange = _channels[channelName].getModes();
         modeArgs = _channels[channelName].getModesArgs();
-        replyMsg(clientSocket, RPL_CHANNELMODEIS(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), tokens[0], modeChange, modeArgs));
+        replyMsg(clientSocket, RPL_CHANNELMODEIS(source, clientName, channelName, modeChange, modeArgs));
     }
     else
     {
         Channel *chan = &_channels[channelName];
-        std::string clientName = _clients.at( clientSocket ).getNickname();
         // if the user is not a channel operator, then an error msg is returned and the command is ignored
         if (tokens[1] == "b")
         {
-            replyMsg(clientSocket, RPL_ENDOFBANLIST(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), tokens[0]));
+            replyMsg(clientSocket, RPL_ENDOFBANLIST(source, clientName, channelName));
             return ; 
         }
-        if (!chan->checkChannelOps(clientName))
+        if (!chan->checkChannelOps(clientName) && !client->getOperator)
         {
-            replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), channelName));
+            replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(source, clientName, channelName));
             return ;
         }
         // checking the mode prefix
@@ -87,15 +89,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         }
         // Displaying channel modes changes to every channel client
         if (modeChange.size() > 1)
-        {
-            int socket;
-            for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++)
-            {
-                socket = it->second->getFd();
-                replyMsg(socket, MSG_MODE_CUSTOM(_clients.at( socket ).getSource(), channelName, modeChange + " " + modeArgs));
-
-            }
-        }
+            channelMsgToAll(clientSocket, channelName, MSG_MODE_CUSTOM(source, channelName, modeChange + " " + modeArgs));
     }
 }
 

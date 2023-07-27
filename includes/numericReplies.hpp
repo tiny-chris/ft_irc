@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 17:26:39 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 17:50:29 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,6 +379,7 @@
 # define KILL_MSG(source, nickname)							(std::string(source) + " KILL " + nickname + " :" + source + "\r\n")
 # define RPL_NICK(oldNickname, newNickname)					(std::string(":") + oldNickname + " NICK " + newNickname + "\r\n")
 # define MSG_MODE(source, nickname, modeString, modeargs)	(std::string(":") + source + " MODE " + nickname + " " + modeString + " " + modeargs + "\r\n")
+// # define MSG_MODE_CUSTOM(channel, modes)					(std::string(":") + " MODE " + channel + " " + modes + "\r\n")
 # define MSG_MODE_CUSTOM(source, channel, modes)			(std::string(":") + source + " MODE " + channel + " " + modes + "\r\n")
 
 
