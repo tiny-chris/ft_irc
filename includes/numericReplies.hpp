@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 18:17:18 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 18:33:24 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,7 +389,7 @@
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
-# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
+# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " " + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
 # define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
