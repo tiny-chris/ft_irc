@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 15:07:17 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/27 17:53:43 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 18:25:25 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	Server::handleSQuit( int clientSocket, std::string param )
 	}
 
 	// client is not a Server Operator (of this server)
-	if ( client->getOperatorMode() != false ) {
+	if ( !client->getOperatorMode() ) {
 		replyMsg( clientSocket, ERR_NOPRIVILEGES( source ) );
 		return ;
 	}
