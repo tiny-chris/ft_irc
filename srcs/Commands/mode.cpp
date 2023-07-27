@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/27 17:58:44 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 18:07:02 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
             replyMsg(clientSocket, RPL_ENDOFBANLIST(source, clientName, channelName));
             return ; 
         }
-        if (!chan->checkChannelOps(clientName) && !client->getOperator)
+        if (!chan->checkChannelOps(clientName) && !client->getOperatorMode())
         {
             replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(source, clientName, channelName));
             return ;
@@ -104,16 +104,15 @@ void		Server::handleUserMode (int clientSocket, std::vector<std::string> & token
         userName = userName.substr(0, NICKLEN);
      // if the nickname entered doesn't exist no such Channel error displayed
     if (!existingNick(userName))
-        replyMsg(clientSocket, ERR_NOSUCHNICK( client->getSource(), client->getNickname()));
+        replyMsg(clientSocket, ERR_NOSUCHNICK( client->getSource(), client->getNickname() ) );
     // else if the username doesn't match the client nickname User Don't Match Error
     else if (userName != client->getNickname())
-        replyMsg(clientSocket, ERR_USERSDONTMATCH( client->getSource(), client->getNickname()));
+        replyMsg(clientSocket, ERR_USERSDONTMATCH( client->getSource(), client->getNickname() ) );
     // if not mode string entered the current usermodes are displayed
     else if (tokens.size() < 2)
     {
-        // std::string modechange = _clients.at( clientSocket ).getInvisibleMode() == true ? "+i" : "";
         modechange = client->getModes();
-        replyMsg(clientSocket, RPL_UMODEIS(client->getSource(), client->getNickname(), modechange));
+        replyMsg(clientSocket, RPL_UMODEIS( client->getSource(), client->getNickname(), modechange ));
     }
     else
     {

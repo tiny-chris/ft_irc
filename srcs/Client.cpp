@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 16:36:27 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 18:12:28 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,13 @@ Client::Client( int socket )
     _passStatus( false ),
     _nickStatus( false ),
     _isRegistered( false ),
-    _invisibleMode( true ),
+    _invisibleMode( false ),
     _operatorMode( false ),
     _nickname( "" ),
     _username( "" ),
     _realname( "" ),
     _source( "" ),
     _clientChannels()
-// _channelModes( "" ),
 {}
 
 Client::Client( Client const& src ) : _fd( src.getFd() ) {
