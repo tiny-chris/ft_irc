@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 17:50:29 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 18:17:18 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define ERR_NOSUCHNICK(source, nickname) (std::string(":") + source + " 401 " + nickname + " :No such nick/channel\r\n")
 // Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
-# define ERR_NOSUCHSERVER 402
+# define ERR_NOSUCHSERVER(source, server) (std::string(":") + source + " 402 " + server + " :No such server" + CRLF)
 //"<nom de serveur> :No such server"
 //Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.
 
@@ -178,7 +178,8 @@
 // This is similar to, but stronger than, ERR_NOSUCHCHANNEL (403), which indicates that the channel does not exist, but that it may be a valid name.
 // The text used in the last param of this message may vary
 
-# define  ERR_NOPRIVILEGES 481
+# define  ERR_NOPRIVILEGES(source) (std::string(":") + source + " 481 " + ":Permission Denied- You're not an IRC operator" + CRLF)
+//481
 // ":Permission Denied- You're not an IRC operator"
 // Toute commande qui requiert le privilège d'opérateur pour opérer doit retourner cette erreur pour indiquer son échec.
 
@@ -392,5 +393,6 @@
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
 # define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_SQUIT(source, reason)							(std::string(":") + source + " " + nickname + " SQUIT " + ":" + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

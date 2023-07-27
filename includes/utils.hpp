@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/26 16:12:06 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 16:53:47 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,14 @@ enum commands {
 	PART = 130,
 	WHO = 131,
 	QUIT = 1001,
-
-	ZZ_SHUTDOWN = 1000,
-	ZZ_MSG = 1003,
+	SQUIT = 1000,
 };
 // 	// NOTICE,
 // 	// LIST,
-// 	// INVITE,
 // 	// PONG,
-// 	// MODE,
 // 	// WHO,
 // 	// WHOIS,
 // 	// WHOWAS,
-// 	// QUIT,
-// 	// KICK,
-// 	// TOPIC,
 // 	// OPER,
 // 	// KILL
 

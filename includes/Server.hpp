@@ -96,6 +96,7 @@ class Server {
   /* ********* QUIT CMD ******* */
   void	      handleQuit( int clientSocket, std::string param );
 
+  void  handleSQuit( int clientSocket, std::string param );
 
 
   std::string	getSupportToken() const;
@@ -106,11 +107,6 @@ class Server {
                             const std::string& message );
   void channelMsgToChanOps( int clientSocket, const std::string& channelName,
                             const std::string& message );
-  // void channelMsgToAll( int clientSocket, std::string channelName,
-  //                       std::string message );
-  // void channelMsgNotClient( int clientSocket, std::string channelName,
-  //                           std::string message );
-  // void channelMsgToChanOps( int clientSocket, std::string channelName, std::string message );
 
  public: // pk y a ecrit public plusieurs fois ?
   void updateChannelMemberNick( std::string& oldNickname,
@@ -146,7 +142,9 @@ class Server {
   void disconnectAllClients();
   void disconnectAClient( int clientSocket );
 
-  void broadcastMsg( std::string& msg, int clientSocket );
+  // void broadcastMsg( std::string& msg, int clientSocket );
+  void broadcastMsgToAll( int clientSocket, const std::string& message );
+  void broadcastMsgNotClient( int clientSocket, const std::string& message );
   void replyMsg( int clientSocket, std::string reply, bool copyToServer = 1 );
   void handleRequest( int clientSocket, std::string request );
   void handleExistingClient( int clientSocket );
