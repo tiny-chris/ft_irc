@@ -17,6 +17,8 @@
 #include "utils.hpp"
 
 /*
+	// syntax: PRIVMSG <msgtarget> <message>
+
 	Numeric Replies:
 
 		x	ERR_NOSUCHNICK (401)
@@ -58,7 +60,7 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 	if (textToBeSent.at(0) == ':')
 		textToBeSent.erase(0, 1);
 	std::vector< std::string >	targetNames = splitString( targetList, ',' );
-	// std::vector< std::string >	targets;
+
 	for ( size_t i = 0; i < targetNames.size(); ++i ) {
 		std::string	target = targetNames[ i ];
 		size_t		sharp = target.find("#");
@@ -77,7 +79,7 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 					continue ;
 				}
 
-				// if client is on Channel 
+				// if client is on Channel
 				if (  channel.checkChannelMembers( nickname ) ) {
 					// it start with '@#' --> text to be sent to chanops only
 					if ( target.find( "@#" ) == 0 ) {
@@ -96,14 +98,15 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			}
 			// if CLIENT
 			else if ( existingClient( target ) ) {
-				mapClients::iterator	it;
+				// mapClients::iterator	it;
 
-				for ( it = _clients.begin() ; it != _clients.end(); ++it) {
-					if ( it->second.getNickname() == target ) {
-						replyMsg( it->second.getFd(), reply );
-						continue ;
-					}
-				}
+				// for ( it = _clients.begin() ; it != _clients.end(); ++it) {
+				// 	if ( it->second.getNickname() == target ) {
+				// 		replyMsg( it->second.getFd(), reply );
+				// 		continue ;
+				// 	}
+				// }
+				replyMsg( findClientFd( target ), reply );
 			}
 			else {
 				replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
@@ -114,4 +117,14 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
 		}
 	}
+}
+
+int	Server::findClientFd(const std::string& name )
+{
+	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
+		if ( it->second.getNickname() == name ) {
+			return ( it->second.getFd() );
+		}
+	}
+	return -1 ;
 }

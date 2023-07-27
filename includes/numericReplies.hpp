@@ -389,7 +389,7 @@
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
-# define RPL_PRIVMSG(source, nickname, destination, text)	(std::string(":") + source + " " + nickname + " PRIVMSG " + destination + " :" + text + CRLF)
+# define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
 # define RPL_QUIT(quitter, reason)							(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

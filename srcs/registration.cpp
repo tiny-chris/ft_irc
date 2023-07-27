@@ -41,29 +41,9 @@ void Server::checkRegistration( int clientSocket ) {
     // DISPLAY WELCOME MESSAGES
     sendWelcomeMsg( clientSocket );
     sendLusersMsg( clientSocket );  // EQUIVALENT OF LUSERS received
-    sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD commad received
+    sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD command received
 
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
-    /************************************/
-    // TO DEL JUSTE POUR TESTER MODE !!
-    // OBLIGEE DE NEW UN CHANNEL POUR CA SINON LES MODIFS REALISEES SUR LE
-    // CHANNEL NE SONT QUE LOCALES EX: J EPUSH BACK UN CLIENT A LA MAP DE
-    // CHANOPS DU CHANNEL DANS MON CONSTRUCTEUR MAIS QUAND JE VEUX Y ACCEDER
-    // DEPUIS UNE AUTRE FONCTION DU SERVEUR CA NE MARCHE PAS LA SIZE DE MA MAP
-    // EST A 0 ..... CHAT GPT DIT QUE Les objets std::map sont stockés en tant
-    // que paires de clé-valeur et lorsqu'une paire est insérée, une copie des
-    // objets est effectuée. Contrairement au std::vector std::string name =
-    // "#chantest"; if ( clientSocket == 5 )
-    // {
-    //   _channels.insert( std::pair<std::string, Channel>( name, Channel( name
-    //   ) ) ); _channels[ name ].addChannelOps(&_clients.at( clientSocket ) );
-    //   _channels[ name ].addChannelMember(&_clients.at( clientSocket ) );
-    // }
-    // if ( clientSocket == 6 )
-    // {
-    //   _channels[ name ].addChannelMember( &_clients.at( clientSocket ) );
-    // }
-    /************************************/
   }
 }
 
