@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 15:07:17 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/27 17:10:29 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:53:43 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,11 @@ void	Server::handleSQuit( int clientSocket, std::string param )
 		return ;
 	}
 
-	// // to uncomment once mode Server Op is on
-	// // client is not a Server Operator (of this server)
-	// if ( client->getServerOperator() != false ) {
-	// 	replyMsg( clientSocket, ERR_NOPRIVILEGES( source ) );
-	// 	return ;
-	// }
-	if ( clientSocket != 5 && clientSocket != 6 ) {
+	// client is not a Server Operator (of this server)
+	if ( client->getOperatorMode() != false ) {
 		replyMsg( clientSocket, ERR_NOPRIVILEGES( source ) );
 		return ;
 	}
-	// // to delete as just for testing
 
 	broadcastMsgToAll( clientSocket, RPL_SQUIT( source, comment ) );
 	stop();

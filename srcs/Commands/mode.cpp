@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/27 17:58:44 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/27 18:14:03 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
             replyMsg(clientSocket, RPL_ENDOFBANLIST(source, clientName, channelName));
             return ; 
         }
-        if (!chan->checkChannelOps(clientName) && !client->getOperator)
+        if (!chan->checkChannelOps(clientName))
         {
             replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(source, clientName, channelName));
             return ;
