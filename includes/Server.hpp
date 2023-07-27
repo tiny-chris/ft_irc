@@ -122,6 +122,7 @@ class Server {
   // void        removeClientFromChannelOps( Client *client );
   // void        removeClientFromInvitedMembers( Client *client );
 
+  void  handleSQuit( int clientSocket, std::string param );
 
 
     std::string	getSupportToken() const;

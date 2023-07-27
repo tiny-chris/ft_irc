@@ -387,20 +387,19 @@ void Server::handleRequest( int clientSocket, std::string request ) {
     case QUIT:
       handleQuit( clientSocket, parameters );
       break;
+    case SQUIT:// ' /shutdown '
+      handleSQuit( clientSocket, parameters );
+      // stop();
+      break;
 
       // keeping Clement's initial commands just in case... - START
-    case ZZ_SHUTDOWN:
-      stop();
-      break;  // ' /shutdown '
     case ZZ_MSG:
       broadcastMsg( parameters, clientSocket );
       break;  // ' /msg <message to broadcast>'
     default: {
       if( !command.empty() || ( command.empty() && !parameters.empty() ) ) {
-        replyMsg(
-          clientSocket,
-          ERR_UNKNOWNCOMMAND(
-            _serverName, _clients.at( clientSocket ).getRealname(), command ) );
+        replyMsg( clientSocket,
+          ERR_UNKNOWNCOMMAND(_serverName, _clients.at( clientSocket ).getRealname(), command ) );
       }
     } break;
   }
@@ -571,7 +570,7 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 130, "PART" ) );
   _commands.insert( std::make_pair( 131, "WHO" ) );
   // temp elements --> will be replaced by valid command
-  _commands.insert( std::make_pair( 1000, "/shutdown" ) );
+  _commands.insert( std::make_pair( 1000, "SQUIT" ) );//ex- /shutdown
   _commands.insert( std::make_pair( 1001, "QUIT" ) );
   _commands.insert( std::make_pair( 1003, "/msg" ) );
   return;

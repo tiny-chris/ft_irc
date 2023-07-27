@@ -35,6 +35,7 @@ SRCS		:=	\
 				Commands/user.cpp \
 				Commands/who.cpp \
 				Commands/quit.cpp \
+				Commands/squit.cpp \
 
 SRC_DIR		:=	srcs
 OBJ_DIR		:=	objs
