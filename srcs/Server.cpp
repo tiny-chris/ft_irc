@@ -167,26 +167,54 @@ void Server::disconnectAClient( int clientSocket ) {
   _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
 }
 
+// /**
+//  * @brief       Broadcasts a message to all connected clients except the
+//  *              sender
+//  */
+
+// void Server::broadcastMsg( std::string& msg, int clientSocket ) {
+//   std::map<int, Client>::const_iterator it;
+//   int                                   recipient;
+
+//   msg = _clients.at( clientSocket ).getNickname() + ": " + msg + "\n";
+//   for( it = _clients.begin(); it != _clients.end(); ++it ) {
+//     recipient = it->first;
+//     if( recipient != _serverSocket && recipient != clientSocket ) {
+//       if( send( recipient, msg.c_str(), msg.length(), 0 ) < 0 ) {
+//         std::string message = "send: " + std::string( strerror( errno ) );
+//         throw std::runtime_error( message );
+//       }
+//     }
+//   }
+//   std::cout << msg;
+// }
+
+/**
+ * @brief       Broadcasts a message to all connected clients including the
+ *              sender
+ */
+void Server::broadcastMsgToAll( int clientSocket, const std::string& message ) 
+{
+  broadcastMsgNotClient( clientSocket, message );
+  replyMsg( clientSocket, message, 0 );
+}
+
 /**
  * @brief       Broadcasts a message to all connected clients except the
  *              sender
  */
+void Server::broadcastMsgNotClient( int clientSocket, const std::string& message )
+{
+  mapClients::const_iterator	it;
+  int   					            socket;
 
-void Server::broadcastMsg( std::string& msg, int clientSocket ) {
-  std::map<int, Client>::const_iterator it;
-  int                                   recipient;
-
-  msg = _clients.at( clientSocket ).getNickname() + ": " + msg + "\n";
   for( it = _clients.begin(); it != _clients.end(); ++it ) {
-    recipient = it->first;
-    if( recipient != _serverSocket && recipient != clientSocket ) {
-      if( send( recipient, msg.c_str(), msg.length(), 0 ) < 0 ) {
-        std::string message = "send: " + std::string( strerror( errno ) );
-        throw std::runtime_error( message );
-      }
+    socket = it->first;
+    if( socket != clientSocket ) {
+      replyMsg( socket, message, 0 );
     }
   }
-  std::cout << msg;
+  std::cout << MSGREPLY << message << std::endl;
 }
 
 /**
@@ -200,7 +228,10 @@ void	Server::replyMsg( int clientSocket, std::string reply, bool copyToServer )
   {
     std::cout << MSGREPLY << reply << std::endl;
   }
-  send( clientSocket, reply.c_str(), reply.length(), 0 );
+  if ( send( clientSocket, reply.c_str(), reply.length(), 0 ) < 0 ) {
+    std::string errMsg = "send: " + std::string( strerror( errno ) );
+    throw std::runtime_error( errMsg );
+  }
   return;
 }
 
@@ -389,13 +420,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       break;
     case SQUIT:// ' /shutdown '
       handleSQuit( clientSocket, parameters );
-      // stop();
       break;
-
-      // keeping Clement's initial commands just in case... - START
-    case ZZ_MSG:
-      broadcastMsg( parameters, clientSocket );
-      break;  // ' /msg <message to broadcast>'
     default: {
       if( !command.empty() || ( command.empty() && !parameters.empty() ) ) {
         replyMsg( clientSocket,
@@ -572,7 +597,6 @@ void Server::initCommands( void ) {
   // temp elements --> will be replaced by valid command
   _commands.insert( std::make_pair( 1000, "SQUIT" ) );//ex- /shutdown
   _commands.insert( std::make_pair( 1001, "QUIT" ) );
-  _commands.insert( std::make_pair( 1003, "/msg" ) );
   return;
 }
 

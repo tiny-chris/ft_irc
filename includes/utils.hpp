@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 15:04:28 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 16:53:47 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,13 @@ enum commands {
 	WHO = 131,
 	QUIT = 1001,
 	SQUIT = 1000,
-
-	ZZ_MSG = 1003,
 };
 // 	// NOTICE,
 // 	// LIST,
-// 	// INVITE,
 // 	// PONG,
-// 	// MODE,
 // 	// WHO,
 // 	// WHOIS,
 // 	// WHOWAS,
-// 	// QUIT,
-// 	// KICK,
-// 	// TOPIC,
 // 	// OPER,
 // 	// KILL
 
