@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/24 10:42:55 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/27 16:58:52 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,23 @@ class Channel
         bool        checkChannelOps( std::string name );
         bool        isInvited( std::string clientName ) const;
         bool        checkChannelMembers( std::string name );
+
+        void        handleChannelModeSet( char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        handleChannelModeUnset( char modeChar, std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        handleModeSetKey( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        handleModeSetLimit( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        handleModeSetInviteOnly( std::string* modeChange );
+        void        handleModeSetTopicRestriction( std::string* modeChange );
+        void        handleModeSetOperator( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        handleModeUnsetKey( std::string* modeChange );
+        bool        isValidModeChar( char const modeChar );
+
+        void        handleModeUnsetLimit( std::string* modeChange );
+        void        handleModeUnsetInviteOnly( std::string* modeChange );
+        void        handleModeUnsetTopicRestriction( std::string* modeChange );
+        void        handleModeUnsetOperator( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+
+
 
     private:
 

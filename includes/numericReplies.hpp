@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/26 18:29:44 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:26:39 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,6 +390,6 @@
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
-# define RPL_QUIT(quitter, reason)							(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
 
 #endif /* __NUMERIC_REPLIES_HPP__*/
