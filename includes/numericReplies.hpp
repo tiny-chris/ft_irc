@@ -186,7 +186,8 @@
 # define ERR_CHANOPRIVSNEEDED(source, nickname, channel) (std::string(":") + source + " 482 " + nickname + " " + channel + " :You're not channel operator\r\n")
 // Toute commande qui requiert les privilèges 'chanop' (tels les messages MODE) doit retourner ce message à un client qui l'utilise sans être chanop sur le canal spécifié.
 
-# define ERR_CANTKILLSERVER 483
+# define ERR_CANTKILLSERVER (std::string(":") + " 483 " + ":You cant kill a server!" + CRLF)
+//483
 // ":You cant kill a server!"
 // Toute tentative d'utiliser la commande KILL sur un serveur doit être refusée et cette erreur renvoyée directement au client.
 
@@ -389,10 +390,13 @@
 # define DEFAULTKICK(nickname, channel, tokick, reason) 	(std::string(":") + nickname + " KICK " + channel + " "  + tokick + " :" + reason + "\r\n")
 # define KICK_REASON "bye bye looser\r\n"
 # define INVITE(inviter, invitee, channel)                  (std::string(":") + inviter + " INVITE " + invitee + " " + channel + "\r\n")
-# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " " + nickname + " PART " + channel + reason + CRLF)
+# define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
-# define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, channel, reason)					(std::string(":") + source + " QUIT " + channel + " :" + reason + "\r\n")
 # define RPL_SQUIT(source, reason)							(std::string(":") + source + " " + nickname + " SQUIT " + ":" + reason + CRLF)
+// # define RPL_KILL(source, tokill, reason)					(std::string(":") + source + " KILL " + tokill + " :" + reason + CRLF)
+# define KILL_REASON(killer, reason)						("Killed (" + killer + " (" + reason + "))")
+# define ERR_KILL(source, servername, reason) 				("Closing Link: " + servername + " (" + reason + ")" + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

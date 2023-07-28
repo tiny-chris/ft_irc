@@ -119,7 +119,7 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 	}
 }
 
-int	Server::findClientFd(const std::string& name )
+int	Server::findClientFd( const std::string& name )
 {
 	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
 		if ( it->second.getNickname() == name ) {

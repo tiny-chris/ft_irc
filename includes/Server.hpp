@@ -79,7 +79,7 @@ class Server {
                           const std::vector<std::string>& tokens );
   bool existingChannel( std::string param );
   char getModePrefix( std::string const& token );
-  /* ********* KICK CMD ******* */  
+  /* ********* KICK CMD ******* */
   void        handleKick( int clientSocket, std::string param );
   void        kickUser( int clientSocket, Channel* chan, std::string nick,
                         std::string toKick, std::string reason );
@@ -98,7 +98,7 @@ class Server {
   /* ********* SQUIT CMD ******* */
   void  handleSQuit( int clientSocket, std::string param );
   /* ********* KILL CMD ******* */
-  void	handleKill( int clientSocket, std::string param )
+  void	handleKill( int clientSocket, std::string param );
 
 
   std::string	getSupportToken() const;

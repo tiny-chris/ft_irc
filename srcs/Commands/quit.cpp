@@ -17,16 +17,16 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-// supprimer de tous les channels existants. 
+// supprimer de tous les channels existants.
 /*	- en tant que Channel Member
 	- en tant que Channop
 	- en tant qu'InvitedMember
-	- si c'est le dernier membre d'un channel supprimer le channel 
+	- si c'est le dernier membre d'un channel supprimer le channel
 */
 void	Server::handleQuit( int clientSocket, std::string param )
 {
 	std::vector<std::string> tokens = splitString( param, ' ' );
-	std::string reason; 
+	std::string reason;
 	if ( tokens.size() && tokens[0].find(':', 0) != std::string::npos )
 	{
 		while (tokens[0].find(':', 0) != std::string::npos)
@@ -38,15 +38,15 @@ void	Server::handleQuit( int clientSocket, std::string param )
 			reason += tokens[i];
 		}
 	}
+	if ( reason.empty() )
+		reason = "Quit: ";
 	Client *client = &_clients.at( clientSocket );
-	if (client->getClientChannels().size() > 0)
+	if ( client->getClientChannels().size() > 0 )
 	{
-		if ( client->getClientChannels().size() > 0 ) {
-			std::vector< std::string > copyClientChannels = client->getClientChannels();
-			for ( size_t i = 0; i < copyClientChannels.size(); i++ ) {
-				leaveChannel( clientSocket, copyClientChannels[ i ], reason, "QUIT" );
-			}
+		std::vector< std::string > copyClientChannels = client->getClientChannels();
+		for ( size_t i = 0; i < copyClientChannels.size(); i++ ) {
+			leaveChannel( clientSocket, copyClientChannels[ i ], reason, "QUIT" );
 		}
 	}
-	disconnectAClient( clientSocket );				
+	disconnectAClient( clientSocket );
 }
