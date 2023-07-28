@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 18:33:24 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 16:06:42 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@
 
 /******		  LUSERS REPLIES		  ******/
 
-# define RPL_LUSERCLIENT(source, nickname, totalusers) (std::string(":") + source + " 251 " + nickname + " :There are " + totalusers + " users and 0 invisible on 1 servers\r\n")
+# define RPL_LUSERCLIENT(source, nickname, totalusers, invisibleuser) (std::string(":") + source + " 251 " + nickname + " :There are " + totalusers + " users and " + invisibleuser + " invisible on 1 servers\r\n")
 // <u>, <i>, and <s> are non-negative integers, and represent the number of total users, invisible users, and other servers connected to this server.
 
 # define RPL_LUSEROP(source, nickname, ops) (std::string(":") + source + " 252 " + nickname + " " + ops + " :operator(s) online\r\n")
@@ -239,7 +239,7 @@
 # define RPL_LUSERCHANNELS(source, nickname, channels) (std::string(":") + source + " 254 " + nickname + " " + channels + " :channels formed\r\n")
 // <channels> is a positive integer and represents the number of channels that currently exist on this server. The text used in the last param of this message may vary.
 
-# define RPL_LUSERME(source, nickname, clientsnbr) (std::string(":") + source + " 255 " + nickname + " :I have " + clientsnbr + " 0 servers\r\n")
+# define RPL_LUSERME(source, nickname, clientsnbr) (std::string(":") + source + " 255 " + nickname + " :I have " + clientsnbr + " clients and 0 servers\r\n")
 // <c> and <s> are non-negative integers and represent the number of clients and other servers connected to this server, respectively.
 
 
