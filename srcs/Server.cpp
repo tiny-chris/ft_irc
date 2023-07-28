@@ -251,7 +251,7 @@ void Server::replyMsg( int clientSocket, std::string reply,
  */
 
 void Server::handleRequest( int clientSocket, std::string request ) {
-  std::string command;
+  std::string command = "";
   std::string parameters = "";
   size_t      splitter;
   int         commandKey = 0;
@@ -267,72 +267,18 @@ void Server::handleRequest( int clientSocket, std::string request ) {
 
   splitter = request.find( ' ', 0 );
 
-  // /*  ************************************  */
-  // /*       POUR CHECKER LES SOCKETS !!      */
-  // /*  ************************************  */
-  // std::cout << "\n\t *** CHECK CLIENT SOCKET: ***\n";
-  // std::cout << "\t from handleRequest parameter <" << clientSocket << ">\n";
-  // std::cout << "\t in map _clients.at( clientSocket ).getFd() <"
-  //           << _clients.at( clientSocket ).getFd() << ">\n";
-  // std::cout << "\t\t fdIsValid(_clients.at( clientSocket ).getFd()) = "
-  //           << Utility::fdIsValid( _clients.at( clientSocket ).getFd() )
-  //           << "\n";
-  // std::cout << "\t for each existing client (loop on _clients):\n";
-  // mapClients::iterator it;
-  // int                  i = 0;
-  // for( it = _clients.begin(); it != _clients.end(); it++ ) {
-  //   std::cout << "\t for client #" << i << ": it->first = " << it->first;
-  //   std::cout << " and it->second.getFd() = " << it->second.getFd()
-  //             << std::endl;
-  //   if( clientSocket == it->first ) {
-  //     std::cout << "\t\t demande en cours du client #" << i
-  //               << " de la map _clients (i.e. clientSocket <" << clientSocket
-  //               << ">)" << std::endl;
-  //   }
-  //   i++;
-  // }
-  // std::cout << std::endl;
-  // std::cout << "\n\t *** CHECK CLIENT DATA (avant requete): ***\n";
-  // std::cout << "\t client's getPassStatus <"
-  //           << _clients.at( clientSocket ).getPassStatus() << ">\n";
-  // std::cout << "\t client's getNickStatus <"
-  //           << _clients.at( clientSocket ).getNickStatus() << ">\n";
-  // std::cout << "\t client's getIfRegistered <"
-  //           << _clients.at( clientSocket ).getIfRegistered() << ">\n";
-  // std::cout << "\t client's getInvisibleMode <"
-  //           << _clients.at( clientSocket ).getInvisibleMode() << ">\n";
-
-  // std::cout << "\t client's getNickname <"
-  //           << _clients.at( clientSocket ).getNickname() << ">\n";
-  // std::cout << "\t client's getUsername <"
-  //           << _clients.at( clientSocket ).getUsername() << ">\n";
-  // std::cout << "\t client's getRealname <"
-  //           << _clients.at( clientSocket ).getRealname() << ">\n";
-  // std::cout << "\t client's getSource <"
-  //           << _clients.at( clientSocket ).getSource() << ">\n";
-  // std::cout << std::endl;
-  // /*  ************************************  */
-  // /*  ************************************  */
-
   /* ********************************* */
   /* ACTION 1   - get command & params */
   /* ********************************* */
   // if <request> has no space --> command is request string
   // else --> split command & parameters
-  if( splitter == std::string::npos )
-    command = request;
-  else {
+  if( splitter != std::string::npos ) {
     command = request.substr( 0, splitter );
     parameters = request.substr( splitter + 1, std::string::npos );
   }
-
-  // /* ********************************* */
-  // /* SUBACTION  - turn command content into capital letters */     TO KEPP
-  // ??????
-  // /* ********************************* */
-  // for (size_t i = 0; i < command.length(); ++i)
-  //   command[i] = std::toupper(command[i]);
-
+  else
+    command = request;
+  
   /* ********************************* */
   /* ACTION 2   - check the case when the client is disconnected and return */
   /* ********************************* */
@@ -377,6 +323,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       return;
     }
   }
+  
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
@@ -526,6 +473,12 @@ void Server::handleNewClient( void ) {
     std::cerr << "accept: " << strerror( errno ) << "\n";
     return;
   }
+  if ( _clients.size() >= MAXCONNECTION ) {
+    replyMsg( clientSocket, RPL_QUIT( _serverName, "", "Too many clients connected already") );
+    Utility::closeFd( clientSocket );
+    return;
+  }
+  std::cout << "-----------------------------" << std:: endl;
   std::cout << "New connection from " << Utility::ntop( clientAddress ) << "\n";
   struct epoll_event event;
   memset( &event, 0, sizeof( event ) );

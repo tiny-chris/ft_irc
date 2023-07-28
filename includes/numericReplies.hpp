@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 17:11:00 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/28 16:06:42 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/28 18:58:16 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,15 +151,15 @@
 // "<canal> :Channel key already set"
 // Clé de canal déjà définie.
 
-// # define  ERR_CHANNELISFULL(source, nickname, channel) (std::string(":") + source + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)\r\n")
-# define  ERR_CHANNELISFULL(source, channel) (std::string(":") + source + " 471 " + channel + " :Cannot join channel (+l)\r\n")
+# define  ERR_CHANNELISFULL(source, nickname, channel) (std::string(":") + source + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)\r\n")
+// # define  ERR_CHANNELISFULL(source, channel) (std::string(":") + source + " 471 " + channel + " :Cannot join channel (+l)\r\n")
 // Impossible de joindre le canal (+l)
 
 # define  ERR_UNKNOWNMODE 472
 // "<caractère> :is unknown mode char to me"
 // Mode inconnu.
 
-# define  ERR_INVITEONLYCHAN(source, channel) (std::string(":") + source + " 473 " + channel + " :Cannot join channel (+i)\r\n")
+# define  ERR_INVITEONLYCHAN(source, nickname, channel) (std::string(":") + source + " 473 " + nickname + " " + channel + " :Cannot join channel (+i)\r\n")
 // 473
 // "<canal> :Cannot join channel (+i)"
 // Impossible de joindre le canal (+i).
@@ -168,12 +168,13 @@
 // "<canal> :Cannot join channel (+b)"
 // Impossible de joindre le canal (+b).
 
-# define  ERR_BADCHANNELKEY(source, channel) (std::string(":") + source + " 475 " + channel + " :Cannot join channel (+k)\r\n")
+# define  ERR_BADCHANNELKEY(source, nickname, channel) (std::string(":") + source + " 475 " + nickname + " " + channel + " :Cannot join channel (+k)\r\n")
 // 475
 // "<canal> :Cannot join channel (+k)"
 // Impossible de joindre le canal (+k).
 
-# define ERR_BADCHANMASK(source, nickname, channel) (std::string(":") + source + " 476 " + nickname + " " + channel + " :Bad Channel Mask\r\n")
+# define ERR_BADCHANMASK(source, channel) (std::string(":") + source + " 476 " + channel + " :Bad Channel Mask\r\n")
+// # define ERR_BADCHANMASK(source, nickname, channel) (std::string(":") + source + " 476 " + nickname + " " + channel + " :Bad Channel Mask\r\n")
 // Indicates the supplied channel name is not a valid.
 // This is similar to, but stronger than, ERR_NOSUCHCHANNEL (403), which indicates that the channel does not exist, but that it may be a valid name.
 // The text used in the last param of this message may vary
