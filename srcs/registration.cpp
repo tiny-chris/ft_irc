@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/27 17:28:19 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/28 16:03:29 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,15 @@ void Server::sendLusersMsg( int clientSocket ) {
   std::string source = _clients.at( clientSocket ).getSource();
   std::string nick = _clients.at( clientSocket ).getNickname();
 
-  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str() ),
+  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str(), getInvisibleUserNbr() ),
             0 );
-  replyMsg( clientSocket, RPL_LUSEROP( source, nick, "0" ),
-            0 );  // A MODIFIER getOpsNbr()
-  replyMsg( clientSocket, RPL_LUSERUNKNOWN( source, nick, "0" ),
-            0 );  // A Modifier getUnknownStateUsers()
-  replyMsg( clientSocket, RPL_LUSERCHANNELS( source, nick, "0" ),
-            0 );  // A MODIFIER getChannelNbr();
-  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str() ),
+  replyMsg( clientSocket, RPL_LUSEROP( source, nick, getOpsNbr() ),
+            0 );
+  replyMsg( clientSocket, RPL_LUSERUNKNOWN( source, nick, getUnknownStateUsers() ),
+            0 );
+  replyMsg( clientSocket, RPL_LUSERCHANNELS( source, nick, getChannelNbr() ),
+            0 );
+  replyMsg( clientSocket, RPL_LUSERME( source, nick, nbrClients.str() ),
             0 );
 }
 
@@ -118,4 +118,42 @@ void Server::sendMotdMsg( int clientSocket ) {
     replyMsg( clientSocket, RPL_MOTD( source, nick ) + line + "\r\n", 0 );
   motdFile.close();
   replyMsg( clientSocket, RPL_ENDOFMOTD( source, nick ), 0 );
+}
+
+std::string Server::getOpsNbr( void )
+{
+  int countOps = 0;
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
+  {
+    if (it->second.getOperatorMode() == true)
+      countOps++;
+  }
+  return ( intToString( countOps ) );
+}
+
+std::string Server::getChannelNbr( void )
+{
+  return ( intToString( _channels.size() ) );
+}
+
+std::string Server::getUnknownStateUsers( void )
+{
+  int countUnknownState = 0;
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
+  {
+    if (it->second.getIfRegistered() == false)
+      countUnknownState++;
+  }
+  return ( intToString( countUnknownState ) );
+}
+
+std::string Server::getInvisibleUserNbr( void )
+{
+  int countInvisibleUSer = 0;
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
+  {
+    if (it->second.getInvisibleMode())
+      countInvisibleUSer++;
+  }
+  return ( intToString( countInvisibleUSer ) );
 }

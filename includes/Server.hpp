@@ -39,6 +39,11 @@ class Server {
   void sendWelcomeMsg( int clientSocket );
   void sendLusersMsg( int clientSocket );
   void sendMotdMsg( int clientSocket );
+  std::string getOpsNbr( void );
+  std::string getChannelNbr( void );
+  std::string getUnknownStateUsers( void );
+  std::string getInvisibleUserNbr( void );
+
 
   // TODO URGENCE -> Create class Commands.
 
