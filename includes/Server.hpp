@@ -67,7 +67,7 @@ class Server {
   /* ********* PART CMD ******* */
   void handlePart( int clientSocket, std::string param );
   void leaveChannel ( int clientSocket, const std::string& channelName,
-                     const std::string& reason, std::string cmd );
+                     const std::string& reason, const std::string& cmd );
   bool checkChanPrePart( int clientSocket, const std::string& channelName );
 
   void handlePrivmsg( int clientSocket, std::string param );

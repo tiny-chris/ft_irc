@@ -16,7 +16,7 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-void	Server::leaveChannel( int clientSocket, const std::string& channelName, const std::string& reason, std::string cmd )
+void	Server::leaveChannel( int clientSocket, const std::string& channelName, const std::string& reason, const std::string& cmd )
 {
 	Client		*client = &_clients.at( clientSocket );
 	Channel		*channel = &_channels.at( channelName );
@@ -29,7 +29,7 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 			if (cmd == "PART")
 				replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
 			else if (cmd == "QUIT")
-				replyMsg( clientSocket, RPL_QUIT( client->getSource(), client->getNickname(), channelName, reason ));
+				replyMsg( clientSocket, RPL_QUIT( client->getSource(), client->getNickname(), reason ));
 			return ;
 		}
 		else {//( channel->getChannelMembers().size() > 1 )// but only current client as chanOp
@@ -67,15 +67,15 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 			std::cout << ZZ_MSGTEST << "6. check après avoir forcé le passage en +o du futur chanOp" << std::endl;
 		}
 	}
-	// else {// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
-	if (cmd == "PART")
-		channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
-	else if (cmd == "QUIT")
-		channelMsgToAll( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), channelName, reason ) );
-	channel->removeChannelOp( client );
-	channel->removeChannelMember( client );
-	client->removeClientChannel( channelName );
-	// }
+	else {// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
+		if (cmd == "PART")
+			channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+		else if (cmd == "QUIT")
+			channelMsgToAll( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), reason ) );
+		channel->removeChannelOp( client );
+		channel->removeChannelMember( client );
+		client->removeClientChannel( channelName );
+	}
 }
 
 /*

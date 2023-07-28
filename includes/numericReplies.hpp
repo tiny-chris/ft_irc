@@ -393,7 +393,7 @@
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
-# define RPL_QUIT(source, quitter, channel, reason)					(std::string(":") + source + " QUIT " + channel + " :" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, reason)					 (std::string(":") + source + " QUIT :" + reason + "\r\n")
 # define RPL_SQUIT(source, reason)							(std::string(":") + source + " " + nickname + " SQUIT " + ":" + reason + CRLF)
 // # define RPL_KILL(source, tokill, reason)					(std::string(":") + source + " KILL " + tokill + " :" + reason + CRLF)
 # define KILL_REASON(killer, reason)						("Killed (" + killer + " (" + reason + "))")
