@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 15:48:21 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/28 17:23:54 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,19 @@ void        Server::handleKick( int clientSocket, std::string param )
 			replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 			return ;
 		}
-		std::string toKick = tokens[ 1 ];
-		if ( !chan->checkChannelMembers( toKick ) ) // checking if the client to kick is a chan member
+		std::vector< std::string > toKick = splitString(tokens[1], ',');
+		size_t i = 0;
+		while ( i < toKick.size() && i < TARGMAXKICK )
 		{
-			replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick, channelName ));
-			return ;
+			if ( !chan->checkChannelMembers( toKick[i] ) ) // checking if the client to kick is a chan member
+			{
+				replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick[i], channelName ));
+				continue;
+			}
+			std::string reason = getReason(tokens);
+			kickUser(clientSocket, chan, nick, toKick[i], reason);
+			i++;
 		}
-		std::string reason = getReason(tokens);
-		kickUser(clientSocket, chan, nick, toKick, reason);
 	}
 }
 
