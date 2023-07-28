@@ -392,7 +392,7 @@
 # define RPL_PART(source, nickname, channel, reason)		(std::string(":") + source + " " + nickname + " PART " + channel + reason + CRLF)
 # define ERR_CANNOTPART(source, channel, reason)			(std::string(":") + source + " " + channel + reason + CRLF)
 # define RPL_PRIVMSG(source, nickname, target, message)		(std::string(":") + source + " PRIVMSG " + target + " :" + message + CRLF)
-# define RPL_QUIT(source, quitter, reason)					(std::string(":") + quitter + " QUIT " + ":" + reason + "\r\n")
+# define RPL_QUIT(source, quitter, reason)					 (std::string(":") + source + " QUIT :" + reason + "\r\n")
 # define RPL_SQUIT(source, reason)							(std::string(":") + source + " " + nickname + " SQUIT " + ":" + reason + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

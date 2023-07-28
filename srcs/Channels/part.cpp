@@ -29,7 +29,7 @@ void	Server::leaveChannel ( int clientSocket, const std::string& channelName, co
 			if (cmd == "PART")
 				replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
 			else if (cmd == "QUIT")
-				replyMsg( clientSocket, RPL_QUIT( client->getSource(), client->getNickname(), reason ));
+				replyMsg( clientSocket, RPL_QUIT( client->getSource(),client->getNickname(), reason ));
 		}
 		else {
 			replyMsg( clientSocket, ERR_CANNOTPART( client->getSource(), channelName, " Error: Cannot delete last operator while other members remaining" ) );
@@ -39,7 +39,7 @@ void	Server::leaveChannel ( int clientSocket, const std::string& channelName, co
 		if (cmd == "PART")
 			channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
 		else if (cmd == "QUIT")
-			channelMsgToAll( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), reason ) );			
+			channelMsgToAll( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), reason) );
 		channel->removeChannelOp( client );
 		channel->removeChannelMember( client );
 		client->removeClientChannel( channelName );
