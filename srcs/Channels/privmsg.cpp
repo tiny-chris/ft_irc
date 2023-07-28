@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 15:19:35 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 21:06:38 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,6 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 		return ;
 	}
 
-	// std::cout << ZZ_MSGTEST << "destination(all): " << targetList << std::endl;
-	// std::cout << ZZ_MSGTEST << "textToBeSent: " << textToBeSent << std::endl;
-
 	if (textToBeSent.at(0) == ':')
 		textToBeSent.erase(0, 1);
 	std::vector< std::string >	targetNames = splitString( targetList, ',' );
@@ -71,19 +68,20 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			// if CHANNEL (#)
 			if ( sharp != std::string::npos && ( sharp == 0 || sharp == 1 )) {
 
-				Channel	channel = _channels.at( target.substr( sharp ) );
-
+				std::string	channelName = target.substr( sharp );
 				// if channel does not exist
-				if ( !existingChannel( target.substr( sharp ) ) ) {
-					replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
+				if ( !existingChannel( channelName ) ) {
+					replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nickname, channelName ) );
 					continue ;
 				}
+
+				Channel	channel = _channels.at( channelName );
 
 				// if client is on Channel
 				if (  channel.checkChannelMembers( nickname ) ) {
 					// it start with '@#' --> text to be sent to chanops only
 					if ( target.find( "@#" ) == 0 ) {
-						channelMsgToChanOps( clientSocket, target.substr( 1 ), reply );
+						channelMsgToChanOps( clientSocket, channelName, reply );
 						continue ;
 					}
 					// start with '#' --> text to be sent to channel members
@@ -101,12 +99,12 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 				replyMsg( findClientFd( target ), reply );
 			}
 			else {
-				replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
+				replyMsg( clientSocket, ERR_NOSUCHNICK( source, target ) );
 				continue ;
 			}
 		}
 		else {
-			replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname ) );
+			replyMsg( clientSocket, ERR_NOSUCHNICK( source, "" ) );
 		}
 	}
 }

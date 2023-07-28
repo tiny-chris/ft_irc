@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/19 15:27:49 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/28 21:02:39 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@
 /**
  * @brief       USER command used at the beginning of a connection to specify the username and realname of a new user
  *
- *              spécification IRC (RFC 2812)
- *              http://abcdrfc.free.fr/rfc-vf/rfc2812.html
- *              https://modern.ircdocs.horse/#connection-setup
  *
  */
 

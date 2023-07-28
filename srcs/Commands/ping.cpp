@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/18 16:08:05 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 19:54:11 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,4 @@ void	Server::handlePing( int clientSocket, std::string param )
 		replyMsg( clientSocket, "PONG " + tokens[ 0 ] + CRLF  );
 	}
 	return ;
-	// else if ( tokens.size() == 1 && param.compare( _clients.at( clientSocket ).getNickname() ) == 0 )
-	// else if ( tokens.size() == 1 && param == _clients.at( clientSocket ).getNickname() )
-	// {
-	// 	// replyMsg(clientSocket, _serverName + " PONG " + param + "\r\n");
-	// 	replyMsg( clientSocket, "PONG " + param + "\r\n" );
-	// }
-	// else
-	// 	std::cout << MSGERROR << param << " is not client's nickname <" << _clients.at( clientSocket ).getNickname() << ">\n" << std::endl;
 }

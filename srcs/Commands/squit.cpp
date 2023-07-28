@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 15:07:17 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/27 18:25:25 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 19:54:33 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "numericReplies.hpp"
 
 /*
-//	syntax	 SQUIT <server> <comment>
+	syntax	 SQUIT <server> <comment>
 
 	Numeric replies:
 

@@ -130,15 +130,15 @@ void Server::stop( void ) {
  */
 
 void Server::removeDisconnectedClients( void ) {
-  std::size_t disconnectCientsNumber = _disconnectedClients.size();
+  std::size_t disconnectClientsNumber = _disconnectedClients.size();
   size_t      clientsNumber = _clients.size();
 
-  for( std::size_t i = 0; i < disconnectCientsNumber; ++i ) {
+  for( std::size_t i = 0; i < disconnectClientsNumber; ++i ) {
     _clients.erase( _disconnectedClients[i] );
     Utility::closeFd( _disconnectedClients[i] );
   }
-  if( disconnectCientsNumber != 0 ) {
-    std::cout << MSGINFO << "<" << disconnectCientsNumber << "/"
+  if( disconnectClientsNumber != 0 ) {
+    std::cout << MSGINFO << "<" << disconnectClientsNumber << "/"
               << clientsNumber << "_clients removed>\n";
   }
   _disconnectedClients.clear();
