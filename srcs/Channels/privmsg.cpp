@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 21:06:38 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 21:32:25 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,8 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 		replyMsg( clientSocket, ERR_NOTEXTTOSEND( source, nickname ) );
 		return ;
 	}
-	else if ( targetList.empty() ) {
-		replyMsg( clientSocket, ERR_NORECIPIENT( source, nickname, "PRIVMSG" ) );
-		return ;
-	}
-	else if ( textToBeSent.empty() ) {
-		replyMsg( clientSocket, ERR_NOTEXTTOSEND( source, client->getNickname() ) );
+	else if ( targetList.empty() || textToBeSent.empty() ) {
+		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nickname, "PRIVMSG" ) );
 		return ;
 	}
 
@@ -92,7 +88,6 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 				}
 				// client is not on the channel or channel prefixes is not '#' neither "@#"
 				replyMsg( clientSocket, ERR_CANNOTSENDTOCHAN( source, nickname, target  ));
-				continue ;// ??????????
 			}
 			// if CLIENT
 			else if ( existingClient( target ) ) {
