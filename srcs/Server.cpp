@@ -118,6 +118,7 @@ std::string Server::getPassword( void ) const { return _password; }
  */
 
 void Server::stop( void ) {
+  broadcastQuitToAll();
   disconnectAllClients();
   removeDisconnectedClients();
   Utility::closeFd( _epollFd );
@@ -188,6 +189,16 @@ void Server::disconnectAClient( int clientSocket ) {
 //   }
 //   std::cout << msg;
 // }
+
+/**
+ * @brief       Broadcasts a message that says that the server shut down to all 
+ *              connected clients
+ */
+void   Server::broadcastQuitToAll( void )
+{
+  for (mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it)
+      replyMsg( it->second.getFd(), RPL_QUIT(it->second.getSource(), "", "Disconnected from server"), 0);
+}
 
 /**
  * @brief       Broadcasts a message to all connected clients including the

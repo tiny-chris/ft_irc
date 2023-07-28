@@ -150,6 +150,7 @@ class Server {
   void disconnectAClient( int clientSocket );
 
   // void broadcastMsg( std::string& msg, int clientSocket );
+  void broadcastQuitToAll( void );
   void broadcastMsgToAll( int clientSocket, const std::string& message );
   void broadcastMsgNotClient( int clientSocket, const std::string& message );
   void replyMsg( int clientSocket, std::string reply, bool copyToServer = 1 );
