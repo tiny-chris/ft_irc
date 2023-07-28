@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/26 18:22:15 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 15:19:35 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,6 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			}
 			// if CLIENT
 			else if ( existingClient( target ) ) {
-				// mapClients::iterator	it;
-
-				// for ( it = _clients.begin() ; it != _clients.end(); ++it) {
-				// 	if ( it->second.getNickname() == target ) {
-				// 		replyMsg( it->second.getFd(), reply );
-				// 		continue ;
-				// 	}
-				// }
 				replyMsg( findClientFd( target ), reply );
 			}
 			else {
