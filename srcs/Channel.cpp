@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/27 17:00:50 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/28 16:42:51 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ Channel &    Channel::operator=( Channel const& rhs ){
   return (*this);
 }
 
-void        Channel::addChannelOps( Client* client ){
+void        Channel::addChannelOps( Client* client )
+{
   if (client != NULL )
   {
     _channelOps.insert(std::make_pair( client->getNickname(), client ));
@@ -83,14 +84,18 @@ void        Channel::addChannelOps( Client* client ){
 
 void        Channel::removeChannelOp( Client* client )
 {
-  Channel::mapClientsPtr::iterator it = _channelOps.begin();
-	for ( ; it != _channelOps.end(); ++it )
-	{
-		if ( it->first == client->getNickname() ) {
-		  _channelOps.erase( it );
-			break;
+  if ( client != NULL )
+  {
+    Channel::mapClientsPtr::iterator it = _channelOps.begin();
+    
+    for ( ; it != _channelOps.end(); ++it )
+    {
+      if ( it->first == client->getNickname() ) {
+        _channelOps.erase( it );
+        break;
+      }
     }
-	}
+  }
 }
 
 void        Channel::addChannelMember( Client* client )
@@ -132,14 +137,17 @@ void        Channel::addInvitedMember( const std::string& clientName )
 
 void        Channel::removeInvitedMember( const std::string& clientName )
 {
-  std::vector< std::string >::iterator it = _invitedMembers.begin();
-	for ( ; it != _invitedMembers.end(); ++it )
-	{
-		if ( *it == clientName ) {
-		  _invitedMembers.erase( it );
-			break;
+  if ( !clientName.empty() )
+  {
+    std::vector< std::string >::iterator it = _invitedMembers.begin();
+    for ( ; it != _invitedMembers.end(); ++it )
+    {
+      if ( *it == clientName ) {
+        _invitedMembers.erase( it );
+        break;
+      }
     }
-	}
+  }
 }
 
 std::string Channel::getChannelName( void ) const { return ( _channelName ); }

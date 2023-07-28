@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/26 16:08:56 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/28 17:56:58 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	Server::handleJoin( int clientSocket, std::string param )
 
 	std::vector< std::string >	chanNames = splitString( tokens[ 0 ], ',' );
 	if ( !chanNames.size() ) {
-		replyMsg( clientSocket, ERR_BADCHANMASK( client->getSource(), client->getNickname(), "<empty>" ) );
+		replyMsg( clientSocket, ERR_BADCHANMASK( client->getSource(), "<empty>" ) );
 		return ;
 	}
 
@@ -199,11 +199,11 @@ bool	Server::checkChanPreJoin( int clientSocket, const std::vector< std::string 
 		}
 		if ( channel.getChannelMembers().size() >= MAXMEMBERS
 			|| ( channel.getLimitStatus() == true &&  static_cast<int>( channel.getChannelMembers().size() ) >= channel.getLimitBis() ) ) {
-			replyMsg( clientSocket, ERR_CHANNELISFULL( client.getSource(), channelName ) );
+			replyMsg( clientSocket, ERR_CHANNELISFULL( client.getSource(), client.getNickname(), channelName ) );
 			return false ;
 		}
 		if ( channel.getInviteOnlyStatus() == true && !channel.isInvited( client.getNickname() ) ) {
-			replyMsg( clientSocket, ERR_INVITEONLYCHAN( client.getSource(), channelName) );
+			replyMsg( clientSocket, ERR_INVITEONLYCHAN( client.getSource(), client.getNickname(), channelName) );
 			return false ;
 		}
 		if ( channel.getKeyStatus() == true ) {
@@ -214,7 +214,7 @@ bool	Server::checkChanPreJoin( int clientSocket, const std::vector< std::string 
 					return true;
 				}
 			}
-			replyMsg( clientSocket, ERR_BADCHANNELKEY( client.getSource(), channelName ) );
+			replyMsg( clientSocket, ERR_BADCHANNELKEY( client.getSource(), client.getNickname(), channelName ) );
 			return false ;
 		}
 	}
@@ -236,7 +236,7 @@ bool	Server::isValidChanName( int clientSocket, const std::string& channelName )
 	if ( chanName == "<empty>" || channelName.find( CHANTYPES ) != 0
 		|| ( channelName.find( CHANTYPES ) == 0 && channelName.length() == 1 )
 		|| ( channelName.find( CHANTYPES ) == 0 && !isValidToken( chanName.substr( 1 ) ) ) ) {
-		replyMsg( clientSocket, ERR_BADCHANMASK( client.getSource(), client.getNickname(), chanName ) );
+		replyMsg( clientSocket, ERR_BADCHANMASK( client.getSource(), chanName ) );
 		return false ;
 	}
 	return true ;

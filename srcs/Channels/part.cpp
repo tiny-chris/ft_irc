@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 15:18:30 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/28 16:39:45 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 
 	if ( channel->checkChannelOps( client->getNickname() ) == true && channel->getChannelOps().size() == 1 ) {
 		if ( channel->getChannelMembers().size() == 1 ) {
-			_channels.erase( channelName );
-			client->removeClientChannel( channelName );
 			if (cmd == "PART")
 				replyMsg( clientSocket, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
 			else if (cmd == "QUIT")
 				replyMsg( clientSocket, RPL_QUIT( client->getSource(), client->getNickname(), reason ));
+			channel->removeChannelOp( client );
+			channel->removeChannelMember( client );
+			_channels.erase( channelName );
+			client->removeClientChannel( channelName );
 			return ;
 		}
 		else {
@@ -54,7 +56,6 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 		channel->removeChannelOp( client );
 		channel->removeChannelMember( client );
 		client->removeClientChannel( channelName );
-
 }
 
 /*
