@@ -419,6 +419,16 @@ void Server::handleRequest( int clientSocket, std::string request ) {
 }
 
 /**
+//  * @brief       Remove the clients from every channel when it is disconnected.
+//  */
+
+// void  Server::removeAClient( int clientSocket )
+// {
+//   Client *toRemove = _clients.at( clientSocket );
+
+// }
+
+/**
  * @brief       Handles communication with existing clients.
  *
  * TODO ask chris for explanation
@@ -438,7 +448,7 @@ void Server::handleExistingClient( int clientSocket ) {
     std::string message = "recv: " + std::string( strerror( errno ) );
     throw std::runtime_error( message );
   } else if( bytesRead == 0 ) {
-    disconnectAClient( clientSocket );
+      handleQuit( clientSocket, ":bye bye" );
     return;
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
