@@ -33,10 +33,7 @@ void    Server::handleInvite( int clientSocket, std::string param ) {
         replyMsg(clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK"));
         return ;
     }
-    std::string channelName = tokens[ 1 ];
-	if (channelName.size() > CHANNELLEN) { // cropping the first param (channel name) if its length is over the define CHANNELLEN
-		channelName = channelName.substr(0, CHANNELLEN);
-    } 
+    std::string channelName = tokens[ 1 ].substr(0, CHANNELLEN); // crops the channel lenght if it's too long
 	if (!existingChannel( channelName )) { // if the channel entered doesn't exist no such Channel error displayed
 		replyMsg(clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName));
         return ;
@@ -50,10 +47,7 @@ void    Server::handleInvite( int clientSocket, std::string param ) {
         replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
         return ;
     }
-    std::string toInvite = tokens[ 0 ]; // checks that the name of the client to invite is not too long
-    if (toInvite.size() > NICKLEN) {
-        toInvite.substr(0, NICKLEN);
-    }
+    std::string toInvite = tokens[0].substr( 0, NICKLEN ); // crops nickname if too long
     if ( chan->checkChannelMembers( toInvite ) ) { // checking if the client to invite is not already chanmember
         replyMsg(clientSocket, ERR_USERONCHANNEL(source, nick, toInvite, channelName ));
         return ;
@@ -69,20 +63,26 @@ void    Server::handleInvite( int clientSocket, std::string param ) {
  */
 
 void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan ) {
-    Client *toAdd = NULL;
-    for ( std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-		if (it->second.getNickname() == nameInvitee) {
-            toAdd = &it->second;
-            break;
-        }
-	}
+    Client *toAdd = getClientByNickname( nameInvitee );
     if (toAdd == NULL) {
         std::cout << MSGERROR << " No such Nickname, cannot invite this client" << std::endl;
+        return ;
     }
-    else { // the invited clients receives an Invite Reply (only him)
-    
-        chan->addInvitedMember(nameInvitee);
-        replyMsg(clientSocket, RPL_INVITING(_clients.at( clientSocket ).getSource(), clientNick, nameInvitee, chan->getChannelName()));
-        replyMsg(toAdd->getFd(), INVITE(clientNick, nameInvitee, chan->getChannelName()));
+    chan->addInvitedMember(nameInvitee);
+    replyMsg(clientSocket, RPL_INVITING(_clients.at( clientSocket ).getSource(), clientNick, nameInvitee, chan->getChannelName()));
+    replyMsg(toAdd->getFd(), INVITE(clientNick, nameInvitee, chan->getChannelName()));
+}
+
+/**
+ * @brief       Function to check if a client exists by nickname
+ *              and return a pointer to the client
+ */
+
+Client* Server::getClientByNickname(const std::string& nickname) {
+    for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
+        if (it->second.getNickname() == nickname) {
+            return (&it->second);
+        }
     }
+    return NULL;
 }

@@ -96,6 +96,7 @@ class Server {
   void handleInvite( int clientSocket, std::string param );
   void inviteClientToChannel( int clientSocket, std::string clientNick,
                               std::string nameInvitee, Channel* chan );
+  Client* getClientByNickname(const std::string& nickname);
   /* ********* WHO CMD ******* */
   void        handleWho( int clientSocket, std::string param );
   /* ********* QUIT CMD ******* */
