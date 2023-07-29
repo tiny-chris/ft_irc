@@ -18,11 +18,12 @@
 #include "numericReplies.hpp"
 
 /**
-   Checks if the client has the rights to invite an other client to a channel, 
-   if the channels and the client to add exist, 
-   and if the client to add is not already on the channel
-   Then adds the client to the invited client vector.
-**/
+ * @brief       Command that allows to invite a client on a Channel
+ *              - Checks rights to invite
+ *              - Checks on invited client
+ *              - Invites client on channel
+ */
+
 void    Server::handleInvite( int clientSocket, std::string param )
 {
     std::string source = _clients.at( clientSocket ).getSource();
@@ -35,8 +36,9 @@ void    Server::handleInvite( int clientSocket, std::string param )
         return ;
     }
     std::string channelName = tokens[ 1 ];
-	if (channelName.size() > CHANNELLEN) // cropping the first param (channel name) if its length is over the define CHANNELLEN
+	if (channelName.size() > CHANNELLEN) { // cropping the first param (channel name) if its length is over the define CHANNELLEN
 		channelName = channelName.substr(0, CHANNELLEN);
+    } 
 	if (!existingChannel( channelName )) // if the channel entered doesn't exist no such Channel error displayed
     {
 		replyMsg(clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName));
@@ -54,8 +56,9 @@ void    Server::handleInvite( int clientSocket, std::string param )
         return ;
     }
     std::string toInvite = tokens[ 0 ]; // checks that the name of the client to invite is not too long
-    if (toInvite.size() > NICKLEN)
+    if (toInvite.size() > NICKLEN) {
         toInvite.substr(0, NICKLEN);
+    }
     if ( chan->checkChannelMembers( toInvite ) ) // checking if the client to invite is not already chanmember
     {
         replyMsg(clientSocket, ERR_USERONCHANNEL(source, nick, toInvite, channelName ));
@@ -64,10 +67,13 @@ void    Server::handleInvite( int clientSocket, std::string param )
     inviteClientToChannel( clientSocket, nick, toInvite, chan );
 }
 
-/* 
-    Adding the client to the invited vector if he exists
-    Sending an invite reply to the client
-*/
+/**
+ * @brief       Invites the designted client to the designated channel
+ *              - Checks if the client exists
+ *              - Adds the client to _invitedMember vector
+ *              - Sends an invite reply to the client
+ */
+
 void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan )
 {
     Client *toAdd = NULL;
@@ -79,8 +85,9 @@ void    Server::inviteClientToChannel( int clientSocket, std::string clientNick,
             break;
         }
 	}
-    if (toAdd == NULL)
-        std::cout << "Error: No such Nickname, cannot invite this client" << std::endl;
+    if (toAdd == NULL) {
+        std::cout << MSGERROR << " No such Nickname, cannot invite this client" << std::endl;
+    }
     else // the invited clients receives an Invite Reply (only him)
     {
         chan->addInvitedMember(nameInvitee);

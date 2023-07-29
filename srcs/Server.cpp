@@ -315,8 +315,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       return;
     }
     if( !_clients.at( clientSocket ).getIfRegistered()
-        && !( command == "PASS" || command == "NICK" || command == "USER"
-              || command == "QUIT" ) ) {
+        && !( command == "PASS" || command == "NICK" || command == "USER" ) ) {
       replyMsg( clientSocket,
                 ERR_NOTREGISTERED(
                   _serverName, _clients.at( clientSocket ).getNickname() ) );
