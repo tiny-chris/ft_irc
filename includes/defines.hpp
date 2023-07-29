@@ -101,7 +101,7 @@ The value MUST be specified and MUST be a positive integer. */
 # define VERSION "1.69"
 
 # define TARGMAXKICK 1
-
 # define TARGMAXMSG 2
+# define TARGMAXNAMES 1
 
 #endif /* __DEFINES_HPP__ */

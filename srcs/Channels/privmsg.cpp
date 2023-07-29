@@ -50,11 +50,12 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 		return ;
 	}
 
-	if (textToBeSent.at(0) == ':')
-		textToBeSent.erase(0, 1);
+	if ( textToBeSent.at( 0 ) == ':' )
+		textToBeSent.erase( 0, 1 );
 	std::vector< std::string >	targetNames = splitString( targetList, ',' );
-
-	for ( size_t i = 0; i < targetNames.size(); ++i ) {
+	// mettre un commentaire si targetNames.size() > TARGMAXMSG?
+	// à voir et tester à 42 car irssi différent
+	for ( size_t i = 0; i < targetNames.size() && i < TARGMAXMSG ; ++i ) {
 		std::string	target = targetNames[ i ];
 		size_t		sharp = target.find("#");
 

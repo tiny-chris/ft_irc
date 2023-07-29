@@ -139,7 +139,7 @@ void Server::removeDisconnectedClients( void ) {
   }
   if( disconnectClientsNumber != 0 ) {
     std::cout << MSGINFO << "<" << disconnectClientsNumber << "/"
-              << clientsNumber << "_clients removed>\n";
+              << clientsNumber << "_clients removed>\n\n";
   }
   _disconnectedClients.clear();
 }
@@ -191,7 +191,7 @@ void Server::disconnectAClient( int clientSocket ) {
 // }
 
 /**
- * @brief       Broadcasts a message that says that the server shut down to all 
+ * @brief       Broadcasts a message that says that the server shut down to all
  *              connected clients
  */
 void   Server::broadcastQuitToAll( void )
@@ -204,7 +204,7 @@ void   Server::broadcastQuitToAll( void )
  * @brief       Broadcasts a message to all connected clients including the
  *              sender
  */
-void Server::broadcastMsgToAll( int clientSocket, const std::string& message ) 
+void Server::broadcastMsgToAll( int clientSocket, const std::string& message )
 {
   broadcastMsgNotClient( clientSocket, message );
   replyMsg( clientSocket, message, 0 );
@@ -278,7 +278,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   }
   else
     command = request;
-  
+
   /* ********************************* */
   /* ACTION 2   - check the case when the client is disconnected and return */
   /* ********************************* */
@@ -323,7 +323,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       return;
     }
   }
-  
+
   /* ********************************* */
   /* ACTION 5   - handle command */
   /* ********************************* */
@@ -387,6 +387,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
         replyMsg( clientSocket,
           ERR_UNKNOWNCOMMAND(_serverName, _clients.at( clientSocket ).getRealname(), command ) );
       }
+      else// if ( command.empty() && parameter.empty() )
+        std::cout << MSGINFO << "request is empty\n" << std::endl;
     } break;
   }
 
@@ -489,7 +491,7 @@ void Server::handleNewClient( void ) {
     throw std::runtime_error( message );
   }
   _clients.insert( std::make_pair( clientSocket, Client( clientSocket ) ) );
-  std::cout << "<New connection via socket " << clientSocket << ">\n";
+  std::cout << "<New connection via socket " << clientSocket << ">\n\n";
 }
 
 /**

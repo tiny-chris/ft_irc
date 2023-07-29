@@ -19,10 +19,6 @@
 /**
  * @brief       JOIN command
  *
- *				spécification IRC (RFC 2812)
- *				http://abcdrfc.free.fr/rfc-vf/rfc2812.html
- *				https://modern.ircdocs.horse/#connection-setup
-
 				syntax:
 					JOIN <channel> [key] [invitationkey] [mode]
 
@@ -116,18 +112,27 @@ void	Server::handleJoin( int clientSocket, std::string param )
 	** *************************************************** ***
 	*/
 	for ( size_t i = 0; i < chanNames.size(); ++i ) {
-		std::string	channelName = chanNames[ i ];
-		bool		chanExists = existingChannel( channelName );
+		std::string& channelName = chanNames[ i ];
+		// bool		chanExists = existingChannel( channelName );
+
+		// 2e version avec le crop en amont
+		if ( channelName.size() > CHANNELLEN )
+			channelName = channelName.substr( 0, CHANNELLEN );
 
 		// check channel format, content & criteria
 		if ( checkChanPreJoin( clientSocket, tokens, i ) == false ) {
 			continue ;
 		}
 
-		// if channel does not exist yet --> create it, add to _channels and client become a chanOp
-		if ( !chanExists ) {
+		// // if channel does not exist yet --> create it, add to _channels and client become a chanOp
+		// if ( !chanExists ) {
+		// 	createChanWithOp( clientSocket, channelName );
+		// }
+		// 2e version avec le crop - ou bien faire cannot join as too long
+		// if ( channelName.size() > CHANNELLEN )
+		// 	channelName = channelName.substr( 0, CHANNELLEN );
+		if ( !existingChannel( channelName ) )
 			createChanWithOp( clientSocket, channelName );
-		}
 
 		Channel	*channel = &_channels[ channelName ];
 		// add client to the list of channel members
@@ -209,10 +214,8 @@ bool	Server::checkChanPreJoin( int clientSocket, const std::vector< std::string 
 		if ( channel.getKeyStatus() == true ) {
 			if ( tokens.size() == 2 ) {
 				std::vector< std::string > keys = splitString( tokens[ 1 ], ',' );
-
-				if ( keys[ index ] == channel.getKey() ) {
+				if ( index <= keys.size() && keys[ index ] == channel.getKey() )
 					return true;
-				}
 			}
 			replyMsg( clientSocket, ERR_BADCHANNELKEY( client.getSource(), client.getNickname(), channelName ) );
 			return false ;

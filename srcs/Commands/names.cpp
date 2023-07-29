@@ -107,8 +107,8 @@ void	Server::handleNames( int clientSocket, std::string param )
 		// créer une macro 'TARGMAX' dans defines !!
 		// TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1
 		// créer une std::map<std::string,int> targmaxLimits pour stocker les targmax
-		size_t targmax = ( 3 < tokens.size() ) ? 3 : tokens.size() ;
-		for ( size_t i = 0; i < targmax; i++ )
+		// size_t targmax = ( 3 < tokens.size() ) ? 3 : tokens.size() ;
+		for ( size_t i = 0; i < tokens.size() && i < TARGMAXNAMES; i++ )
 		{
 			chanIt = _channels.find(tokens[ i ]);
 			if ( chanIt != _channels.end() )
