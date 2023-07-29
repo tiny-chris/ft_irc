@@ -119,20 +119,16 @@ void Client::removeClientChannel( std::string chanName ) {
   }
 }
 
-void  Client::handleUserModeSet( char modeChar, std::string *modechange )
-{
-  switch (modeChar)
-  {
+void  Client::handleUserModeSet( char modeChar, std::string *modechange ) {
+  switch (modeChar) {
     case 'i':
-      if ( !getInvisibleMode() )
-      {
+      if ( !getInvisibleMode() ) {
         setInvisibleMode(true);
         *modechange += "i";
       }
       break;
     case 'o':
-      if ( !getOperatorMode() )
-      {
+      if ( !getOperatorMode() ) {
         setOperatorMode(true);
         *modechange += "o";
       }
@@ -140,20 +136,16 @@ void  Client::handleUserModeSet( char modeChar, std::string *modechange )
   }
 }
 
-void  Client::handleUserModeUnset( char modeChar, std::string *modechange )
-{
-  switch (modeChar)
-  {
+void  Client::handleUserModeUnset( char modeChar, std::string *modechange ) {
+  switch (modeChar) {
     case 'i':
-      if ( getInvisibleMode() )
-      {
+      if ( getInvisibleMode() ) {
         setInvisibleMode( false );
         *modechange += "i";
       }
       break;
     case 'o':
-      if ( getOperatorMode() )
-      {
+      if ( getOperatorMode() ) {
         setOperatorMode( false );
         *modechange += "o";
       }

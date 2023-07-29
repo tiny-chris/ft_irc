@@ -17,35 +17,30 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
+// TO DO COMMENT + mapclient::iterator
+
 void    Server::handleWho( int clientSocket, std::string param )
 {
     std::vector<std::string> tokens = splitString( param, ' ' );
-    if (tokens.size() >= 1)
-    {
+    if (tokens.size() >= 1) {
         std::string source = _clients.at( clientSocket ).getSource();
 	    std::string nick = _clients.at( clientSocket ).getNickname();
         bool    isChannel = tokens[0].find('#', 0) != std::string::npos;
-        if (isChannel && existingChannel(tokens[0]))
-        {
+        if (isChannel && existingChannel(tokens[0])) {
             Channel *chan = &_channels[tokens[0]];
             std::string channelName = tokens[0];
-            for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++)
-            {
+            for (std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++) {
                 std::string flag = chan->checkChannelOps( nick ) == true ? "H@" : "H+";
                 replyMsg(clientSocket, RPL_WHOREPLY(source, nick, channelName, it->second->getUsername(), SERVERNAME, it->second->getNickname(), flag, it->second->getRealname()));
             }
             replyMsg(clientSocket, RPL_ENDOFWHO(source, nick, tokens[0]));
         }
-        else
-        {
+        else {
             std::string clientName = tokens[0];
-            if (existingClient(clientName))
-            {
+            if (existingClient(clientName)) {
                 Client toDisplay;
-                for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
-                {
-                    if (it->second.getNickname() == clientName)
-                    {
+                for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+                    if (it->second.getNickname() == clientName) {
                         toDisplay = it->second;
                         break ;
                     }
@@ -59,8 +54,7 @@ void    Server::handleWho( int clientSocket, std::string param )
 
 bool        Server::existingClient(std::string clientName)
 {
-    for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
-    {
+    for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
        if (it->second.getNickname() == clientName)
         return true;
     }

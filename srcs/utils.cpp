@@ -36,37 +36,6 @@ int         StringToInt( std::string str ) {
   return number;
 }
 
-// /**
-//  * @brief       Forbidden gai_strerror implementation
-//  */
-
-// std::string gaiStrerror( int errorCode ) {
-//   switch( errorCode ) {
-//     case 0:
-//       return "Success";
-//     case EAI_AGAIN:
-//       return "Temporary failure in name resolution";
-//     case EAI_BADFLAGS:
-//       return "Invalid value for ai_flags";
-//     case EAI_FAIL:
-//       return "Non-recoverable failure in name resolution";
-//     case EAI_FAMILY:
-//       return "ai_family not supported";
-//     case EAI_MEMORY:
-//       return "Out of memory";
-//     case EAI_NONAME:
-//       return "Name or service not known";
-//     case EAI_SERVICE:
-//       return "Invalid value for service";
-//     case EAI_SOCKTYPE:
-//       return "ai_socktype not supported";
-//     case EAI_SYSTEM:
-//       return strerror( errno );
-//     default:
-//       return "Unknown error";
-//   }
-// }
-
 /**
  * @brief       Split a string and store each substring into a vector element
  *              Delimiter is a specific mentionned 'char'
@@ -130,8 +99,7 @@ bool	splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1
 
 bool	isValidUser( std::string name )
 {
-  for ( size_t i = 0; i < name.size(); i++ )
-  {
+  for ( size_t i = 0; i < name.size(); i++ ) {
     char c = name[ i ];
     if ( c == '\0' || c == '\r' || c == '\n' || c == ' ' )
       return false;
@@ -139,35 +107,34 @@ bool	isValidUser( std::string name )
   return true;
 }
 
-bool	isValidParam( std::string name )
-{
-  if ( name.empty() )
+bool	isValidParam( std::string name ) {
+  if ( name.empty() ) {
     return false;
-  for ( size_t i = 0; i < name.size(); i++ )
-  {
+  }
+  for ( size_t i = 0; i < name.size(); i++ ) {
     char c = name[ i ];
-    if ( !( isalnum(c) || c == '*' || c == '.' || c == '_' || c == '-' ) )
+    if ( !( isalnum(c) || c == '*' || c == '.' || c == '_' || c == '-' ) ) {
       return false;
+    }
   }
   return true;
 }
 
-bool    isValidToken(std::string name)
-{
-  if (name.empty())
+bool    isValidToken(std::string name) {
+  if (name.empty()) {
     return false;
-  for (size_t i = 0; i < name.size(); i++)
-  {
+  }
+  for (size_t i = 0; i < name.size(); i++) {
     char c = name[i];
-    if (!(isalnum(c) || c == '.' || c == '_' || c == '-'))
+    if (!(isalnum(c) || c == '.' || c == '_' || c == '-')) {
       return false;
+    }
   }
   return true;
 }
 
 // Returns a human readable string of the current date
-std::string	getCurrentDate()
-{
+std::string	getCurrentDate() {
  	std::time_t time = std::time(0);
 	std::stringstream	timeStream;
 	timeStream << time;

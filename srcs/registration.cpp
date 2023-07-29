@@ -42,10 +42,9 @@ void Server::checkRegistration( int clientSocket ) {
     sendWelcomeMsg( clientSocket );
     sendLusersMsg( clientSocket );  // EQUIVALENT OF LUSERS received
     sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD command received
-    if (_clients.size() == 1)
-    {
+    if (_clients.size() == 1) {
       handleMode( clientSocket, _clients.at( clientSocket ).getNickname() + " +o");
-      std::cout << "operator mode = " << _clients.at( clientSocket ).getOperatorMode() << std::endl;
+      std::cout << MSGINFO << "operator mode = " << _clients.at( clientSocket ).getOperatorMode() << std::endl;
     }
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
   }
@@ -123,37 +122,33 @@ void Server::sendMotdMsg( int clientSocket ) {
 std::string Server::getOpsNbr( void )
 {
   int countOps = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
-  {
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
     if (it->second.getOperatorMode() == true)
       countOps++;
   }
   return ( intToString( countOps ) );
 }
 
-std::string Server::getChannelNbr( void )
-{
+std::string Server::getChannelNbr( void ) {
   return ( intToString( _channels.size() ) );
 }
 
-std::string Server::getUnknownStateUsers( void )
-{
+std::string Server::getUnknownStateUsers( void ) {
   int countUnknownState = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
-  {
-    if (it->second.getIfRegistered() == false)
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
+    if (it->second.getIfRegistered() == false) {
       countUnknownState++;
+    }
   }
   return ( intToString( countUnknownState ) );
 }
 
-std::string Server::getInvisibleUserNbr( void )
-{
+std::string Server::getInvisibleUserNbr( void ) {
   int countInvisibleUSer = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ )
-  {
-    if (it->second.getInvisibleMode())
+  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
+    if (it->second.getInvisibleMode()) {
       countInvisibleUSer++;
+    }
   }
   return ( intToString( countInvisibleUSer ) );
 }

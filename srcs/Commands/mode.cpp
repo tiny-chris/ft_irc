@@ -20,18 +20,19 @@
 void		Server::handleMode( int clientSocket, std::string param )
 {
     // if no param are entered then a need more params err msg is displayed
-    if (param.empty())
-    {
+    if (param.empty()) {
         replyMsg(clientSocket, ERR_NEEDMOREPARAMS(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "MODE"));
         return ;
     }
     // parsing params
     std::vector<std::string>tokens = splitString(param, ' ');
     bool    isChannelMode = tokens[0].find('#', 0) != std::string::npos;
-    if (isChannelMode)
+    if (isChannelMode) {
         handleChannelMode(clientSocket, tokens[0], tokens);
-    else
+    }
+    else {
         handleUserMode(clientSocket, tokens);
+    }
 }
 
 // CHANGING CHANNEL MODE (type B +k, Type C +l, Type D +it)
@@ -45,29 +46,27 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
     std::string modeArgs;
 
     // cropping the first param (channel name) if its length is over the define CHANNELLEN
-    if (channelName.size() > CHANNELLEN)
+    if (channelName.size() > CHANNELLEN) {
         channelName = channelName.substr(0, CHANNELLEN);
+    }
     // if the channel entered doesn't exist no such Channel error displayed
-    if (!existingChannel(channelName))
+    if (!existingChannel(channelName)) {
         replyMsg(clientSocket, ERR_NOSUCHCHANNEL(source, clientName, channelName));
+    }
     // else if a valid Channel is entered but no param the modes set are displayed
-    else if (tokens.size() < 2)
-    {
+    else if (tokens.size() < 2) {
         modeChange = _channels[channelName].getModes();
         modeArgs = _channels[channelName].getModesArgs();
         replyMsg(clientSocket, RPL_CHANNELMODEIS(source, clientName, channelName, modeChange, modeArgs));
     }
-    else
-    {
+    else {
         Channel *chan = &_channels[channelName];
         // if the user is not a channel operator, then an error msg is returned and the command is ignored
-        if (tokens[1] == "b")
-        {
+        if (tokens[1] == "b") {
             replyMsg(clientSocket, RPL_ENDOFBANLIST(source, clientName, channelName));
             return ; 
         }
-        if (!chan->checkChannelOps(clientName) && !client->getOperatorMode())
-        {
+        if (!chan->checkChannelOps(clientName) && !client->getOperatorMode()) {
             replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(source, clientName, channelName));
             return ;
         }
@@ -77,19 +76,22 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         std::string modeString = tokens[1].substr(1, tokens[1].size() - 1);
         size_t j = 2;
         // checking which mode to set or unset depending on the prefix
-        for (size_t i = 0; i < modeString.size(); i++)
-        {
+        for (size_t i = 0; i < modeString.size(); i++) {
             char    modeChar = modeString[i];
-            if (!chan->isValidModeChar(modeChar))
+            if (!chan->isValidModeChar(modeChar)) {
                 break;
-            if (modePrefix == '+')
+            }
+            if (modePrefix == '+') {
                 chan->handleChannelModeSet(modeChar, &modeArgs, &modeChange, tokens, &j);
-            else if (modePrefix == '-' && modeString.size() >= 1)
+            }
+            else if (modePrefix == '-' && modeString.size() >= 1) {
                 chan->handleChannelModeUnset(modeChar, &modeArgs, &modeChange, tokens, &j);
+            }
         }
         // Displaying channel modes changes to every channel client
-        if (modeChange.size() > 1)
+        if (modeChange.size() > 1) {
             channelMsgToAll(clientSocket, channelName, MSG_MODE_CUSTOM(source, channelName, modeChange + " " + modeArgs));
+        }
     }
 }
 
@@ -100,39 +102,39 @@ void		Server::handleUserMode (int clientSocket, std::vector<std::string> & token
     std::string modechange;
     Client *client = &_clients.at( clientSocket );
     // cropping the first param (nickname) if its length is over the define USERLEN
-    if (userName.size() > NICKLEN)
+    if (userName.size() > NICKLEN) {
         userName = userName.substr(0, NICKLEN);
+    }
      // if the nickname entered doesn't exist no such Channel error displayed
-    if (!existingNick(userName))
+    if (!existingNick(userName)) {
         replyMsg(clientSocket, ERR_NOSUCHNICK( client->getSource(), client->getNickname() ) );
+    }
     // else if the username doesn't match the client nickname User Don't Match Error
-    else if (userName != client->getNickname())
+    else if (userName != client->getNickname()) {
         replyMsg(clientSocket, ERR_USERSDONTMATCH( client->getSource(), client->getNickname() ) );
+    }
     // if not mode string entered the current usermodes are displayed
-    else if (tokens.size() < 2)
-    {
+    else if (tokens.size() < 2) {
         modechange = client->getModes();
         replyMsg(clientSocket, RPL_UMODEIS( client->getSource(), client->getNickname(), modechange ));
     }
-    else
-    {
+    else {
         char modePrefix = getModePrefix(tokens[1]);
         modechange += modePrefix;
         std::string modeString = tokens[1].substr(1, tokens[1].size() - 1);
-        for (size_t i = 0; i < modeString.size(); i++)
-        {
+        for (size_t i = 0; i < modeString.size(); i++) {
             char modeChar = modeString[i];
-            if (modePrefix == '+')
+            if (modePrefix == '+') {
                 client->handleUserModeSet(modeChar, &modechange);
-            else if (modePrefix == '-')
+            }
+            else if (modePrefix == '-') {
                 client->handleUserModeUnset(modeChar, &modechange);
+            }
         }
-        if (modechange.size() > 1)
-        {
+        if (modechange.size() > 1) {
             replyMsg(clientSocket, MSG_MODE(client->getSource(), client->getNickname(), modechange, ""));
             int diff = tokens[1].size() - modechange.size();
-            while (diff)
-            {
+            while (diff) {
                 replyMsg(clientSocket, ERR_UMODEUNKNOWNFLAG(client->getSource(), client->getNickname()));
                 diff--;
             }
@@ -143,8 +145,9 @@ void		Server::handleUserMode (int clientSocket, std::vector<std::string> & token
 // Checks if the Channel exists on the server
 bool		Server::existingChannel(std::string param)
 {
-    if (_channels.find(param) != _channels.end())
+    if (_channels.find(param) != _channels.end()) {
         return true;
+    }
     return false;
 }
 
@@ -153,13 +156,11 @@ char	Server::getModePrefix( std::string const& token )
 {
     char sign = 'O';
 
-    if (token.find('+', 0) != std::string::npos)
-    {
+    if (token.find('+', 0) != std::string::npos) {
         sign = '+';
         return (sign);
     }
-    if (token.find('-', 0) != std::string::npos)
-    {
+    if (token.find('-', 0) != std::string::npos) {
         sign = '-';
         return (sign);
     }

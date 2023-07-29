@@ -22,35 +22,29 @@
 /*  ******************************************************************** */
 
 /* Peut etre mettre des comments dans le serveur (pour indiquer par exemple que le mot de passe est correct....)*/
-
-void	Server::handlePass( int clientSocket, std::string param )
-{
   // checking if the Client is already registered
   // meaning checking if PASS, NICK, USER are already set
   // if not ERR_ALREADYREGISTERED numeric reply is sent
-  if ( _clients.at( clientSocket ).getIfRegistered() == true )
-  {
-    // ERR_ALREADYREGISTERED numeric reply is sent
+
+void	Server::handlePass( int clientSocket, std::string param )
+{
+  if ( _clients.at( clientSocket ).getIfRegistered() == true ) {
     replyMsg( clientSocket, ERR_ALREADYREGISTRED( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
   }
   // else if there is no param to the PASS command
   // ERR_NEEDMOREPARAMS numeric reply is sent
-  else if ( param.compare( "" ) == 0 )
-  {
+  else if ( param.compare( "" ) == 0 ) {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS ( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "PASS" ) );
   }
   // else if Pass command's param is different from the password set for the Server
   // then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
-  else if ( param.compare( _password ) != 0 || param.size() != _password.size() )
-  {
+  else if ( param.compare( _password ) != 0 || param.size() != _password.size() ) {
     replyMsg( clientSocket, ERR_PASSWDMISMATCH( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
     replyMsg( clientSocket, KILL_MSG( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
     disconnectAClient( clientSocket );
-
   }
   // else if it's the right password, the client is not yet registered then setPassStatus to true
-  else
-  {
+  else {
     _clients.at( clientSocket ).setPassStatus( true );
     std::cout << MSGINFO << "valid password provided!\n" << std::endl;
   }
