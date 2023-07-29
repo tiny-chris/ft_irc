@@ -18,8 +18,7 @@
 #include "numericReplies.hpp"
 
 // The TOPIC command is used to change or view the topic of the given channel.
-void		Server::handleTopic( int clientSocket, std::string param )
-{
+void		Server::handleTopic( int clientSocket, std::string param ) {
     std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
     if (param.empty()) { // if no param are entered then a need more params err msg is displayed
@@ -69,12 +68,12 @@ void		Server::handleTopic( int clientSocket, std::string param )
     }
 }
 
-std::string Server::getNewTopic( std::vector<std::string> &tokens )
-{
+std::string Server::getNewTopic( std::vector<std::string> &tokens ) {
     std::string newTopic = "";
     if ( tokens.size() >= 2 && tokens[1].find(':', 0) != std::string::npos) {
-        while (tokens[1].find(':', 0) != std::string::npos)
+        while (tokens[1].find(':', 0) != std::string::npos) {
 			tokens[1].erase(0, 1);
+        }
         for (size_t i = 1; i < tokens.size(); i++) {
 			if (i != 1) {
 			    newTopic += " ";

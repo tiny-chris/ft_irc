@@ -19,8 +19,7 @@
 
 // TO DO COMMENT + mapclient::iterator
 
-void    Server::handleWho( int clientSocket, std::string param )
-{
+void    Server::handleWho( int clientSocket, std::string param ) {
     std::vector<std::string> tokens = splitString( param, ' ' );
     if (tokens.size() >= 1) {
         std::string source = _clients.at( clientSocket ).getSource();
@@ -52,8 +51,7 @@ void    Server::handleWho( int clientSocket, std::string param )
     }
 }
 
-bool        Server::existingClient(std::string clientName)
-{
+bool        Server::existingClient(std::string clientName) {
     for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
        if (it->second.getNickname() == clientName)
         return true;

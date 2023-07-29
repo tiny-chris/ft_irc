@@ -19,8 +19,7 @@
 
 
 // Checks if all parameters are valids, user chanops rights, and kicks the indicated user if in the channel.
-void        Server::handleKick( int clientSocket, std::string param )
-{
+void        Server::handleKick( int clientSocket, std::string param ) {
 	std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
 
@@ -68,8 +67,7 @@ void        Server::handleKick( int clientSocket, std::string param )
 // - if he is the last one is he the only one ?
 //		- if yes delete the channel
 //		- if not display error msg
-void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason )
-{
+void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::string toKick, std::string reason ) {
 	Client	*tmp = chan->getChannelMembers().at(toKick);
 	if (chan->getChannelOps().size() == 1) {
 		if ( chan->getChannelMembers().size() == 1 ) {
@@ -98,17 +96,16 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 }
 
 // Gets the reason why the client is kicked of the channel. If no reason indicated, default reason displayed.
-std::string		Server::getReason(std::vector<std::string> &tokens)
-{
+std::string		Server::getReason(std::vector<std::string> &tokens) {
 	std::string reason;
-	if ( tokens.size() >= 3 && tokens[2].find(':', 0) != std::string::npos)
-	{
-		while (tokens[2].find(':', 0) != std::string::npos)
+	if ( tokens.size() >= 3 && tokens[2].find(':', 0) != std::string::npos) {
+		while (tokens[2].find(':', 0) != std::string::npos) {
 			tokens[2].erase(0, 1);
-		for (size_t i = 2; i < tokens.size(); i++)
-		{
-			if (i != 2)
+		}
+		for (size_t i = 2; i < tokens.size(); i++) {
+			if (i != 2) {
 				reason += " ";
+			}
 			reason += tokens[i];
 		}
 	}

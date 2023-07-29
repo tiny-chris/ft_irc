@@ -47,18 +47,10 @@ std::vector<std::string>  splitString( std::string params, char splitter )
     std::istringstream        iss( params );
     std::string               token;
 
-    if ( !params.empty() )
-    {
-      while ( std::getline( iss, token, splitter ) )
-      {
+    if ( !params.empty() ) {
+      while ( std::getline( iss, token, splitter ) ) {
         tokens.push_back( token );
       }
-      // // Helpers to check params
-      // std::cout << "client - number of params before ':' is " << tokens.size() << std::endl;
-      // for (size_t i = 0; i < tokens.size(); ++i)
-      // {
-      //   std::cout << "client - param[" << i << "] is <" << tokens[i] << ">" << std::endl;
-      // }
     }
     return ( tokens );
 }
@@ -68,8 +60,7 @@ std::vector<std::string>  splitString( std::string params, char splitter )
  *              Delimiter is a specific mentionned 'char'
  */
 
-bool	splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2 )
-{
+bool	splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2 ) {
 	size_t	splitter = strToSplit.find( delimiter, 0 );
 
 	if ( strToSplit.empty() ) {
@@ -97,8 +88,7 @@ bool	splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1
  *
  */
 
-bool	isValidUser( std::string name )
-{
+bool	isValidUser( std::string name ) {
   for ( size_t i = 0; i < name.size(); i++ ) {
     char c = name[ i ];
     if ( c == '\0' || c == '\r' || c == '\n' || c == ' ' )

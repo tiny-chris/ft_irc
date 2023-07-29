@@ -17,18 +17,6 @@
 #include "utils.hpp"
 
 void Server::checkRegistration( int clientSocket ) {
-  // /*  ************************************  */
-  // /*       POUR CHECKER LES SOCKETS !!      */
-  // /*  ************************************  */
-  // std::cout << "\n\t *** INFO INSIDE CHECKING REGISTRATION FUNCTION: ***\n";
-  // std::cout << "\t getPassStatus <"<< _clients.at( clientSocket
-  // ).getPassStatus() << ">\n"; std::cout << "\t getNickStatus <"<<
-  // _clients.at( clientSocket ).getNickStatus() << ">\n"; std::cout << "\t
-  // getUsername <"<< _clients.at( clientSocket ).getUsername() << ">\n";
-  // std::cout << std::endl;
-  // /*  ************************************  */
-  // /*  ************************************  */
-
   if( _clients.at( clientSocket ).getPassStatus() == true
       && _clients.at( clientSocket ).getNickStatus() == true
       && _clients.at( clientSocket ).getUsername().empty() == false ) {

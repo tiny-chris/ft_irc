@@ -14,21 +14,6 @@
 
 Channel::Channel() {}
 
-// Channel::Channel(std::string const& name, const Client& chanop) :
-// _channelName(name),
-// _keyStatus(0),
-// _limitStatus(0),
-// _inviteOnlyStatus(0),
-// _topicRestrictionStatus(1),
-// _key(""),
-// _limit("")
-// {
-// 	std::cout << "chanop.getNickname(): " << chanop.getNickname() << std::endl;
-// 	_channelOps.insert(std::pair< std::string, const Client* >(chanop.getNickname(), &chanop));
-// 	std::cout << "first channop size: " << _channelOps.size() << std::endl;
-// 	setTopicRestrictionStatus(1);
-// }
-
 Channel::Channel(std::string const& name) :
   _channelName( name ),
   _channelOps(),

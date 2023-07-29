@@ -17,13 +17,10 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-void		Server::handleNick( int clientSocket, std::string param )
-{
-
+void		Server::handleNick( int clientSocket, std::string param ) {
   std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
   std::vector<std::string> tokens = splitString( param, ' ' ); 
-  
   if ( param.empty() ) {
     replyMsg(clientSocket, ERR_NONICKNAMEGIVEN(source, nick));
   }
@@ -72,8 +69,7 @@ void		Server::handleNick( int clientSocket, std::string param )
   return ;
 }
 
-bool		Server::isValidNick(std::string param)
-{
+bool		Server::isValidNick(std::string param) {
   for (size_t i = 0; i < param.size(); i++) {
     char c = param[i];
     if (!(isalnum(c) || c == '[' || c == ']' || c == '{' \
@@ -83,8 +79,7 @@ bool		Server::isValidNick(std::string param)
   return true;
 }
 
-bool  Server::existingNick( std::string param )
-{
+bool  Server::existingNick( std::string param ) {
   for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
     if (it->second.getNickname() == param ) {
       return true;
@@ -93,8 +88,7 @@ bool  Server::existingNick( std::string param )
   return false;
 }
 
-void  Server::updateChannelMemberNick( std::string &oldNickname, std::string nickName )
-{
+void  Server::updateChannelMemberNick( std::string &oldNickname, std::string nickName ) {
   for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
     std::map< std::string, Client* >	&mapClients = it->second.getChannelMembers();
     std::map<std::string, Client *>::iterator elem = mapClients.find(oldNickname);
@@ -106,10 +100,8 @@ void  Server::updateChannelMemberNick( std::string &oldNickname, std::string nic
   }
 }
 
-void  Server::updateChannelOpsNick( std::string &oldNickname, std::string nickName )
-{
-  for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
-  {
+void  Server::updateChannelOpsNick( std::string &oldNickname, std::string nickName ) {
+  for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
     std::map< std::string, Client* >	&mapClients = it->second.getChannelOps();
     std::map<std::string, Client *>::iterator elem = mapClients.find(oldNickname);
     if (elem != mapClients.end()) {
@@ -120,8 +112,7 @@ void  Server::updateChannelOpsNick( std::string &oldNickname, std::string nickNa
   }
 }
 
-void  Server::updateInvitedMembersNick( std::string &oldNickname, std::string nickName )
-{
+void  Server::updateInvitedMembersNick( std::string &oldNickname, std::string nickName ) {
   for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
     std::vector< std::string >	&invitedmembers = it->second.getInvitedMembers();
     for (size_t i = 0; i < invitedmembers.size() ; ++i) {

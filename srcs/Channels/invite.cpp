@@ -24,14 +24,12 @@
  *              - Invites client on channel
  */
 
-void    Server::handleInvite( int clientSocket, std::string param )
-{
+void    Server::handleInvite( int clientSocket, std::string param ) {
     std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
     std::vector<std::string> tokens = splitString( param, ' ' ); 
     
-    if ( param.empty() || tokens.size() < 2 ) // if no param are entered then a need more params err msg is displayed
-    {
+    if ( param.empty() || tokens.size() < 2 ) {// if no param are entered then a need more params err msg is displayed 
         replyMsg(clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK"));
         return ;
     }
@@ -39,19 +37,16 @@ void    Server::handleInvite( int clientSocket, std::string param )
 	if (channelName.size() > CHANNELLEN) { // cropping the first param (channel name) if its length is over the define CHANNELLEN
 		channelName = channelName.substr(0, CHANNELLEN);
     } 
-	if (!existingChannel( channelName )) // if the channel entered doesn't exist no such Channel error displayed
-    {
+	if (!existingChannel( channelName )) { // if the channel entered doesn't exist no such Channel error displayed
 		replyMsg(clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName));
         return ;
     }
 	Channel *chan = &_channels[ channelName ];
-    if ( !chan->checkChannelMembers( nick ) ) // checking if the client that makes the request is a channel member
-    {
+    if ( !chan->checkChannelMembers( nick ) ) { // checking if the client that makes the request is a channel member
         replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
         return ;
     }
-    if ( !chan->checkChannelOps( nick ) ) // if the client doesn't have chanops privileges 
-    {
+    if ( !chan->checkChannelOps( nick ) ) { // if the client doesn't have chanops privileges 
         replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
         return ;
     }
@@ -59,8 +54,7 @@ void    Server::handleInvite( int clientSocket, std::string param )
     if (toInvite.size() > NICKLEN) {
         toInvite.substr(0, NICKLEN);
     }
-    if ( chan->checkChannelMembers( toInvite ) ) // checking if the client to invite is not already chanmember
-    {
+    if ( chan->checkChannelMembers( toInvite ) ) { // checking if the client to invite is not already chanmember
         replyMsg(clientSocket, ERR_USERONCHANNEL(source, nick, toInvite, channelName ));
         return ;
     }
@@ -74,13 +68,10 @@ void    Server::handleInvite( int clientSocket, std::string param )
  *              - Sends an invite reply to the client
  */
 
-void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan )
-{
+void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan ) {
     Client *toAdd = NULL;
-    for ( std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++ )
-	{
-		if (it->second.getNickname() == nameInvitee)
-        {
+    for ( std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
+		if (it->second.getNickname() == nameInvitee) {
             toAdd = &it->second;
             break;
         }
@@ -88,11 +79,10 @@ void    Server::inviteClientToChannel( int clientSocket, std::string clientNick,
     if (toAdd == NULL) {
         std::cout << MSGERROR << " No such Nickname, cannot invite this client" << std::endl;
     }
-    else // the invited clients receives an Invite Reply (only him)
-    {
+    else { // the invited clients receives an Invite Reply (only him)
+    
         chan->addInvitedMember(nameInvitee);
         replyMsg(clientSocket, RPL_INVITING(_clients.at( clientSocket ).getSource(), clientNick, nameInvitee, chan->getChannelName()));
         replyMsg(toAdd->getFd(), INVITE(clientNick, nameInvitee, chan->getChannelName()));
     }
-    
 }

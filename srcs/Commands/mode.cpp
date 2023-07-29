@@ -17,8 +17,7 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-void		Server::handleMode( int clientSocket, std::string param )
-{
+void		Server::handleMode( int clientSocket, std::string param ) {
     // if no param are entered then a need more params err msg is displayed
     if (param.empty()) {
         replyMsg(clientSocket, ERR_NEEDMOREPARAMS(_clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "MODE"));
@@ -37,8 +36,7 @@ void		Server::handleMode( int clientSocket, std::string param )
 
 // CHANGING CHANNEL MODE (type B +k, Type C +l, Type D +it)
 // Types B and C modes need a valid mode argument otherwise they are ignored
-void		Server::handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> & tokens )
-{
+void		Server::handleChannelMode (int clientSocket, std::string& channelName, const std::vector<std::string> & tokens ) {
     Client *client = &_clients.at( clientSocket );
     std::string source = client->getSource();
     std::string clientName = client->getNickname();
@@ -96,8 +94,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
 }
 
 // CHANGING USER MODE (only one mode +i)
-void		Server::handleUserMode (int clientSocket, std::vector<std::string> & tokens )
-{
+void		Server::handleUserMode (int clientSocket, std::vector<std::string> & tokens ) {
     std::string userName = tokens[0];
     std::string modechange;
     Client *client = &_clients.at( clientSocket );
@@ -143,8 +140,7 @@ void		Server::handleUserMode (int clientSocket, std::vector<std::string> & token
 }
 
 // Checks if the Channel exists on the server
-bool		Server::existingChannel(std::string param)
-{
+bool		Server::existingChannel(std::string param) {
     if (_channels.find(param) != _channels.end()) {
         return true;
     }
@@ -152,10 +148,8 @@ bool		Server::existingChannel(std::string param)
 }
 
 // Gets the prefix of the modestring
-char	Server::getModePrefix( std::string const& token )
-{
+char	Server::getModePrefix( std::string const& token ) {
     char sign = 'O';
-
     if (token.find('+', 0) != std::string::npos) {
         sign = '+';
         return (sign);

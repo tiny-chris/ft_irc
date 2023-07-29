@@ -26,8 +26,7 @@
   // meaning checking if PASS, NICK, USER are already set
   // if not ERR_ALREADYREGISTERED numeric reply is sent
 
-void	Server::handlePass( int clientSocket, std::string param )
-{
+void	Server::handlePass( int clientSocket, std::string param ) {
   if ( _clients.at( clientSocket ).getIfRegistered() == true ) {
     replyMsg( clientSocket, ERR_ALREADYREGISTRED( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
   }

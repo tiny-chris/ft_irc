@@ -23,8 +23,7 @@
 	- en tant qu'InvitedMember
 	- si c'est le dernier membre d'un channel supprimer le channel
 */
-void	Server::handleQuit( int clientSocket, std::string param )
-{
+void	Server::handleQuit( int clientSocket, std::string param ) {
 	std::vector<std::string> tokens = splitString( param, ' ' );
 	std::string reason;
 	if ( tokens.size() && tokens[0].find(':', 0) != std::string::npos ) {
