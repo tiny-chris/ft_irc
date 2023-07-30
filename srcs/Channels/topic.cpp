@@ -17,7 +17,13 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-// The TOPIC command is used to change or view the topic of the given channel.
+/**
+ * @brief       Command that allows to change or view the topic of a Channel
+ *              - Checks rights to change topic (+t mode and chanops)
+ *              - Displays the topic if no arguments are given
+ *              - Updates the topic and displays it to all chan members
+ */
+
 void		Server::handleTopic( int clientSocket, std::string param ) {
     std::string source = _clients.at( clientSocket ).getSource();
 	std::string nick = _clients.at( clientSocket ).getNickname();
@@ -26,7 +32,7 @@ void		Server::handleTopic( int clientSocket, std::string param ) {
         return ;
     }
     std::vector<std::string> tokens = splitString( param, ' ' );
-    std::string channelName = tokens[ 0 ].substr( 0, CHANNELLEN );// cropping the first param (channel name) if its length is over the define CHANNELLEN
+    std::string channelName = tokens[ 0 ].substr( 0, CHANNELLEN ); // cropping the first param (channel name) if its length is over the define CHANNELLEN
 	if (!existingChannel( channelName )) { // if the channel entered doesn't exist no such Channel error displayed
 		replyMsg(clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName ) );
         return ;
@@ -37,13 +43,7 @@ void		Server::handleTopic( int clientSocket, std::string param ) {
         return ;
     }
     if (tokens.size() < 2) { // if <topic> is not given, RPL_TOPIC Or RPL_NOTOPIC returned
-        if (chan->getTopic().empty()) {
-            replyMsg(clientSocket, RPL_NOTOPIC(source, nick, channelName));
-        }
-        else {
-            replyMsg(clientSocket, RPL_TOPIC(source, nick, channelName, chan->getTopic()));
-            replyMsg(clientSocket, RPL_TOPICWHOTIME(source, nick, channelName, chan->getTopicSetter(), chan->getTopicDate()));
-        }
+        handleTopicDisplay(clientSocket, chan);
         return ;
     }
     if ( chan->getTopicRestrictionStatus() == true && !chan->checkChannelOps( nick ) ) { // error if the client doesn't have chanops privileges
@@ -52,17 +52,14 @@ void		Server::handleTopic( int clientSocket, std::string param ) {
     }
     std::string newTopic = getNewTopic(tokens);
     if (newTopic != chan->getTopic()) {
-        chan->setTopicDate( getCurrentDate() );
-        chan->setTopic( newTopic );
-        chan->setTopicSetter(nick);
-        int socket;
-        for ( std::map<std::string, Client *>::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++ ) {
-            socket = it->second->getFd();
-            replyMsg(socket, RPL_TOPIC(source, it->second->getNickname(), channelName, chan->getTopic()));
-            replyMsg(socket, RPL_TOPICWHOTIME(source, it->second->getNickname(), channelName, chan->getTopicSetter(), chan->getTopicDate()));
-        }
+        updateChannelTopic(chan, newTopic, nick);
+        sendTopicToChannelMembers(chan);
     }
 }
+
+/**
+ * @brief       Gets the new channel topic
+ */
 
 std::string Server::getNewTopic( std::vector<std::string> &tokens ) {
     std::string newTopic = "";
@@ -81,4 +78,56 @@ std::string Server::getNewTopic( std::vector<std::string> &tokens ) {
         newTopic = tokens[1];
     }
     return ( newTopic.substr( 0, TOPICLEN ) );
+}
+
+/**
+ * @brief       Displays the current topic, it creation time and who created it
+ *              When no topic set a NO_TOPIC reply is sent  
+ */
+
+void    Server::handleTopicDisplay(int clientSocket, Channel *chan)
+{
+    std::string source = _clients.at( clientSocket ).getSource();
+	std::string nick = _clients.at( clientSocket ).getNickname();
+    std::string channelName = chan->getChannelName();
+
+    if (chan->getTopic().empty()) {
+        replyMsg(clientSocket, RPL_NOTOPIC(source, nick, channelName));
+    }
+    else {
+        replyMsg(clientSocket, RPL_TOPIC(source, nick, channelName, chan->getTopic()));
+        replyMsg(clientSocket, RPL_TOPICWHOTIME(source, nick, channelName, chan->getTopicSetter(), chan->getTopicDate()));
+    }
+}
+
+/**
+ * @brief       Updates the channel topic and the creation informations
+ */
+
+void   Server::updateChannelTopic(Channel *chan, std::string newTopic, std::string nick)
+{
+    chan->setTopicDate( getCurrentDate() );
+    chan->setTopic( newTopic );
+    chan->setTopicSetter( nick );
+}
+
+/**
+ * @brief       Sends the new topic and its creation info 
+ *              to every channel members
+ */
+void    Server::sendTopicToChannelMembers(Channel* chan)
+{
+    std::string channelName = chan->getChannelName();
+    std::string topic = chan->getTopic();
+    std::string topicSetter = chan->getTopicSetter();
+    std::string topicDate = chan->getTopicDate();
+
+    for ( mapClientsPtr::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++ ) {
+        int socket = it->second->getFd();
+        std::string source = it->second->getSource();
+        std::string nick = it->second->getNickname();
+
+        replyMsg(socket, RPL_TOPIC(source, nick, channelName, topic));
+        replyMsg(socket, RPL_TOPICWHOTIME(source, nick, channelName, topicSetter, topicDate));
+    }
 }

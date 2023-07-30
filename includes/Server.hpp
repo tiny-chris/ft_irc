@@ -34,6 +34,7 @@ class Server {
   typedef std::map<std::string, Channel> mapChannels;
   typedef std::map<int, std::string>     mapCommands;
   typedef std::vector< std::string >     vecString;
+  typedef std::map< std::string, Client * >   mapClientsPtr;
 
   void checkRegistration( int clientSocket );
   void sendWelcomeMsg( int clientSocket );
@@ -93,6 +94,9 @@ class Server {
   /* ********* TOPIC CMD ******* */
   void        handleTopic( int clientSocket, std::string param );
   std::string getNewTopic( std::vector<std::string>& tokens );
+  void        handleTopicDisplay(int clientSocket, Channel *chan);
+  void        updateChannelTopic(Channel *chan, std::string newTopic, std::string nick);
+  void        sendTopicToChannelMembers(Channel* chan);
   /* ********* INVITE CMD ******* */
   void handleInvite( int clientSocket, std::string param );
   void inviteClientToChannel( int clientSocket, std::string clientNick,
