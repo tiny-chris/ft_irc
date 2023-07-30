@@ -106,8 +106,6 @@ class Channel
         void        handleModeUnsetTopicRestriction( std::string* modeChange );
         void        handleModeUnsetOperator( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
 
-
-
     private:
 
         std::string     _channelName;

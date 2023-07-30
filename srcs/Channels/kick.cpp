@@ -88,9 +88,8 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 		clientToKick->removeClientChannel( channelName ); // deletes the channel name from clientchannel vector
 		return ;
 	}
-	else if ( isLastOperator && toKick == nick) {
-		replyMsg( clientSocket, "Error: Cannot delete last operator\r\n");
-		return ;
+	if ( isLastOperator && toKick == nick) {
+		changeChannelOperator(clientSocket, clientToKick, chan);
 	}
 	channelMsgToAll( clientSocket, channelName, DEFAULTKICK( nick, channelName, toKick, reason ));
 	clientToKick->removeClientChannel( channelName ); // deletes the channel name from clientchannel vector
@@ -121,4 +120,19 @@ std::string		Server::getKickReason(std::vector<std::string> &tokens) {
 	}
 	reason = reason.substr(0, KICKLEN);
 	return (reason);
+}
+
+void        Server::changeChannelOperator(int clientSocket, Client *toLeave, Channel *chan)
+{
+	Client								*toBeChanOp = NULL;
+	for ( mapClientsPtr::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++) {
+		if ( it->second != toLeave ) {
+			toBeChanOp = it->second;
+			break ;
+		}
+	}
+	std::string	toBeChanOpName = toBeChanOp->getNickname();
+	std::string	param = chan->getChannelName() + " +o " + toBeChanOpName;
+	handleMode( clientSocket, param );
+	return ;
 }

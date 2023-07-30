@@ -34,18 +34,7 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 			return ;
 		}
 		else {
-			Channel::mapClientsPtr::iterator	it =  channel->getChannelMembers().begin();
-			Client								*toBeChanOp = NULL;
-
-			for ( ; it != channel->getChannelMembers().end(); it++) {
-				if ( it->second != client ) {
-					toBeChanOp = it->second;
-					break ;
-				}
-			}
-			std::string	toBeChanOpName = toBeChanOp->getNickname();
-			std::string	param = channelName + " +o " + toBeChanOpName;
-			handleMode( clientSocket, param );
+			changeChannelOperator(clientSocket, client, channel);
 		}
 	}
 	// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel

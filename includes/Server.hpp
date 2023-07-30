@@ -133,6 +133,8 @@ class Server {
   void updateChannelOpsNick( std::string& oldNickname, std::string nickName );
   void updateInvitedMembersNick( std::string &oldNickname, std::string nickName );
 
+  void changeChannelOperator( int clientSocket, Client *toLeave, Channel *chan );
+
   //
   //
   //
