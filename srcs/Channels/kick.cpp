@@ -122,6 +122,11 @@ std::string		Server::getKickReason(std::vector<std::string> &tokens) {
 	return (reason);
 }
 
+/**
+ * @brief       Function that makes another client chanops when the only
+ * 				one chanop is quitting server or is kicked of the channel
+ * 				Channel cannot remain without a chanop
+ */
 void        Server::changeChannelOperator(int clientSocket, Client *toLeave, Channel *chan)
 {
 	Client								*toBeChanOp = NULL;
