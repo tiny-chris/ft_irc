@@ -48,18 +48,30 @@ void        Server::handleKick( int clientSocket, std::string param ) {
 		return ;
 	}
 	std::vector< std::string > toKick = splitString(tokens[1], ',');
+	kickSelectedClients(clientSocket, chan, toKick, getKickReason(tokens));
+}
+
+/**
+ * @brief       Iterate on the vector of client to kick and calls kick User
+ * 				for each one of them
+ */
+
+void	Server::kickSelectedClients(int clientSocket, Channel *chan, std::vector<std::string> toKick, std::string reason)
+{
+	std::string source = _clients.at( clientSocket ).getSource();
+	std::string nick = _clients.at( clientSocket ).getNickname();
+
 	for (size_t i = 0; i < toKick.size() && i < TARGMAXKICK; ++i) {
 		if ( !chan->checkChannelMembers( toKick[i] ) ) { // checks if the client to kick is a chanmember
-			replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick[i], channelName ));
+			replyMsg(clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick[i], chan->getChannelName() ));
 			continue;
 		}
-		std::string reason = getKickReason(tokens);
 		kickUser(clientSocket, chan, nick, toKick[i], reason);
 	}
 }
 
 /**
- * @brief       Kicks the user of the channel and deletes him from all map
+ * @brief       Kicks one user of the channel and deletes it from all map
  * 				Exception if he the last operator among other clients
  * 				Displays a message to all members left on the channel
  */

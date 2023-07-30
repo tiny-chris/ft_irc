@@ -89,6 +89,7 @@ class Server {
   void        kickUser( int clientSocket, Channel* chan, std::string nick,
                         std::string toKick, std::string reason );
   std::string getKickReason( std::vector<std::string>& tokens );
+  void	      kickSelectedClients(int clientSocket, Channel *chan, std::vector<std::string> toKick, std::string reason);
   /* ********* TOPIC CMD ******* */
   void        handleTopic( int clientSocket, std::string param );
   std::string getNewTopic( std::vector<std::string>& tokens );
