@@ -23,6 +23,7 @@
  *              client connections, receiving and sending data, and handling
  *              disconnections.
  */
+
 class Client;
 class Channel;
 
@@ -107,6 +108,8 @@ class Server {
   Client* getClientByNickname(const std::string& nickname);
   /* ********* WHO CMD ******* */
   void        handleWho( int clientSocket, std::string param );
+  void        handleWhoChannel(int clientSocket, std::string source, std::string nick, std::string target);
+  void        handleWhoClient(int clientSocket, std::string source, std::string nick, std::string target);
   /* ********* QUIT CMD ******* */
   void	      handleQuit( int clientSocket, std::string param );
   /* ********* SQUIT CMD ******* */
