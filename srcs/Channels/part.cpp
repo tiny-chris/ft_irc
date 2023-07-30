@@ -34,7 +34,7 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 			return ;
 		}
 		else {
-			changeChannelOperator(clientSocket, client, channel);
+			changeChannelOperator(clientSocket, client, channel); // function in kick.cpp file
 		}
 	}
 	// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
