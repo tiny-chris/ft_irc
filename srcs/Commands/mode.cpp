@@ -155,12 +155,10 @@ bool		Server::existingChannel(std::string param) {
 char	Server::getModePrefix( std::string const& token ) {
     char sign = 'O';
     if (token.find('+', 0) != std::string::npos) {
-        sign = '+';
-        return (sign);
+        return (sign = '+');
     }
     if (token.find('-', 0) != std::string::npos) {
-        sign = '-';
-        return (sign);
+        return (sign = '-');
     }
     return (sign);
 }
