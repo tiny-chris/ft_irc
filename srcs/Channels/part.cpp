@@ -47,7 +47,7 @@
 	for ( size_t i = 0; i < channelNames.size(); ++i ) {
 		std::string	channelName = channelNames[ i ];
 
-		if ( channelName > CHANNELLEN )
+		if ( channelName.size() > CHANNELLEN )
 			channelName = channelName.substr(0, CHANNELLEN);
 		if ( checkChanPrePart( clientSocket, channelName ) == false )
 			continue ;

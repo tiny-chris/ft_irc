@@ -66,6 +66,8 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			if ( sharp != std::string::npos && ( sharp == 0 || sharp == 1 )) {
 
 				std::string	channelName = target.substr( sharp );
+				if ( channelName.size() > CHANNELLEN )
+					channelName = channelName.substr(0, CHANNELLEN);
 				// if channel does not exist
 				if ( !existingChannel( channelName ) ) {
 					replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nickname, channelName ) );
@@ -91,13 +93,10 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 				replyMsg( clientSocket, ERR_CANNOTSENDTOCHAN( source, nickname, target  ));
 			}
 			// if CLIENT
-			else if ( existingClient( target ) ) {
+			else if ( existingClient( target ) )
 				replyMsg( findClientFd( target ), reply );
-			}
-			else {
+			else
 				replyMsg( clientSocket, ERR_NOSUCHNICK( source, target ) );
-				continue ;
-			}
 		}
 		else {
 			replyMsg( clientSocket, ERR_NOSUCHNICK( source, "" ) );
@@ -108,9 +107,8 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 int	Server::findClientFd( const std::string& name )
 {
 	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
-		if ( it->second.getNickname() == name ) {
+		if ( it->second.getNickname() == name )
 			return ( it->second.getFd() );
-		}
 	}
 	return -1 ;
 }
