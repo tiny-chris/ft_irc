@@ -17,7 +17,6 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-
 /**
  * @brief       The MODE command is used to set or remove options (or modes) from a given target.
  *              2 types of tagets : Channel and User
