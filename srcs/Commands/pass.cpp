@@ -17,35 +17,33 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-/*  ******************************************************************** */
-/*  ***** following functions should be put in the Commands folder ***** */
-/*  ******************************************************************** */
-
-/* Peut etre mettre des comments dans le serveur (pour indiquer par exemple que le mot de passe est correct....)*/
-  // checking if the Client is already registered
-  // meaning checking if PASS, NICK, USER are already set
-  // if not ERR_ALREADYREGISTERED numeric reply is sent
+/**
+ * @brief       First command that a user needs to make to register
+ *              Checks if the a password is given
+ *              Checks if the password valid
+ *              Sets the password status to true to continue registration
+ */
 
 void	Server::handlePass( int clientSocket, std::string param ) {
-  if ( _clients.at( clientSocket ).getIfRegistered() == true ) {
-    replyMsg( clientSocket, ERR_ALREADYREGISTRED( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
+  Client *client = &_clients.at( clientSocket );
+  std::string source = client->getSource();
+	std::string nick = client->getNickname();
+  if ( client->getIfRegistered() ) { // client cannot re registered
+    replyMsg( clientSocket, ERR_ALREADYREGISTRED( source, client->getNickname() ) );
+    return ;
   }
-  // else if there is no param to the PASS command
-  // ERR_NEEDMOREPARAMS numeric reply is sent
-  else if ( param.compare( "" ) == 0 ) {
-    replyMsg( clientSocket, ERR_NEEDMOREPARAMS ( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname(), "PASS" ) );
+  if ( param.empty() ) { // if no assword entered -> error need more param
+    replyMsg( clientSocket, ERR_NEEDMOREPARAMS ( source, nick, "PASS" ) );
+    return ;
   }
-  // else if Pass command's param is different from the password set for the Server
-  // then ERR_PASSDMISMATCH error is sent and Client is killed et disconnected
-  else if ( param.compare( _password ) != 0 || param.size() != _password.size() ) {
-    replyMsg( clientSocket, ERR_PASSWDMISMATCH( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
-    replyMsg( clientSocket, KILL_MSG( _clients.at( clientSocket ).getSource(), _clients.at( clientSocket ).getNickname() ) );
+  std::vector<std::string> tokens = splitString( param, ' ' ); 
+  std::string passEntered = tokens[0].substr(0, PASSMAXLEN);
+  if ( passEntered != _password ) { // if the password is not valid ->error
+    replyMsg( clientSocket, ERR_PASSWDMISMATCH( source, client->getNickname() ) );
+    replyMsg( clientSocket, KILL_MSG( source, client->getNickname() ) );
     disconnectAClient( clientSocket );
+    return ;
   }
-  // else if it's the right password, the client is not yet registered then setPassStatus to true
-  else {
-    _clients.at( clientSocket ).setPassStatus( true );
-    std::cout << MSGINFO << "valid password provided!\n" << std::endl;
-  }
-  return ;
+  client->setPassStatus( true ); // set pass status to true for registration
+  std::cout << MSGINFO << "valid password provided!\n" << std::endl;
 }
