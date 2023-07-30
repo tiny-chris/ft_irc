@@ -56,6 +56,9 @@ class Server {
   void handleNick( int clientSocket, std::string param );
   bool isValidNick( std::string param );
   bool existingNick( std::string param );
+  void handleExistingNick(int clientSocket, std::string newNick);
+  void updateNickname(int clientSocket, std::string nick, std::string newNick);
+  void updateNickInChannels( int clientSocket, std::string nick, std::string newNick );
   /* ********* USER CMD ******* */
   void handleUser( int clientSocket, std::string param );
   /* ********* PING CMD ******* */

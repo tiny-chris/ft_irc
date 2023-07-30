@@ -12,6 +12,9 @@
 
 #include "Channel.hpp"
 
+
+/* CONSTRUCTORS ***************************************************************/
+
 Channel::Channel() {}
 
 Channel::Channel(std::string const& name) :
@@ -31,12 +34,16 @@ Channel::Channel(std::string const& name) :
   _topicDate( "" )
 {}
 
-Channel::~Channel() {}
-
 Channel::Channel( Channel const & src ) {
   *this = src;
   return ;
 }
+
+/* DESTRUCTORS ****************************************************************/
+
+Channel::~Channel() {}
+
+/* OVERLOADS ******************************************************************/
 
 Channel &    Channel::operator=( Channel const& rhs ){
   if (this != &rhs) {
@@ -57,6 +64,8 @@ Channel &    Channel::operator=( Channel const& rhs ){
   }
   return (*this);
 }
+
+/* METHODS ********************************************************************/
 
 void        Channel::addChannelOps( Client* client )
 {
