@@ -24,49 +24,36 @@ void		Server::handleNick( int clientSocket, std::string param ) {
   if ( param.empty() ) {
     replyMsg(clientSocket, ERR_NONICKNAMEGIVEN(source, nick));
   }
-  std::string newNick = tokens[0];
-  if (newNick.size() > NICKLEN) {
-    newNick = newNick.substr(0, NICKLEN);
-  }
-  // else if there are invalid char in the nickname, an erroneus nickname message is sent
+  std::string newNick = tokens[0].substr(0, NICKLEN);
   if (!isValidNick(newNick)) {
     replyMsg(clientSocket, ERR_ERRONEUSNICKNAME(source, nick, newNick));
+    return;
   }
-  // else if the nickname is the same nickname as another client
-  else if (existingNick(newNick)) {
-    // and if our client is not yet registered then an nick collision occurs and the client is killed
-    if (_clients.at( clientSocket ).getIfRegistered() == false) {
+  else if (existingNick(newNick)) {  // else if the nickname is the same nickname as another client
+    if (_clients.at( clientSocket ).getIfRegistered() == false) { // and if our client is not yet registered then an nick collision occurs and the client is killed
       replyMsg(clientSocket, ERR_NICKCOLLISION(source, nick, newNick));
       replyMsg(clientSocket, KILL_MSG(source, nick));
       disconnectAClient( clientSocket );
     }
-    // but if our client is already registered then a nickname in use error occurs
-    // the client keeps its nickname
-    else {
+    else {  // but if our client is already registered then a nickname in use error occurs the client keeps its nickname
       replyMsg(clientSocket, ERR_NICKNAMEINUSE( source, nick, newNick ));
     }
+    return ;
   }
-  // else meaning if the nickname given is valid and does not already exist
-  // nickname is set to param value and nickstatus set to true
-  else {
-    // std::string oldNickname = _clients.at( clientSocket ).getNickname();
-    replyMsg(clientSocket, RPL_NICK(nick, newNick));
-    _clients.at( clientSocket ).setNickStatus( true );
-    _clients.at( clientSocket ).setNickname( newNick );
-    std::cout << MSGINFO << "valid nickname provided!" << std::endl;
-    if ( _clients.at( clientSocket ).getIfRegistered() == false ) {
-      checkRegistration( clientSocket );
-    }
-    else { // maj de la source + maj des nickname dans les map de chanops et de chanmembers dans les channels;
-    
-      _clients.at( clientSocket ).setSource( newNick, _clients.at( clientSocket ).getUsername() );
-      updateChannelMemberNick( nick, newNick );
-      updateChannelOpsNick( nick, newNick );
-      updateInvitedMembersNick( nick, newNick );
-    }
-    std::cout << std::endl;
+  replyMsg(clientSocket, RPL_NICK(nick, newNick));
+  _clients.at( clientSocket ).setNickStatus( true );
+  _clients.at( clientSocket ).setNickname( newNick );
+  std::cout << MSGINFO << "valid nickname provided!" << std::endl;
+  if ( _clients.at( clientSocket ).getIfRegistered() == false ) {
+    checkRegistration( clientSocket );
   }
-  return ;
+  else { // maj de la source + maj des nickname dans les map de chanops et de chanmembers dans les channels;
+    _clients.at( clientSocket ).setSource( newNick, _clients.at( clientSocket ).getUsername() );
+    updateChannelMemberNick( nick, newNick );
+    updateChannelOpsNick( nick, newNick );
+    updateInvitedMembersNick( nick, newNick );
+  }
+  std::cout << std::endl;
 }
 
 bool		Server::isValidNick(std::string param) {

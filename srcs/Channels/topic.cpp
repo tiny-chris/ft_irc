@@ -115,6 +115,7 @@ void   Server::updateChannelTopic(Channel *chan, std::string newTopic, std::stri
  * @brief       Sends the new topic and its creation info 
  *              to every channel members
  */
+
 void    Server::sendTopicToChannelMembers(Channel* chan)
 {
     std::string channelName = chan->getChannelName();
