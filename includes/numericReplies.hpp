@@ -228,6 +228,6 @@
 // # define RPL_KILL(source, tokill, reason)					(std::string(":") + source + " KILL " + tokill + " :" + reason + CRLF)
 # define KILL_REASON(killer, reason)						("Killed (" + killer + " (" + reason + "))")
 # define ERR_KILL(source, servername, reason) 				("Closing Link: " + servername + " (" + reason + ")" + CRLF)
-
+# define CHANNEL_DELETED(source, tokick, channelName)       (std::string(":") + source + " KICK last chanop " + tokick + " from " + channelName + " :channel was deleted " + CRLF)
 
 #endif /* __NUMERIC_REPLIES_HPP__*/

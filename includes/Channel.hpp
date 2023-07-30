@@ -28,9 +28,11 @@
 
 # include "Client.hpp"
 # include "utils.hpp"
+# include "Server.hpp"
 # include "defines.hpp"
 
 class Client;
+class Server;
 
 class Channel
 {
