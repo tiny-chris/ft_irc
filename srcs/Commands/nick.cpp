@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/26 15:00:38 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:50:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@
 
 
 /**
- * @brief       Command that allows to change the nickname of a Client
+ * @brief       NICK command
+ *              NICK <nickname>
+ * 
+ *              Changes the nickname of a Client
  *              - Checks if the parameter are valid
  *              - Checks if the new nickname is already in use
  *              - Updates the nickname of the client everywhere it is used
