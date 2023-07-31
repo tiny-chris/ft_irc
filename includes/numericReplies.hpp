@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 18:14:24 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@
 #define ERR_NOTEXTTOSEND( source, nickname )                                   \
   ( std::string( ":" ) + source + " 412 " + nickname + " :No text to send"     \
     + CRLF )
+
+#define ERR_INPUTTOOLONG( source, nickname ) ( std::string( ":" ) + source + " 417 " + nickname + " :Input line was too long" + CRLF )
 
 // Renvoyé à un client enregistré pour indiquer que la commande envoyée est
 // inconnue du serveur.
