@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 18:42:25 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 11:39:07 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:51:43 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 /**
  * @brief       WHO commande
  *              WHO <mask>
+ * 
  *              This command is used to query a list of users who match
  *              - A channel name, in which case the channel members are listed.
  *              - An exact nickname, in which case a single user is returned.
