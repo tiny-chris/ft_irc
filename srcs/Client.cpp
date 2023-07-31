@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/31 14:26:17 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:31:37 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ Client::Client( Client const& src ) : _fd( src.getFd() ) {
 
 Client::~Client( void ) {}
 
-/* ------------ MEMBER FUNCTION: OVERLOAD OF ASSIGNMENT OPERATOR ------------ */
+/* ------------  OVERLOAD OF ASSIGNMENT OPERATOR ------------ */
 
 Client& Client::operator=( Client const& rhs ) {
   if( this != &rhs ) {
@@ -56,7 +56,7 @@ Client& Client::operator=( Client const& rhs ) {
   return ( *this );
 }
 
-/* ---------------------- MEMBER FUNCTIONS: ACCESSORS ----------------------- */
+/* ---------------------- ACCESSORS ----------------------- */
 
 int         Client::getFd( void ) const { return _fd; }
 bool        Client::getPassStatus( void ) const { return _passStatus; }
@@ -83,6 +83,8 @@ std::vector<std::string> Client::getClientChannels( void ) const {
   return _clientChannels;
 }
 
+/* ----------------------  SETTERS ------------------------- */
+
 void Client::setPassStatus( bool const& status ) { _passStatus = status; }
 void Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
@@ -95,8 +97,10 @@ void Client::setSource( std::string nickname, std::string username ) {
   _source = nickname + "!" + username + "@localhost";
 }
 
+/* ---------------------- METHODS ------------------------- */
+
 /**
- * @brief       SINGINT ^-C Handling
+ * @brief       Adds a channel to the _clientChannels map
  */
 
 void Client::addChannel( std::string channelName ) {
@@ -104,6 +108,10 @@ void Client::addChannel( std::string channelName ) {
     _clientChannels.push_back( channelName );
   }
 }
+
+/**
+ * @brief       Removes a channel to the _clientChannels map
+ */
 
 void Client::removeClientChannel( std::string chanName ) {
   for( size_t i = 0; i < _clientChannels.size(); i++ ) {
@@ -113,6 +121,10 @@ void Client::removeClientChannel( std::string chanName ) {
     }
   }
 }
+
+/**
+ * @brief       Sets user modes (invisible i, operator o)
+ */
 
 void  Client::handleUserModeSet( char modeChar, std::string *modechange ) {
   switch (modeChar) {
@@ -130,6 +142,10 @@ void  Client::handleUserModeSet( char modeChar, std::string *modechange ) {
       break;
   }
 }
+
+/**
+ * @brief       Unsets user modes (invisible i, operator o)
+ */
 
 void  Client::handleUserModeUnset( char modeChar, std::string *modechange ) {
   switch (modeChar) {
