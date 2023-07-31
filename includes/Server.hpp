@@ -74,6 +74,7 @@ class Server {
                         size_t index );
   bool isValidChanName( int clientSocket, const std::string& channelName );
   void createChanWithOp( int clientSocket, const std::string& channelName );
+  bool checkParamSize( int clientSocket, const std::string& param, const std::vector< std::string >& tokens );
   /* ********* PART CMD ******* */
   void handlePart( int clientSocket, std::string param );
   void leaveChannel ( int clientSocket, const std::string& channelName,
@@ -119,6 +120,7 @@ class Server {
   void  handleSQuit( int clientSocket, std::string param );
   /* ********* KILL CMD ******* */
   void	handleKill( int clientSocket, std::string param );
+  bool	checkChanPreKill( int clientSocket, const std::string& param, const std::string& nickToKill, const std::string& comment );
 
 
   std::string	getSupportToken() const;

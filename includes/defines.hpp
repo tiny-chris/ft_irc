@@ -102,6 +102,6 @@ The value MUST be specified and MUST be a positive integer. */
 
 # define TARGMAXKICK 1
 # define TARGMAXMSG 2
-# define TARGMAXNAMES 1
+# define TARGMAXNAMES 2
 
 #endif /* __DEFINES_HPP__ */

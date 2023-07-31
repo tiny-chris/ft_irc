@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 21:32:25 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 12:18:47 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,22 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-/*
-	// syntax: PRIVMSG <msgtarget> <message>
-
-	Numeric Replies:
-
-		x	ERR_NOSUCHNICK (401)
-			ERR_NOSUCHSERVER (402)
-		x	ERR_CANNOTSENDTOCHAN (404)
-			ERR_TOOMANYTARGETS (407)
-		x	ERR_NORECIPIENT (411)
-		x	ERR_NOTEXTTOSEND (412)
-			ERR_NOTOPLEVEL (413)
-			ERR_WILDTOPLEVEL (414)
-			RPL_AWAY (301)
-*/
+/**
+ * @brief       PRIVMSG command
+ *				syntax:			PRIVMSG <target> <message>
+ *	
+ *	Send a message to the target (client or channel)
+ *	- Check for a channel target: channel exists, client is joined to it 
+ *		(specific case: if only addressed to chanOps)
+ * 	- Check for a client target: client exists
+ *
+ */
 
 void	Server::handlePrivmsg( int clientSocket, std::string param )
 {
 	Client				*client = &_clients.at( clientSocket );
 	const std::string&	source = client->getSource();
 	const std::string&	nickname = client->getNickname();
-
 	std::string 		targetList = "", textToBeSent = "";
 
 	if ( param.empty() || splitStringInTwo( param, ' ', &targetList, &textToBeSent ) == false ) {
@@ -53,8 +47,7 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 	if ( textToBeSent.at( 0 ) == ':' )
 		textToBeSent.erase( 0, 1 );
 	std::vector< std::string >	targetNames = splitString( targetList, ',' );
-	// mettre un commentaire si targetNames.size() > TARGMAXMSG?
-	// à voir et tester à 42 car irssi différent
+
 	for ( size_t i = 0; i < targetNames.size() && i < TARGMAXMSG ; ++i ) {
 		std::string	target = targetNames[ i ];
 		size_t		sharp = target.find("#");
@@ -68,23 +61,18 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 				std::string	channelName = target.substr( sharp );
 				if ( channelName.size() > CHANNELLEN )
 					channelName = channelName.substr(0, CHANNELLEN);
-				// if channel does not exist
-				if ( !existingChannel( channelName ) ) {
+				if ( !existingChannel( channelName ) ) { // if channel does not exist
 					replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nickname, channelName ) );
 					continue ;
 				}
 
 				Channel	channel = _channels.at( channelName );
-
-				// if client is on Channel
-				if (  channel.checkChannelMembers( nickname ) ) {
-					// it start with '@#' --> text to be sent to chanops only
-					if ( target.find( "@#" ) == 0 ) {
+				if (  channel.checkChannelMembers( nickname ) ) { // if client is on Channel
+					if ( target.find( "@#" ) == 0 ) { // if starts with '@#' --> to chanOps only
 						channelMsgToChanOps( clientSocket, channelName, reply );
 						continue ;
 					}
-					// start with '#' --> text to be sent to channel members
-					else if ( target.find( "#" ) == 0 ) {
+					else if ( target.find( "#" ) == 0 ) { // if start with '#' --> all members
 						channelMsgNotClient( clientSocket, target, reply );
 						continue ;
 					}

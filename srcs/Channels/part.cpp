@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 16:39:45 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 12:17:56 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@
 
 /**
  * @brief       PART command
- *
- *				syntax:		PART <channel>{,<channel>} [<reason>]
+ *				syntax:			PART <channel>{,<channel>} [<reason>]
  *
  *	For each channel in the parameter of this command:
  *	- if the channel exists and the client is joined to it --> client leaves
  *	- if not --> consider replies ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL
  *
  */
+
  void	Server::handlePart( int clientSocket, std::string param )
 {
 	Client&						client = _clients.at( clientSocket );
@@ -36,7 +36,6 @@
 		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client.getSource(), client.getNickname(), "PART" ) );
 		return ;
 	}
-
 	if ( !reason.empty() ) {
 		if ( reason.at(0) == ':' )
 			reason = " " + reason;
@@ -46,7 +45,6 @@
 	channelNames = splitString( channelList, ',' );
 	for ( size_t i = 0; i < channelNames.size(); ++i ) {
 		std::string	channelName = channelNames[ i ];
-
 		if ( channelName.size() > CHANNELLEN )
 			channelName = channelName.substr(0, CHANNELLEN);
 		if ( checkChanPrePart( clientSocket, channelName ) == false )
@@ -54,6 +52,16 @@
 		leaveChannel( clientSocket, channelName, reason, "PART" );
 	}
 }
+
+/**
+ * @brief       Leave channel: removing client from the channel (as member, as chanOp if applied)
+ * 				and removing channel into client object
+ *
+ *	Specific cases:
+ *	- if client is last member (chanOp): remove client from channel & delete channel
+ *	- if client ifslast chanOp with other members: design another chanOp and remove client from channel
+ *
+ */
 
 void	Server::leaveChannel( int clientSocket, const std::string& channelName, const std::string& reason, const std::string& cmd )
 {
@@ -76,31 +84,33 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 			changeChannelOperator(clientSocket, client, channel); // function in kick.cpp file
 		}
 	}
-	// client is not chanOps or is chanOps but there are other chanOps --> remove client from Channel
-		if (cmd == "PART")
-			channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
-		else if (cmd == "QUIT")
-		{
-			channelMsgNotClient( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), reason ));
-			std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason << std::endl;
-		}
-		channel->removeChannelOp( client );
-		channel->removeChannelMember( client );
-		client->removeClientChannel( channelName );
+	if (cmd == "PART") // client is not chanOps or is one of many chanOps --> remove client from Channel
+		channelMsgToAll( clientSocket, channelName, RPL_PART( client->getSource(), client->getNickname(), channelName, reason ) );
+	else if (cmd == "QUIT")
+	{
+		channelMsgNotClient( clientSocket, channelName, RPL_QUIT( client->getSource(), client->getNickname(), reason ));
+		std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason << std::endl;
+	}
+	channel->removeChannelOp( client );
+	channel->removeChannelMember( client );
+	client->removeClientChannel( channelName );
 }
+
+/**
+ * @brief       Pre-check before leaving a channel: channel exists and client is joined to it
+ *
+ */
 
 bool	Server::checkChanPrePart( int clientSocket, const std::string& channelName )
 {
 	Client&	client = _clients.at( clientSocket );
 
-	// channel does not exist --> ERR_NOSUCHCHANNEL (403)
 	if ( existingChannel( channelName ) == false ) {
 		replyMsg( clientSocket, ERR_NOSUCHCHANNEL( client.getSource(), client.getNickname(), channelName ) );
 		return false ;
 	}
 
 	Channel&	channel = _channels.at( channelName );
-	// client is not joined to the channel --> ERR_NOTONCHANNEL (442)
 	if ( channel.getChannelMembers().find( client.getNickname() ) == channel.getChannelMembers().end() ) {
 		replyMsg( clientSocket, ERR_NOTONCHANNEL( client.getSource(), client.getNickname(), channelName ) );
 		return false ;

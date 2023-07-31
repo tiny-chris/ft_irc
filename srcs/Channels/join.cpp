@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 17:56:58 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:26:18 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,72 +16,12 @@
 #include "numericReplies.hpp"
 #include "utils.hpp"
 
-/**
- * @brief       JOIN command
- *
- *				syntax:		JOIN <channel>{,<channel>} [<key>{,<key>}]
- *
- *	If channel does not exist: create it, then client joins it and become chanOp
- *	If channel already exists: join channel as regular member
- *	Perform checks on channel format, mode and possibility to join it
- *
- */
-void	Server::handleJoin( int clientSocket, std::string param )
-{
-	std::vector< std::string >	tokens = splitString( param, ' ' );
-	Client						*client = &_clients.at( clientSocket );
-
-	// STEP 1 - check param size
-	if ( param.empty() || tokens.size() == 0 ) {
-		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client->getSource(), client->getNickname(), "JOIN" ) );
-		return ;
-	}
-	if ( tokens.size() > 2 ) {
-		std::cout << MSGERROR << "JOIN" << " : too many parameters for this command\n" << std::endl;
-		return ;
-	}
-	std::vector< std::string >	chanNames = splitString( tokens[ 0 ], ',' );
-	if ( !chanNames.size() ) {
-		replyMsg( clientSocket, ERR_BADCHANMASK( client->getSource(), "<empty>" ) );
-		return ;
-	}
-
-	// STEP 2 - specific case when param is only "0"
-	if ( handleJoinZero( clientSocket, tokens ) == true ) {
-		return ;
-	}
-
-	// STEP 3 -	a. check channel format, content & criteria
-	//			b. create the channel and/or add client to it
-	//			c. info displayed on channel & for client (RPL_TOPIC and NAMES)
-	for ( size_t i = 0; i < chanNames.size(); ++i ) {
-		std::string& channelName = chanNames[ i ];
-		if ( channelName.size() > CHANNELLEN )
-			channelName = channelName.substr( 0, CHANNELLEN );
-		if ( checkChanPreJoin( clientSocket, tokens, i ) == false )
-			continue ;
-		if ( !existingChannel( channelName ) )
-			createChanWithOp( clientSocket, channelName );
-
-		Channel	*channel = &_channels[ channelName ];
-		channel->addChannelMember( client );
-		if ( channel->getInviteOnlyStatus() == true )
-			channel->removeInvitedMember( client->getNickname() );
-		client->addChannel( channelName );
-
-		channelMsgToAll( clientSocket, channelName, RPL_JOIN( client->getSource(), client->getNickname(), channelName ) );
-		if ( !channel->getTopic().empty() )
-			replyMsg( clientSocket, RPL_TOPIC( client->getSource(), client->getNickname(), channelName, _channels[ channelName ].getTopic() ) );
-		handleNames( clientSocket, channelName );
-	}
-	return ;
-}
 
 /**
- * @brief       JOIN command specific case : 	JOIN 0
+ * @brief 	JOIN command specific case : 	JOIN 0
  *
- *	In this specific case, this means client leaves all channels he was joined on
- *	<--> equivalent to PART <all client channels>
+ *			This case means client leaves all channels it was joined on
+ *			<--> equivalent to PART <all client channels>
  *
  */
 bool	Server::handleJoinZero( int clientSocket, const std::vector< std::string >& tokens )
@@ -96,28 +36,57 @@ bool	Server::handleJoinZero( int clientSocket, const std::vector< std::string >&
 				leaveChannel( clientSocket, copyClientChannels[ i ], "" , "PART");
 			}
 		}
+		else
+			std::cout << MSGINFO << client->getNickname() << " isn't joined on any channel\n\n";
 		return true ;
 	}
 	return false ;
 }
 
 /**
- * @brief       Create a channel and put client as chanOp (chan creator)
+ * @brief 	Check JOIN param size: there must be 1 or 2 parameters
  *
  */
-void	Server::createChanWithOp( int clientSocket, const std::string& channelName )
+bool	Server::checkParamSize( int clientSocket, const std::string& param, const std::vector< std::string >& tokens )
 {
-	Client	*client = &_clients.at( clientSocket );
+	const std::string&	source = _clients.at( clientSocket ).getSource();
+	const std::string&	nickname = _clients.at( clientSocket ).getNickname();
 
-	_channels.insert( std::make_pair( channelName, Channel ( channelName ) ) );
-
-	Channel	*channel = &_channels[ channelName ];
-
-	channel->addChannelOps( client );
+	if ( param.empty() || tokens.size() == 0 ) {
+		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nickname, "JOIN" ) );
+		return false ;
+	}
+	if ( tokens.size() > 2 ) {
+		std::cout << MSGERROR << "JOIN : too many parameters for this command\n" << std::endl;
+		return false ;
+	}
+	return true ;
 }
 
 /**
- * @brief       Check channel format, content & criteria
+ * @brief	Check if channel name is valid
+ *
+ *			Specific case when there is no channel name (only spaces)
+ *			Check each channel --> if there is at least one channel
+ *			Valid characters: prefix '#', then alphanum and "-", "_", or "."
+ */
+
+bool	Server::isValidChanName( int clientSocket, const std::string& channelName )
+{
+	const Client&	client = _clients.at( clientSocket );
+	std::string		chanName = ( channelName.empty() ) ? "<empty>" : channelName;
+
+	if ( chanName == "<empty>" || channelName.find( CHANTYPES ) != 0
+		|| ( channelName.find( CHANTYPES ) == 0 && channelName.length() == 1 )
+		|| ( channelName.find( CHANTYPES ) == 0 && !isValidToken( chanName.substr( 1 ) ) ) ) {
+		replyMsg( clientSocket, ERR_BADCHANMASK( client.getSource(), chanName ) );
+		return false ;
+	}
+	return true ;
+}
+
+/**
+ * @brief	Check channel format, content & criteria
  *
  *	- check if the channel name is valid (start with a '#' and has valid characters)
  *	- check if the client is already on too many channels
@@ -173,24 +142,68 @@ bool	Server::checkChanPreJoin( int clientSocket, const std::vector< std::string 
 }
 
 /**
- * @brief       Check if channel name is valid
+ * @brief	Create a channel and put client as chanOp (chan creator)
  *
- *	Specific case when there is no channel name (only spaces)
- *	Check each channel --> if there is at least one channel
- *	Valid characters: prefix '#' and then alphanum and specif ones as "-", "_", or "."
  */
-bool	Server::isValidChanName( int clientSocket, const std::string& channelName )
-{
-	const Client&	client = _clients.at( clientSocket );
-	std::string		chanName = ( channelName.empty() ) ? "<empty>" : channelName;
 
-	if ( chanName == "<empty>" || channelName.find( CHANTYPES ) != 0
-		|| ( channelName.find( CHANTYPES ) == 0 && channelName.length() == 1 )
-		|| ( channelName.find( CHANTYPES ) == 0 && !isValidToken( chanName.substr( 1 ) ) ) ) {
-		replyMsg( clientSocket, ERR_BADCHANMASK( client.getSource(), chanName ) );
-		return false ;
+void	Server::createChanWithOp( int clientSocket, const std::string& channelName )
+{
+	Client	*client = &_clients.at( clientSocket );
+
+	_channels.insert( std::make_pair( channelName, Channel ( channelName ) ) );
+
+	Channel	*channel = &_channels[ channelName ];
+
+	channel->addChannelOps( client );
+}
+
+/**
+ * @brief	JOIN command
+ *			syntax:	JOIN <channel>{,<channel>} [<key>{,<key>}]
+ *
+ *			If channel does not exist: create it, then client joins it and 
+ *			become chanOp
+ *			If channel already exists: join channel as regular member
+ *			Perform checks on channel format, mode and possibility to join it
+ *
+ */
+void	Server::handleJoin( int clientSocket, std::string param )
+{
+	Client						*client = &_clients.at( clientSocket );
+	const std::string&			source = client->getSource();
+	const std::string&			nickname = client->getNickname();
+	std::vector< std::string >	tokens = splitString( param, ' ' );
+
+	if ( checkParamSize( clientSocket, param, tokens ) == false 
+		|| handleJoinZero( clientSocket, tokens ) == true )
+		return ;
+	std::vector< std::string >	chanNames = splitString( tokens[ 0 ], ',' );
+	if ( !chanNames.size() ) {
+		replyMsg( clientSocket, ERR_BADCHANMASK( client->getSource(), "<empty>" ) );
+		return ;
 	}
-	return true ;
+
+	for ( size_t i = 0; i < chanNames.size(); ++i ) {
+		std::string& channelName = chanNames[ i ];
+		if ( channelName.size() > CHANNELLEN )
+			channelName = channelName.substr( 0, CHANNELLEN );
+		if ( checkChanPreJoin( clientSocket, tokens, i ) == false )
+			continue ;
+		if ( !existingChannel( channelName ) )
+			createChanWithOp( clientSocket, channelName );
+
+		Channel	*channel = &_channels[ channelName ];
+		channel->addChannelMember( client );
+		if ( channel->getInviteOnlyStatus() == true )
+			channel->removeInvitedMember( nickname );
+		client->addChannel( channelName );
+
+		channelMsgToAll( clientSocket, channelName, RPL_JOIN( source, nickname, channelName ) );
+		if ( !channel->getTopic().empty() )
+			replyMsg( clientSocket, RPL_TOPIC( source, nickname, channelName, _channels[ channelName ].getTopic() ) );
+		handleNames( clientSocket, channelName );
+	}
+	return ;
 }
 
 /* ****************************** ***
