@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/28 16:03:29 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:08:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 #include "utils.hpp"
+
+
+/**
+ * @brief       Checks the user is registered
+ *              Valid password + valid nickname + valid username
+ *              If he is the first user registered he is set as a server operator
+ */
 
 void Server::checkRegistration( int clientSocket ) {
   if( _clients.at( clientSocket ).getPassStatus() == true
@@ -26,8 +33,7 @@ void Server::checkRegistration( int clientSocket ) {
                   _clients.at( clientSocket ).getUsername() );
     std::cout << MSGINFO << _clients.at( clientSocket ).getNickname();
     std::cout << " is now registered!" << std::endl;
-    // DISPLAY WELCOME MESSAGES
-    sendWelcomeMsg( clientSocket );
+    sendWelcomeMsg( clientSocket ); // DISPLAY WELCOME MESSAGES
     sendLusersMsg( clientSocket );  // EQUIVALENT OF LUSERS received
     sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD command received
     if (_clients.size() == 1) {
@@ -37,6 +43,11 @@ void Server::checkRegistration( int clientSocket ) {
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
   }
 }
+
+/**
+ * @brief       Displays the welcome messages, after registration
+ *   
+ */
 
 void Server::sendWelcomeMsg( int clientSocket ) {
   std::time_t t = std::time( 0 );
@@ -56,6 +67,11 @@ void Server::sendWelcomeMsg( int clientSocket ) {
   replyMsg( clientSocket, RPL_ISUPPORT( source, nick, getSupportToken() ), 0 );
 }
 
+/**
+ * @brief      Gets tokens for RPL_ISUPPORT
+ *             (parameters supported by the server)
+ */
+
 std::string Server::getSupportToken() const {
   std::stringstream token;
   token << " CHANLIMIT=#:" << CHANLIMIT << " ";
@@ -70,6 +86,11 @@ std::string Server::getSupportToken() const {
   token << " TOPICLEN=" << TOPICLEN << " ";
   return ( token.str() );
 }
+
+/**
+ * @brief       Displays statistics about local 
+ *              and global users, as numeric replies.
+ */
 
 void Server::sendLusersMsg( int clientSocket ) {
   std::stringstream nbrClients;
@@ -90,6 +111,10 @@ void Server::sendLusersMsg( int clientSocket ) {
             0 );
 }
 
+/**
+ * @brief       Gets the “Message of the Day” of the given server
+ */
+
 void Server::sendMotdMsg( int clientSocket ) {
   std::string   source = _clients.at( clientSocket ).getSource();
   std::string   nick = _clients.at( clientSocket ).getNickname();
@@ -107,6 +132,10 @@ void Server::sendMotdMsg( int clientSocket ) {
   replyMsg( clientSocket, RPL_ENDOFMOTD( source, nick ), 0 );
 }
 
+/**
+ * @brief       Gets the number of operators of the server
+ */
+
 std::string Server::getOpsNbr( void )
 {
   int countOps = 0;
@@ -117,9 +146,17 @@ std::string Server::getOpsNbr( void )
   return ( intToString( countOps ) );
 }
 
+/**
+ * @brief       Gets the number of channels on server
+ */
+
 std::string Server::getChannelNbr( void ) {
   return ( intToString( _channels.size() ) );
 }
+
+/**
+ * @brief       Gets the number of unknown state users (non registered clients)
+ */
 
 std::string Server::getUnknownStateUsers( void ) {
   int countUnknownState = 0;
@@ -130,6 +167,11 @@ std::string Server::getUnknownStateUsers( void ) {
   }
   return ( intToString( countUnknownState ) );
 }
+
+/**
+ * @brief       Gets the number of invisible user on the server 
+ *              (user mode +i)
+ */
 
 std::string Server::getInvisibleUserNbr( void ) {
   int countInvisibleUSer = 0;

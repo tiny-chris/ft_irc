@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:18:54 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/18 18:19:58 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 13:48:01 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,7 @@ void checkArgs( int argc, char** argv ) {
 int main( int argc, char** argv ) {
   signal( SIGINT, signalHandler );
   try {
-    /* ***** CHECK NB of ARG and VALUES OF ARGV[1] & ARGV[2] ***** */
     checkArgs( argc, argv );
-    /* if incorrect --> throw an exception invalid_argument */
-
-    /* ***** INIT REQUIRED PARAMETERS FOR THE SERVER CLASS ***** */
-    /* Classe Server avec 2 params: port et password, garder password en char*
-     */
     std::size_t port = std::atoi( argv[1] );
     const char* password = argv[2];
 

@@ -172,28 +172,6 @@ void Server::disconnectAClient( int clientSocket ) {
   _disconnectedClients.push_back( static_cast<int>( clientSocket ) );
 }
 
-// /**
-//  * @brief       Broadcasts a message to all connected clients except the
-//  *              sender
-//  */
-
-// void Server::broadcastMsg( std::string& msg, int clientSocket ) {
-//   std::map<int, Client>::const_iterator it;
-//   int                                   recipient;
-
-//   msg = _clients.at( clientSocket ).getNickname() + ": " + msg + "\n";
-//   for( it = _clients.begin(); it != _clients.end(); ++it ) {
-//     recipient = it->first;
-//     if( recipient != _serverSocket && recipient != clientSocket ) {
-//       if( send( recipient, msg.c_str(), msg.length(), 0 ) < 0 ) {
-//         std::string message = "send: " + std::string( strerror( errno ) );
-//         throw std::runtime_error( message );
-//       }
-//     }
-//   }
-//   std::cout << msg;
-// }
-
 /**
  * @brief       Broadcasts a message that says that the server shut down to all
  *              connected clients
@@ -252,6 +230,12 @@ void Server::replyMsg( int clientSocket, std::string reply,
 
 /**
  * @brief       Handle request by identifying command and parameters
+ *              ACTION 1   - get command & params
+ *              ACTION 2   - check the case when the client is disconnected and return
+ *              ACTION 3   - check if 'command' is part of the _commands and get the
+ *              command key
+ *              ACTION 4   - if 'command' is in _commands (authentifiers PASS, NICK, USER first)
+ *              ACTION 5   - handle command
  */
 
 void Server::handleRequest( int clientSocket, std::string request ) {
@@ -265,53 +249,21 @@ void Server::handleRequest( int clientSocket, std::string request ) {
     std::cout << _clients.at( clientSocket ).getNickname() << " ";
   }
   std::cout << "on socket " << clientSocket << " ]-----\n";
-  // std::cout << "-----client [" <<  << " ";
-  // std::cout << _clients.at( clientSocket ).getNickname() << "]-----\n" ;
   std::cout << "request: <" << request << ">" << std::endl;
-
   splitter = request.find( ' ', 0 );
 
-  /* ********************************* */
-  /* ACTION 1   - get command & params */
-  /* ********************************* */
-  // if <request> has no space --> command is request string
-  // else --> split command & parameters
   if( splitter != std::string::npos ) {
     command = request.substr( 0, splitter );
     parameters = request.substr( splitter + 1, std::string::npos );
   }
   else
     command = request;
-
-  /* ********************************* */
-  /* ACTION 2   - check the case when the client is disconnected and return */
-  /* ********************************* */
-  //   /* TODO:  prévoir le cas où le client est / a été déconnecté et breaker
-  //   */
-
-  /* ********************************* */
-  /* ACTION 3   - check if 'command' is part of the _commands and get the
-   * command key */
-  /* ********************************* */
   for( mapCommands::const_iterator it = _commands.begin();
        it != _commands.end(); ++it ) {
     if( command == it->second ) {
       commandKey = it->first;
     }
   }
-
-  /* ********************************* */
-  /* ACTION 4   - if 'command' is in _commands */
-  /* ********************************* */
-  //
-  //  SUB-ACTION 4.1   - 'PASS' must be the first command entered, if not -->
-  //  return (numeric_reply ??) SUB-ACTION 4.2   - if command is NOT an
-  //  authentifier (PASS, NICK, USER) or QUIT and if client is not registered
-  //  yet --> ERR_NOTREGISTERED
-  //
-  //    ???? QUESTION ????  pour 'quit' --> doit-on etre registered ? idem
-  //    pour potentiel shutdown
-  //
   if( commandKey != UNDEFINED && commandKey != CAP ) {
     if( command != "PASS"
         && _clients.at( clientSocket ).getPassStatus() == false ) {
@@ -326,13 +278,6 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       return;
     }
   }
-
-  /* ********************************* */
-  /* ACTION 5   - handle command */
-  /* ********************************* */
-  // This message is not required for a server implementation to work, but
-  // SHOULD be implemented. If a command is not implemented, it MUST return
-  // the ERR_UNKNOWNCOMMAND (421) numeric.
   switch( commandKey ) {
     case CAP:
       std::cout << std::endl;
@@ -394,42 +339,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
         std::cout << MSGINFO << "request is empty\n" << std::endl;
     } break;
   }
-
-  // /*  ************************************  */
-  // /*    POUR CHECKER LES DATA CLIENTS !     */
-  // /*  ************************************  */
-  // std::cout << "\n\t *** CHECK CLIENT DATA (apres requete): ***\n";
-  // std::cout << "\t client's getPassStatus <"
-  //           << _clients.at( clientSocket ).getPassStatus() << ">\n";
-  // std::cout << "\t client's getNickStatus <"
-  //           << _clients.at( clientSocket ).getNickStatus() << ">\n";
-  // std::cout << "\t client's getIfRegistered <"
-  //           << _clients.at( clientSocket ).getIfRegistered() << ">\n";
-  // std::cout << "\t client's getInvisibleMode <"
-  //           << _clients.at( clientSocket ).getInvisibleMode() << ">\n";
-
-  // std::cout << "\t client's getNickname <"
-  //           << _clients.at( clientSocket ).getNickname() << ">\n";
-  // std::cout << "\t client's getUsername <"
-  //           << _clients.at( clientSocket ).getUsername() << ">\n";
-  // std::cout << "\t client's getRealname <"
-  //           << _clients.at( clientSocket ).getRealname() << ">\n";
-  // std::cout << "\t client's getSource <"
-  //           << _clients.at( clientSocket ).getSource() << ">\n";
-  // std::cout << std::endl;
-  // /*  ************************************  */
-  // /*  ************************************  */
 }
-
-/**
-//  * @brief       Remove the clients from every channel when it is disconnected.
-//  */
-
-// void  Server::removeAClient( int clientSocket )
-// {
-//   Client *toRemove = _clients.at( clientSocket );
-
-// }
 
 /**
  * @brief       Handles communication with existing clients.
@@ -457,8 +367,6 @@ void Server::handleExistingClient( int clientSocket ) {
   // Turn "^M\n" into "\0" TODO OS compatibility
   // faire un pour verifier que ca finit bien par un
   bufs[clientSocket] += buf;
-  // std::cout << "|INFO| initial buf: " << bufs[clientSocket] <<
-  // std::endl;
   while( bufs[clientSocket].size() >= 2
          && bufs[clientSocket].find( CRLF ) != std::string::npos ) {
     isClear = true;
