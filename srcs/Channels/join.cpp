@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 15:26:18 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:29:08 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,56 +204,4 @@ void	Server::handleJoin( int clientSocket, std::string param )
 		handleNames( clientSocket, channelName );
 	}
 	return ;
-}
-
-/* ****************************** ***
-** CHANNEL MESSAGE TO ALL MEMBERS ***
-** ****************************** ***
-*/
-void	Server::channelMsgToAll( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	channelMsgNotClient( clientSocket, channelName, message );
-	replyMsg( clientSocket, message, 0 );
-}
-
-/* ******************************* ***
-** CHANNEL MESSAGE TO CHANOPS ONLY ***
-** ******************************* ***
-*/
-void	Server::channelMsgToChanOps( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	Channel&							channel = _channels.at( channelName );
-	Channel::mapClientsPtr::iterator	it;
-	int									socket;
-
-	for ( it = channel.getChannelOps().begin() ; it != channel.getChannelOps().end() ; ++it )
-	{
-		socket = it->second->getFd();
-		if ( socket != clientSocket ) {
-			replyMsg( socket, message, 0 );
-		}
-	}
-	// displays reply message on the server only once
-	std::cout << MSGREPLY << message << std::endl;
-}
-
-/* ******************************************** ***
-** CHANNEL MESSAGE TO ALL MEMBERS EXCEPT CLIENT ***
-** ******************************************** ***
-*/
-void	Server::channelMsgNotClient( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	Channel&							channel = _channels.at( channelName );
-	Channel::mapClientsPtr::iterator	it;
-	int									socket;
-
-	for ( it = channel.getChannelMembers().begin() ; it != channel.getChannelMembers().end() ; ++it )
-	{
-		socket = it->second->getFd();
-		if ( socket != clientSocket ) {
-			replyMsg( socket, message, 0 );
-		}
-	}
-	// displays reply message on the server only once
-	std::cout << MSGREPLY << message << std::endl;
 }
