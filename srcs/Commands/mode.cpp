@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 11:18:55 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:49:37 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 #include "numericReplies.hpp"
 
 /**
- * @brief       The MODE command is used to set or remove options (or modes) from a given target.
+ * @brief       MODE command
+ *              MODE <target> [<modestring> [<mode arguments>...]]
+ * 
+ *              Sets or removes options (or modes) from a given target.
  *              2 types of tagets : Channel and User
  */
 
