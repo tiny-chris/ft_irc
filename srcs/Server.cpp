@@ -30,7 +30,7 @@
 #include "Server.hpp"
 #include "Utility.hpp"
 
-/*  CANON ------------------------------------------- */
+/* CONSTRUCTORS ***************************************************************/
 
 Server::Server( void )
   : _port( 0 ),
@@ -68,10 +68,14 @@ Server::Server( const Server& src )
   _disconnectedClients = src._disconnectedClients;
 }
 
+/* DESTRUCTORS ****************************************************************/
+
 Server::~Server( void ) {
   stop();
   std::cout << MSGINFO << "Server shutting down...\n";
 }
+
+/* OVERLOADS ******************************************************************/
 
 Server& Server::operator=( Server const& rhs ) {
   std::map<int, Client>::const_iterator it;

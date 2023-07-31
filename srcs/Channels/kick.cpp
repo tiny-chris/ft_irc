@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/28 17:23:54 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 12:21:26 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 #include "numericReplies.hpp"
 
 /**
- * @brief       Command that kicks a client off of a Channel
+ * @brief       KICK command
+ * 				KICK <channel> <user> *( "," <user> ) [<comment>]
+ * 				
+ * 				Kicks a client off of a Channel
  *              - Checks the parameters are valid (number, channel name)
  * 				- Check if client has the right to kick on this channel
  * 				- Kicks at most TARGMAXKICK clients of the channel if they are on it
@@ -43,7 +46,7 @@ void        Server::handleKick( int clientSocket, std::string param ) {
 		replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
 		return ;
 	}
-	if ( !chan->checkChannelOps( nick ) ) { // checks if the client has chanops privileges to kick
+	if ( !chan->checkChannelOps( nick ) && !_clients.at( clientSocket ).getOperatorMode() ) { // checks if the client has chanops privileges to kick
 		replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
 		return ;
 	}
@@ -88,7 +91,7 @@ void	Server::kickUser(int clientSocket, Channel *chan, std::string nick, std::st
 		clientToKick->removeClientChannel( channelName ); // deletes the channel name from clientchannel vector
 		return ;
 	}
-	if ( isLastOperator && toKick == nick) {
+	if ( isLastOperator ) {
 		changeChannelOperator(clientSocket, clientToKick, chan);
 	}
 	channelMsgToAll( clientSocket, channelName, DEFAULTKICK( nick, channelName, toKick, reason ));
@@ -137,8 +140,11 @@ void        Server::changeChannelOperator(int clientSocket, Client *toLeave, Cha
 			break ;
 		}
 	}
-	std::string	toBeChanOpName = toBeChanOp->getNickname();
-	std::string	param = chan->getChannelName() + " +o " + toBeChanOpName;
-	handleMode( clientSocket, param );
+	if (toBeChanOp != NULL)
+	{
+		std::string	toBeChanOpName = toBeChanOp->getNickname();
+		std::string	param = chan->getChannelName() + " +o " + toBeChanOpName;
+		handleMode( clientSocket, param );
+	}
 	return ;
 }

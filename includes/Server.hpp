@@ -85,8 +85,11 @@ class Server {
   /* ********* MODE CMD ******* */
   void handleMode( int clientSocket, std::string param );
   void handleUserMode( int clientSocket, std::vector<std::string>& tokens );
+  void updateUserMode(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
+  void displayUserModeChanges(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
   void handleChannelMode( int clientSocket, std::string& channelName,
                           const std::vector<std::string>& tokens );
+  void updateChannelMode(Channel *chan, const std::vector<std::string> & tokens, std::string &modeChange, std::string &modeArgs);
   bool existingChannel( std::string param );
   char getModePrefix( std::string const& token );
   /* ********* KICK CMD ******* */
