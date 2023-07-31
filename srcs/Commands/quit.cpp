@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:14:38 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 14:53:33 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:37:30 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 
-// supprimer de tous les channels existants.
-/*	- en tant que Channel Member
-	- en tant que Channop
-	- en tant qu'InvitedMember
-	- si c'est le dernier membre d'un channel supprimer le channel
-*/
+/**
+ * @brief       QUIT command
+ * 				syntax: QUIT [<reason>]
+ * 
+ * 				The client quits the server and every channel he joined.
+ * 				All channel members receive a reply saying that client left the channel
+ * 				if client is the last chanop, a new one is asigned but default  
+ */
+
 void	Server::handleQuit( int clientSocket, std::string param ) {
 	std::vector<std::string> tokens = splitString( param, ' ' );
 	std::string reason;
