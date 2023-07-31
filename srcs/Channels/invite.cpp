@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 13:05:13 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/24 17:25:51 by codespace        ###   ########.fr       */
+/*   Updated: 2023/07/31 11:40:53 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 #include "numericReplies.hpp"
 
 /**
- * @brief       Command that allows to invite a client on a Channel
+ * @brief       INVITE command
+ *              INVITE <nickname> <channel>
+ *             
+ *               Invites a client on a Channel
  *              - Checks rights to invite
  *              - Checks on invited client
  *              - Invites client on channel
