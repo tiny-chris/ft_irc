@@ -143,6 +143,16 @@ void Server::stop( void ) {
   Utility::closeFd( _serverSocket );
 }
 
+int	Server::findClientFd( const std::string& name )
+{
+	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
+		if ( it->second.getNickname() == name )
+			return ( it->second.getFd() );
+	}
+	return -1 ;
+}
+
+
 /**
  * @brief       Checks if the new nickname has already been assigned
  *              to another client
@@ -155,6 +165,17 @@ bool  Server::existingNick( std::string param ) {
     }
   }
   return false;
+}
+
+/**
+ * @brief       Checks if the Channel exists on the server
+ */
+
+bool		Server::existingChannel(std::string param) {
+    if (_channels.find(param) != _channels.end()) {
+        return true;
+    }
+    return false;
 }
 
 /**

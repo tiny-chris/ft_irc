@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 15:18:39 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 15:32:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,6 @@ void    Server::displayUserModeChanges(Client *client, const std::vector<std::st
             diff--;
         }
     }
-}
-
-/**
- * @brief       Checks if the Channel exists on the server
- */
-
-bool		Server::existingChannel(std::string param) {
-    if (_channels.find(param) != _channels.end()) {
-        return true;
-    }
-    return false;
 }
 
 /**
