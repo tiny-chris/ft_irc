@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 18:43:09 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 13:56:28 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,6 @@ enum commands {
 	SQUIT = 1000,
 	KILL = 1002
 };
-// 	// NOTICE,
-// 	// LIST,
-// 	// PONG,
-// 	// WHO,
-// 	// WHOIS,
-// 	// WHOWAS,
-// 	// OPER
 
 bool						isValidUser( std::string name );
 bool						isValidParam( std::string name );
