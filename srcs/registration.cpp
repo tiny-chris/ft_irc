@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 15:03:07 by lmelard          ###   ########.fr       */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
  * @brief       Gets the number of operators of the server
  */
 
-std::string Server::getOpsNbr( void )
-{
+std::string Server::getOpsNbr( void ) {
   int countOps = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-    if (it->second.getOperatorMode() == true)
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       it++ ) {
+    if( it->second.getOperatorMode() == true )
       countOps++;
   }
   return ( intToString( countOps ) );
@@ -35,7 +35,7 @@ std::string Server::getOpsNbr( void )
  */
 
 std::string Server::getChannelNbr( void ) {
-  return ( intToString( _channels.size() ) );
+  return ( intToString( static_cast<int>( _channels.size() ) ) );
 }
 
 /**
@@ -44,8 +44,9 @@ std::string Server::getChannelNbr( void ) {
 
 std::string Server::getUnknownStateUsers( void ) {
   int countUnknownState = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-    if (it->second.getIfRegistered() == false) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       it++ ) {
+    if( it->second.getIfRegistered() == false ) {
       countUnknownState++;
     }
   }
@@ -53,14 +54,15 @@ std::string Server::getUnknownStateUsers( void ) {
 }
 
 /**
- * @brief       Gets the number of invisible user on the server 
+ * @brief       Gets the number of invisible user on the server
  *              (user mode +i)
  */
 
 std::string Server::getInvisibleUserNbr( void ) {
   int countInvisibleUSer = 0;
-  for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-    if (it->second.getInvisibleMode()) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       it++ ) {
+    if( it->second.getInvisibleMode() ) {
       countInvisibleUSer++;
     }
   }
@@ -89,7 +91,7 @@ std::string Server::getSupportToken() const {
 
 /**
  * @brief       Displays the welcome messages, after registration
- *   
+ *
  */
 
 void Server::sendWelcomeMsg( int clientSocket ) {
@@ -111,7 +113,7 @@ void Server::sendWelcomeMsg( int clientSocket ) {
 }
 
 /**
- * @brief       Displays statistics about local 
+ * @brief       Displays statistics about local
  *              and global users, as numeric replies.
  */
 
@@ -122,16 +124,16 @@ void Server::sendLusersMsg( int clientSocket ) {
   std::string source = _clients.at( clientSocket ).getSource();
   std::string nick = _clients.at( clientSocket ).getNickname();
 
-  replyMsg( clientSocket, RPL_LUSERCLIENT( source, nick, nbrClients.str(), getInvisibleUserNbr() ),
-            0 );
-  replyMsg( clientSocket, RPL_LUSEROP( source, nick, getOpsNbr() ),
-            0 );
-  replyMsg( clientSocket, RPL_LUSERUNKNOWN( source, nick, getUnknownStateUsers() ),
-            0 );
+  replyMsg(
+    clientSocket,
+    RPL_LUSERCLIENT( source, nick, nbrClients.str(), getInvisibleUserNbr() ),
+    0 );
+  replyMsg( clientSocket, RPL_LUSEROP( source, nick, getOpsNbr() ), 0 );
+  replyMsg( clientSocket,
+            RPL_LUSERUNKNOWN( source, nick, getUnknownStateUsers() ), 0 );
   replyMsg( clientSocket, RPL_LUSERCHANNELS( source, nick, getChannelNbr() ),
             0 );
-  replyMsg( clientSocket, RPL_LUSERME( source, nick, nbrClients.str() ),
-            0 );
+  replyMsg( clientSocket, RPL_LUSERME( source, nick, nbrClients.str() ), 0 );
 }
 
 /**
@@ -158,7 +160,8 @@ void Server::sendMotdMsg( int clientSocket ) {
 /**
  * @brief       Checks the user is registered
  *              Valid password + valid nickname + valid username
- *              If he is the first user registered he is set as a server operator
+ *              If he is the first user registered he is set as a server
+ * operator
  */
 
 void Server::checkRegistration( int clientSocket ) {
@@ -171,12 +174,14 @@ void Server::checkRegistration( int clientSocket ) {
                   _clients.at( clientSocket ).getUsername() );
     std::cout << MSGINFO << _clients.at( clientSocket ).getNickname();
     std::cout << " is now registered!" << std::endl;
-    sendWelcomeMsg( clientSocket ); // DISPLAY WELCOME MESSAGES
-    sendLusersMsg( clientSocket );  // EQUIVALENT OF LUSERS received
-    sendMotdMsg( clientSocket );    // EQUIVALENT OF MOTD command received
-    if (_clients.size() == 1) {
-      handleMode( clientSocket, _clients.at( clientSocket ).getNickname() + " +o");
-      std::cout << MSGINFO << "operator mode = " << _clients.at( clientSocket ).getOperatorMode() << std::endl;
+    sendWelcomeMsg( clientSocket );  // DISPLAY WELCOME MESSAGES
+    sendLusersMsg( clientSocket );   // EQUIVALENT OF LUSERS received
+    sendMotdMsg( clientSocket );     // EQUIVALENT OF MOTD command received
+    if( _clients.size() == 1 ) {
+      handleMode( clientSocket,
+                  _clients.at( clientSocket ).getNickname() + " +o" );
+      std::cout << MSGINFO << "operator mode = "
+                << _clients.at( clientSocket ).getOperatorMode() << std::endl;
     }
     std::cout << MSGINFO << "welcome message displayed" << std::endl;
   }

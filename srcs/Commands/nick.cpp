@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/03 15:16:17 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/31 15:24:25 by lmelard          ###   ########.fr       */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Client.hpp"
-#include "Socket.hpp"
 #include "utils.hpp"
 #include "defines.hpp"
 #include "numericReplies.hpp"
@@ -20,9 +19,9 @@
 
 /**
  * @brief       Checks if the nickname format is valid
- *              Allows all alphanumerical characters, 
- *              square and curly brackets ([]{}), 
- *              backslashes (\), and pipe (|) 
+ *              Allows all alphanumerical characters,
+ *              square and curly brackets ([]{}),
+ *              backslashes (\), and pipe (|)
  *              no leading # character, leading colon (:), ASCII space
  */
 
@@ -87,7 +86,7 @@ void  Server::updateInvitedMembersNick( std::string &oldNickname, std::string ni
 }
 
 /**
- * @brief       Updates the client source and 
+ * @brief       Updates the client source and
  *              nickname in all the client's Channels
  */
 
@@ -101,7 +100,7 @@ void  Server::updateNickInChannels( int clientSocket, std::string nick, std::str
 }
 
 /**
- * @brief       Updates the nickname in Client with the new 
+ * @brief       Updates the nickname in Client with the new
  *              valid nickname
  */
 
@@ -138,7 +137,7 @@ void  Server::handleExistingNick(int clientSocket, std::string newNick)
 /**
  * @brief       NICK command
  *              NICK <nickname>
- * 
+ *
  *              Changes the nickname of a Client
  *              - Checks if the parameter are valid
  *              - Checks if the new nickname is already in use
@@ -149,7 +148,7 @@ void		Server::handleNick( int clientSocket, std::string param ) {
   Client *client = &_clients.at( clientSocket );
   std::string source = client->getSource();
 	std::string nick = client->getNickname();
-  std::vector<std::string> tokens = splitString( param, ' ' ); 
+  std::vector<std::string> tokens = splitString( param, ' ' );
   if ( param.empty() ) {
     replyMsg(clientSocket, ERR_NONICKNAMEGIVEN(source, nick));
     return ;
@@ -166,7 +165,7 @@ void		Server::handleNick( int clientSocket, std::string param ) {
   updateNickname( clientSocket, nick, newNick );
   if ( !client->getIfRegistered() ) {
     checkRegistration( clientSocket );
-    return ; 
+    return ;
   }
   updateNickInChannels(clientSocket, nick, newNick );
   std::cout << std::endl;

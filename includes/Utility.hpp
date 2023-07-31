@@ -1,7 +1,14 @@
-/* includes/Utility */
-/* Created: 230717 17:03:21 by cvidon@paul-f3Br9s2.clusters.42paris.fr */
-/* Updated: 230717 17:03:21 by cvidon@paul-f3Br9s2.clusters.42paris.fr */
-/* Maintainer: Clément Vidon */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Utility.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef UTILITY_HPP_
 #define UTILITY_HPP_
@@ -21,8 +28,8 @@ class Utility {
   virtual ~Utility( void );
   /* Utility& operator=( Utility const& rhs ); */
 
-  static void        closeFd( int& fd );
-  static bool        fdIsValid( int fd );
+  static void closeFd( int& fd );
+  static bool fdIsValid( int fd );
 
   static int         stringToInt( const std::string& str );
   static std::string intToString( int number );
@@ -32,4 +39,3 @@ class Utility {
 };
 
 #endif  // UTILITY_HPP_
-

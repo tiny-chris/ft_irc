@@ -1,16 +1,12 @@
-/* srcs/Server */
-/* Created: 230725 07:55:18 by clem@spectre */
-/* Updated: 230725 07:55:18 by clem@spectre */
-/* Maintainer: Clément Vidon */
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 14:40:23 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/24 18:44:22 by codespace        ###   ########.fr       */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,15 +115,15 @@ std::string Server::getPassword( void ) const { return _password; }
  *              and return a pointer to the client
  */
 
-Client* Server::getClientByNickname(const std::string& nickname) {
-    for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-        if (it->second.getNickname() == nickname) {
-            return (&it->second);
-        }
+Client* Server::getClientByNickname( const std::string& nickname ) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       it++ ) {
+    if( it->second.getNickname() == nickname ) {
+      return ( &it->second );
     }
-    return NULL;
+  }
+  return NULL;
 }
-
 
 /*  IMPLEMENTATION ---------------------------------- */
 
@@ -143,24 +139,24 @@ void Server::stop( void ) {
   Utility::closeFd( _serverSocket );
 }
 
-int	Server::findClientFd( const std::string& name )
-{
-	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
-		if ( it->second.getNickname() == name )
-			return ( it->second.getFd() );
-	}
-	return -1 ;
+int Server::findClientFd( const std::string& name ) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       ++it ) {
+    if( it->second.getNickname() == name )
+      return ( it->second.getFd() );
+  }
+  return -1;
 }
-
 
 /**
  * @brief       Checks if the new nickname has already been assigned
  *              to another client
  */
 
-bool  Server::existingNick( std::string param ) {
-  for (mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-    if (it->second.getNickname() == param ) {
+bool Server::existingNick( std::string param ) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end();
+       ++it ) {
+    if( it->second.getNickname() == param ) {
       return true;
     }
   }
@@ -171,11 +167,11 @@ bool  Server::existingNick( std::string param ) {
  * @brief       Checks if the Channel exists on the server
  */
 
-bool		Server::existingChannel(std::string param) {
-    if (_channels.find(param) != _channels.end()) {
-        return true;
-    }
-    return false;
+bool Server::existingChannel( std::string param ) {
+  if( _channels.find( param ) != _channels.end() ) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -184,22 +180,22 @@ bool		Server::existingChannel(std::string param) {
  * 				Channel cannot remain without a chanop
  */
 
-void        Server::changeChannelOperator(int clientSocket, Client *toLeave, Channel *chan)
-{
-	Client								*toBeChanOp = NULL;
-	for ( mapClientsPtr::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++) {
-		if ( it->second != toLeave ) {
-			toBeChanOp = it->second;
-			break ;
-		}
-	}
-	if (toBeChanOp != NULL)
-	{
-		std::string	toBeChanOpName = toBeChanOp->getNickname();
-		std::string	param = chan->getChannelName() + " +o " + toBeChanOpName;
-		handleMode( clientSocket, param );
-	}
-	return ;
+void Server::changeChannelOperator( int clientSocket, Client* toLeave,
+                                    Channel* chan ) {
+  Client* toBeChanOp = NULL;
+  for( mapClientsPtr::iterator it = chan->getChannelMembers().begin();
+       it != chan->getChannelMembers().end(); it++ ) {
+    if( it->second != toLeave ) {
+      toBeChanOp = it->second;
+      break;
+    }
+  }
+  if( toBeChanOp != NULL ) {
+    std::string toBeChanOpName = toBeChanOp->getNickname();
+    std::string param = chan->getChannelName() + " +o " + toBeChanOpName;
+    handleMode( clientSocket, param );
+  }
+  return;
 }
 
 /**
@@ -249,18 +245,18 @@ void Server::disconnectAClient( int clientSocket ) {
  * @brief       Broadcasts a message that says that the server shut down to all
  *              connected clients
  */
-void   Server::broadcastQuitToAll( void )
-{
-  for (mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it)
-      replyMsg( it->second.getFd(), RPL_QUIT(it->second.getSource(), "", "Disconnected from server"), 0);
+void Server::broadcastQuitToAll( void ) {
+  for( mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it )
+    replyMsg(
+      it->second.getFd(),
+      RPL_QUIT( it->second.getSource(), "", "Disconnected from server" ), 0 );
 }
 
 /**
  * @brief       Broadcasts a message to all connected clients including the
  *              sender
  */
-void Server::broadcastMsgToAll( int clientSocket, const std::string& message )
-{
+void Server::broadcastMsgToAll( int clientSocket, const std::string& message ) {
   broadcastMsgNotClient( clientSocket, message );
   replyMsg( clientSocket, message, 0 );
 }
@@ -269,10 +265,10 @@ void Server::broadcastMsgToAll( int clientSocket, const std::string& message )
  * @brief       Broadcasts a message to all connected clients except the
  *              sender
  */
-void Server::broadcastMsgNotClient( int clientSocket, const std::string& message )
-{
-  mapClients::const_iterator	it;
-  int   					            socket;
+void Server::broadcastMsgNotClient( int                clientSocket,
+                                    const std::string& message ) {
+  mapClients::const_iterator it;
+  int                        socket;
 
   for( it = _clients.begin(); it != _clients.end(); ++it ) {
     socket = it->first;
@@ -283,57 +279,58 @@ void Server::broadcastMsgNotClient( int clientSocket, const std::string& message
   std::cout << MSGREPLY << message << std::endl;
 }
 
-
 /* ****************************** ***
 ** CHANNEL MESSAGE TO ALL MEMBERS ***
 ** ****************************** ***
 */
-void	Server::channelMsgToAll( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	channelMsgNotClient( clientSocket, channelName, message );
-	replyMsg( clientSocket, message, 0 );
+void Server::channelMsgToAll( int clientSocket, const std::string& channelName,
+                              const std::string& message ) {
+  channelMsgNotClient( clientSocket, channelName, message );
+  replyMsg( clientSocket, message, 0 );
 }
 
 /* ******************************* ***
 ** CHANNEL MESSAGE TO CHANOPS ONLY ***
 ** ******************************* ***
 */
-void	Server::channelMsgToChanOps( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	Channel&							channel = _channels.at( channelName );
-	Channel::mapClientsPtr::iterator	it;
-	int									socket;
+void Server::channelMsgToChanOps( int                clientSocket,
+                                  const std::string& channelName,
+                                  const std::string& message ) {
+  Channel&                         channel = _channels.at( channelName );
+  Channel::mapClientsPtr::iterator it;
+  int                              socket;
 
-	for ( it = channel.getChannelOps().begin() ; it != channel.getChannelOps().end() ; ++it )
-	{
-		socket = it->second->getFd();
-		if ( socket != clientSocket ) {
-			replyMsg( socket, message, 0 );
-		}
-	}
-	// displays reply message on the server only once
-	std::cout << MSGREPLY << message << std::endl;
+  for( it = channel.getChannelOps().begin();
+       it != channel.getChannelOps().end(); ++it ) {
+    socket = it->second->getFd();
+    if( socket != clientSocket ) {
+      replyMsg( socket, message, 0 );
+    }
+  }
+  // displays reply message on the server only once
+  std::cout << MSGREPLY << message << std::endl;
 }
 
 /* ******************************************** ***
 ** CHANNEL MESSAGE TO ALL MEMBERS EXCEPT CLIENT ***
 ** ******************************************** ***
 */
-void	Server::channelMsgNotClient( int clientSocket, const std::string& channelName, const std::string& message )
-{
-	Channel&							channel = _channels.at( channelName );
-	Channel::mapClientsPtr::iterator	it;
-	int									socket;
+void Server::channelMsgNotClient( int                clientSocket,
+                                  const std::string& channelName,
+                                  const std::string& message ) {
+  Channel&                         channel = _channels.at( channelName );
+  Channel::mapClientsPtr::iterator it;
+  int                              socket;
 
-	for ( it = channel.getChannelMembers().begin() ; it != channel.getChannelMembers().end() ; ++it )
-	{
-		socket = it->second->getFd();
-		if ( socket != clientSocket ) {
-			replyMsg( socket, message, 0 );
-		}
-	}
-	// displays reply message on the server only once
-	std::cout << MSGREPLY << message << std::endl;
+  for( it = channel.getChannelMembers().begin();
+       it != channel.getChannelMembers().end(); ++it ) {
+    socket = it->second->getFd();
+    if( socket != clientSocket ) {
+      replyMsg( socket, message, 0 );
+    }
+  }
+  // displays reply message on the server only once
+  std::cout << MSGREPLY << message << std::endl;
 }
 
 /**
@@ -347,7 +344,7 @@ void Server::replyMsg( int clientSocket, std::string reply,
   if( copyToServer == true ) {
     std::cout << MSGREPLY << reply << std::endl;
   }
-  if ( send( clientSocket, reply.c_str(), reply.length(), 0 ) < 0 ) {
+  if( send( clientSocket, reply.c_str(), reply.length(), 0 ) < 0 ) {
     std::string errMsg = "send: " + std::string( strerror( errno ) );
     throw std::runtime_error( errMsg );
   }
@@ -357,11 +354,11 @@ void Server::replyMsg( int clientSocket, std::string reply,
 /**
  * @brief       Handle request by identifying command and parameters
  *              ACTION 1   - get command & params
- *              ACTION 2   - check the case when the client is disconnected and return
- *              ACTION 3   - check if 'command' is part of the _commands and get the
+ *              ACTION 2   - check the case when the client is disconnected and
+ * return ACTION 3   - check if 'command' is part of the _commands and get the
  *              command key
- *              ACTION 4   - if 'command' is in _commands (authentifiers PASS, NICK, USER first)
- *              ACTION 5   - handle command
+ *              ACTION 4   - if 'command' is in _commands (authentifiers PASS,
+ * NICK, USER first) ACTION 5   - handle command
  */
 
 void Server::handleRequest( int clientSocket, std::string request ) {
@@ -381,8 +378,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   if( splitter != std::string::npos ) {
     command = request.substr( 0, splitter );
     parameters = request.substr( splitter + 1, std::string::npos );
-  }
-  else
+  } else
     command = request;
   for( mapCommands::const_iterator it = _commands.begin();
        it != _commands.end(); ++it ) {
@@ -453,15 +449,16 @@ void Server::handleRequest( int clientSocket, std::string request ) {
     case KILL:
       handleKill( clientSocket, parameters );
       break;
-    case SQUIT:// ' /shutdown '
+    case SQUIT:  // ' /shutdown '
       handleSQuit( clientSocket, parameters );
       break;
     default: {
       if( !command.empty() || ( command.empty() && !parameters.empty() ) ) {
-        replyMsg( clientSocket,
-          ERR_UNKNOWNCOMMAND(_serverName, _clients.at( clientSocket ).getRealname(), command ) );
-      }
-      else // if ( command.empty() && parameter.empty() )
+        replyMsg(
+          clientSocket,
+          ERR_UNKNOWNCOMMAND(
+            _serverName, _clients.at( clientSocket ).getRealname(), command ) );
+      } else  // if ( command.empty() && parameter.empty() )
         std::cout << MSGINFO << "request is empty\n" << std::endl;
     } break;
   }
@@ -487,7 +484,7 @@ void Server::handleExistingClient( int clientSocket ) {
     std::string message = "recv: " + std::string( strerror( errno ) );
     throw std::runtime_error( message );
   } else if( bytesRead == 0 ) {
-      handleQuit( clientSocket, ":bye bye" );
+    handleQuit( clientSocket, ":bye bye" );
     return;
   }
   // Turn "^M\n" into "\0" TODO OS compatibility
@@ -522,12 +519,13 @@ void Server::handleNewClient( void ) {
     std::cerr << "accept: " << strerror( errno ) << "\n";
     return;
   }
-  if ( _clients.size() >= MAXCONNECTION ) {
-    replyMsg( clientSocket, RPL_QUIT( _serverName, "", "Too many clients connected already") );
+  if( _clients.size() >= MAXCONNECTION ) {
+    replyMsg( clientSocket, RPL_QUIT( _serverName, "",
+                                      "Too many clients connected already" ) );
     Utility::closeFd( clientSocket );
     return;
   }
-  std::cout << "-----------------------------" << std:: endl;
+  std::cout << "-----------------------------" << std::endl;
   std::cout << "New connection from " << Utility::ntop( clientAddress ) << "\n";
   struct epoll_event event;
   memset( &event, 0, sizeof( event ) );
@@ -611,7 +609,7 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 120, "NAMES" ) );
   _commands.insert( std::make_pair( 130, "PART" ) );
   _commands.insert( std::make_pair( 131, "WHO" ) );
-  _commands.insert( std::make_pair( 1000, "SQUIT" ) );//ex- /shutdown
+  _commands.insert( std::make_pair( 1000, "SQUIT" ) );  // ex- /shutdown
   _commands.insert( std::make_pair( 1001, "QUIT" ) );
   _commands.insert( std::make_pair( 1002, "KILL" ) );
   return;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/31 15:05:03 by lmelard          ###   ########.fr       */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ Client::Client( int socket )
     _username( "" ),
     _realname( "" ),
     _source( "" ),
-    _clientChannels()
-{}
+    _clientChannels() {}
 
 Client::Client( Client const& src ) : _fd( src.getFd() ) {
   *this = src;
@@ -64,21 +63,20 @@ bool        Client::getNickStatus( void ) const { return _nickStatus; }
 bool        Client::getIfRegistered( void ) const { return _isRegistered; }
 bool        Client::getInvisibleMode( void ) const { return _invisibleMode; }
 bool        Client::getOperatorMode( void ) const { return _operatorMode; }
-std::string	Client::getModes( void ) const
-{
+std::string Client::getModes( void ) const {
   std::string mode = "";
-  if (getInvisibleMode())
+  if( getInvisibleMode() )
     mode += "i";
-  if (getOperatorMode())
+  if( getOperatorMode() )
     mode += "o";
-  if (mode.size() != 0)
+  if( mode.size() != 0 )
     mode = "+" + mode;
   return mode;
 }
-std::string Client::getNickname( void ) const { return _nickname; }
-std::string Client::getUsername( void ) const { return _username; }
-std::string Client::getRealname( void ) const { return _realname; }
-std::string Client::getSource( void ) const { return _source; }
+std::string              Client::getNickname( void ) const { return _nickname; }
+std::string              Client::getUsername( void ) const { return _username; }
+std::string              Client::getRealname( void ) const { return _realname; }
+std::string              Client::getSource( void ) const { return _source; }
 std::vector<std::string> Client::getClientChannels( void ) const {
   return _clientChannels;
 }
@@ -126,17 +124,17 @@ void Client::removeClientChannel( std::string chanName ) {
  * @brief       Sets user modes (invisible i, operator o)
  */
 
-void  Client::handleUserModeSet( char modeChar, std::string *modechange ) {
-  switch (modeChar) {
+void Client::handleUserModeSet( char modeChar, std::string* modechange ) {
+  switch( modeChar ) {
     case 'i':
-      if ( !getInvisibleMode() ) {
-        setInvisibleMode(true);
+      if( !getInvisibleMode() ) {
+        setInvisibleMode( true );
         *modechange += "i";
       }
       break;
     case 'o':
-      if ( !getOperatorMode() ) {
-        setOperatorMode(true);
+      if( !getOperatorMode() ) {
+        setOperatorMode( true );
         *modechange += "o";
       }
       break;
@@ -147,16 +145,16 @@ void  Client::handleUserModeSet( char modeChar, std::string *modechange ) {
  * @brief       Unsets user modes (invisible i, operator o)
  */
 
-void  Client::handleUserModeUnset( char modeChar, std::string *modechange ) {
-  switch (modeChar) {
+void Client::handleUserModeUnset( char modeChar, std::string* modechange ) {
+  switch( modeChar ) {
     case 'i':
-      if ( getInvisibleMode() ) {
+      if( getInvisibleMode() ) {
         setInvisibleMode( false );
         *modechange += "i";
       }
       break;
     case 'o':
-      if ( getOperatorMode() ) {
+      if( getOperatorMode() ) {
         setOperatorMode( false );
         *modechange += "o";
       }

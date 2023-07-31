@@ -1,7 +1,14 @@
-/* includes/Server */
-/* Created: 230725 10:02:18 by clem@spectre */
-/* Updated: 230725 10:02:18 by clem@spectre */
-/* Maintainer: Clément Vidon */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
@@ -28,26 +35,23 @@ class Client;
 class Channel;
 
 class Server {
-
  public:
-
   typedef std::map<int, Client>          mapClients;
   typedef std::map<std::string, Channel> mapChannels;
   typedef std::map<int, std::string>     mapCommands;
-  typedef std::vector< std::string >     vecString;
-  typedef std::map< std::string, Client * >   mapClientsPtr;
+  typedef std::vector<std::string>       vecString;
+  typedef std::map<std::string, Client*> mapClientsPtr;
 
   /* ********* REGISTRATION ******* */
   std::string getOpsNbr( void );
   std::string getChannelNbr( void );
   std::string getUnknownStateUsers( void );
   std::string getInvisibleUserNbr( void );
-  std::string	getSupportToken() const;
-  void sendWelcomeMsg( int clientSocket );
-  void sendLusersMsg( int clientSocket );
-  void sendMotdMsg( int clientSocket );
-  void checkRegistration( int clientSocket );
-
+  std::string getSupportToken() const;
+  void        sendWelcomeMsg( int clientSocket );
+  void        sendLusersMsg( int clientSocket );
+  void        sendMotdMsg( int clientSocket );
+  void        checkRegistration( int clientSocket );
 
   // TODO URGENCE -> Create class Commands.
 
@@ -58,12 +62,15 @@ class Server {
   /* ********* NICK CMD ******* */
   bool isValidNick( std::string param );
   void updateChannelMemberNick( std::string& oldNickname,
-                              std::string  nickName );
+                                std::string  nickName );
   void updateChannelOpsNick( std::string& oldNickname, std::string nickName );
-  void updateInvitedMembersNick( std::string &oldNickname, std::string nickName );
-  void updateNickInChannels( int clientSocket, std::string nick, std::string newNick );
-  void updateNickname(int clientSocket, std::string nick, std::string newNick);
-  void handleExistingNick(int clientSocket, std::string newNick);
+  void updateInvitedMembersNick( std::string& oldNickname,
+                                 std::string  nickName );
+  void updateNickInChannels( int clientSocket, std::string nick,
+                             std::string newNick );
+  void updateNickname( int clientSocket, std::string nick,
+                       std::string newNick );
+  void handleExistingNick( int clientSocket, std::string newNick );
   void handleNick( int clientSocket, std::string param );
   /* ********* USER CMD ******* */
   void handleUser( int clientSocket, std::string param );
@@ -74,22 +81,27 @@ class Server {
   void displayNames( int clientSocket, Channel& channel );
   /* ********* JOIN CMD ******* */
   void handleJoin( int clientSocket, std::string param );
-  bool handleJoinZero( int clientSocket, const std::vector< std::string >& tokens );
-  bool checkChanPreJoin( int clientSocket, const std::vector< std::string >& tokens,
-                        size_t index );
+  bool handleJoinZero( int                             clientSocket,
+                       const std::vector<std::string>& tokens );
+  bool checkChanPreJoin( int                             clientSocket,
+                         const std::vector<std::string>& tokens, size_t index );
   bool isValidChanName( int clientSocket, const std::string& channelName );
   void createChanWithOp( int clientSocket, const std::string& channelName );
-  bool checkParamSize( int clientSocket, const std::string& param, const std::vector< std::string >& tokens );
+  bool checkParamSize( int clientSocket, const std::string& param,
+                       const std::vector<std::string>& tokens );
   /* ********* PART CMD ******* */
   void handlePart( int clientSocket, std::string param );
-  void leaveChannel ( int clientSocket, const std::string& channelName,
+  void leaveChannel( int clientSocket, const std::string& channelName,
                      const std::string& reason, const std::string& cmd );
   bool checkChanPrePart( int clientSocket, const std::string& channelName );
 
   void handlePrivmsg( int clientSocket, std::string param );
   /* ********* MODE CMD ******* */
-  void displayUserModeChanges(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
-  void updateUserMode(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
+  void displayUserModeChanges( Client*                         client,
+                               const std::vector<std::string>& tokens,
+                               std::string&                    modechange );
+  void updateUserMode( Client* client, const std::vector<std::string>& tokens,
+                       std::string& modechange );
   void handleUserMode( int clientSocket, std::vector<std::string>& tokens );
   void handleChannelMode( int clientSocket, std::string& channelName,
                           const std::vector<std::string>& tokens );
@@ -98,30 +110,36 @@ class Server {
   std::string getKickReason( std::vector<std::string>& tokens );
   void        kickUser( int clientSocket, Channel* chan, std::string nick,
                         std::string toKick, std::string reason );
-  void	      kickSelectedClients(int clientSocket, Channel *chan, std::vector<std::string> toKick, std::string reason);
+  void        kickSelectedClients( int clientSocket, Channel* chan,
+                                   std::vector<std::string> toKick,
+                                   std::string              reason );
   void        handleKick( int clientSocket, std::string param );
   /* ********* TOPIC CMD ******* */
-  void        sendTopicToChannelMembers(Channel* chan);
-  void        updateChannelTopic(Channel *chan, std::string newTopic, std::string nick);
+  void        sendTopicToChannelMembers( Channel* chan );
+  void        updateChannelTopic( Channel* chan, std::string newTopic,
+                                  std::string nick );
   std::string getNewTopic( std::vector<std::string>& tokens );
-  void        handleTopicDisplay(int clientSocket, Channel *chan);
+  void        handleTopicDisplay( int clientSocket, Channel* chan );
   void        handleTopic( int clientSocket, std::string param );
   /* ********* INVITE CMD ******* */
   void inviteClientToChannel( int clientSocket, std::string clientNick,
                               std::string nameInvitee, Channel* chan );
   void handleInvite( int clientSocket, std::string param );
   /* ********* WHO CMD ******* */
-  void        handleWhoChannel(int clientSocket, std::string source, std::string nick, std::string target);
-  void        handleWhoClient(int clientSocket, std::string source, std::string nick, std::string target);
-  void        handleWho( int clientSocket, std::string param );
+  void handleWhoChannel( int clientSocket, std::string source, std::string nick,
+                         std::string target );
+  void handleWhoClient( int clientSocket, std::string source, std::string nick,
+                        std::string target );
+  void handleWho( int clientSocket, std::string param );
   /* ********* QUIT CMD ******* */
-  void	      handleQuit( int clientSocket, std::string param );
+  void handleQuit( int clientSocket, std::string param );
   /* ********* SQUIT CMD ******* */
-  void  handleSQuit( int clientSocket, std::string param );
+  void handleSQuit( int clientSocket, std::string param );
   /* ********* KILL CMD ******* */
-  void	handleKill( int clientSocket, std::string param );
-  bool	checkChanPreKill( int clientSocket, const std::string& param, const std::string& nickToKill, const std::string& comment );
-
+  void handleKill( int clientSocket, std::string param );
+  bool checkChanPreKill( int clientSocket, const std::string& param,
+                         const std::string& nickToKill,
+                         const std::string& comment );
 
   /* ********* METHHODS ******* */
   void channelMsgToAll( int clientSocket, const std::string& channelName,
@@ -130,10 +148,11 @@ class Server {
                             const std::string& message );
   void channelMsgToChanOps( int clientSocket, const std::string& channelName,
                             const std::string& message );
-  int  findClientFd(const std::string& name );
+  int  findClientFd( const std::string& name );
   bool existingNick( std::string param );
   bool existingChannel( std::string param );
-  void changeChannelOperator( int clientSocket, Client *toLeave, Channel *chan );
+  void changeChannelOperator( int clientSocket, Client* toLeave,
+                              Channel* chan );
   //
   //
   //
@@ -154,12 +173,11 @@ class Server {
   size_t      getPort( void ) const;
   void        setPassword( std::string& password );
   std::string getPassword( void ) const;
-  Client*     getClientByNickname(const std::string& nickname);
+  Client*     getClientByNickname( const std::string& nickname );
 
  private:
   void stop( void );
 
- 
   void removeDisconnectedClients( void );
   void disconnectAllClients();
   void disconnectAClient( int clientSocket );
@@ -174,7 +192,7 @@ class Server {
   void handleNewClient( void );
   void createServerSocket( void );
   void initCommands( void );  // TODO --->>> class Command constructor
-  bool        existingClient(std::string clientName);
+  bool existingClient( std::string clientName );
 
  public:
   void start( void );

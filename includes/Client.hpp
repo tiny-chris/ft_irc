@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 14:45:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 18:06:30 by lmelard          ###   ########.fr       */
+/*   By:                                            +#+  +:+       +#+        */
+/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
+/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
+/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <string>
 
 #include "Channel.hpp"
-#include "numericReplies.hpp"
 #include "Server.hpp"
+#include "numericReplies.hpp"
 
 class Channel;
 
@@ -39,7 +39,7 @@ class Client {
   bool        getIfRegistered( void ) const;
   bool        getInvisibleMode( void ) const;
   bool        getOperatorMode( void ) const;
-  std::string	getModes( void ) const;
+  std::string getModes( void ) const;
   std::string getNickname( void ) const;
   std::string getUsername( void ) const;
   std::string getRealname( void ) const;
@@ -63,8 +63,8 @@ class Client {
   void addChannel( std::string channelName );
   void removeClientChannel( std::string chanName );
 
-  void  handleUserModeSet( char modeChar, std::string *modechange );
-  void  handleUserModeUnset( char modeChar, std::string *modechange );
+  void handleUserModeSet( char modeChar, std::string* modechange );
+  void handleUserModeUnset( char modeChar, std::string* modechange );
 
  private:
   int _fd;
@@ -72,7 +72,7 @@ class Client {
   bool _passStatus;
   bool _nickStatus;
   bool _isRegistered;
-  
+
   /* ******* USER MODES ****** */
   bool _invisibleMode;
   bool _operatorMode;
