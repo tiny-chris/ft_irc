@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 17:52:25 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,20 +279,18 @@ void Server::broadcastMsgNotClient( int                clientSocket,
   std::cout << MSGREPLY << message << std::endl;
 }
 
-/* ****************************** ***
-** CHANNEL MESSAGE TO ALL MEMBERS ***
-** ****************************** ***
-*/
+/**
+ * @brief       Channel message to all members
+ */
 void Server::channelMsgToAll( int clientSocket, const std::string& channelName,
                               const std::string& message ) {
   channelMsgNotClient( clientSocket, channelName, message );
   replyMsg( clientSocket, message, 0 );
 }
 
-/* ******************************* ***
-** CHANNEL MESSAGE TO CHANOPS ONLY ***
-** ******************************* ***
-*/
+/**
+ * @brief       Channel message to chanops only
+ */
 void Server::channelMsgToChanOps( int                clientSocket,
                                   const std::string& channelName,
                                   const std::string& message ) {
@@ -311,10 +309,9 @@ void Server::channelMsgToChanOps( int                clientSocket,
   std::cout << MSGREPLY << message << std::endl;
 }
 
-/* ******************************************** ***
-** CHANNEL MESSAGE TO ALL MEMBERS EXCEPT CLIENT ***
-** ******************************************** ***
-*/
+/**
+ * @brief       Channel message to all members except client
+ */
 void Server::channelMsgNotClient( int                clientSocket,
                                   const std::string& channelName,
                                   const std::string& message ) {
@@ -609,7 +606,7 @@ void Server::initCommands( void ) {
   _commands.insert( std::make_pair( 120, "NAMES" ) );
   _commands.insert( std::make_pair( 130, "PART" ) );
   _commands.insert( std::make_pair( 131, "WHO" ) );
-  _commands.insert( std::make_pair( 1000, "SQUIT" ) );  // ex- /shutdown
+  _commands.insert( std::make_pair( 1000, "SQUIT" ) );
   _commands.insert( std::make_pair( 1001, "QUIT" ) );
   _commands.insert( std::make_pair( 1002, "KILL" ) );
   return;

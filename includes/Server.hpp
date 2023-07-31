@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 17:28:40 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,27 @@ class Server {
   typedef std::vector<std::string>       vecString;
   typedef std::map<std::string, Client*> mapClientsPtr;
 
+ public:
+  Server( void );
+  Server( size_t port, const char* password, std::string serverName );
+  Server( Server const& src );
+  ~Server( void );
+  Server&      operator=( Server const& rhs );
+  virtual void print( std::ostream& o ) const;
+
+  void        setPort( size_t& port );
+  size_t      getPort( void ) const;
+  void        setPassword( std::string& password );
+  std::string getPassword( void ) const;
+  Client*     getClientByNickname( const std::string& nickname );
+
+ private:
+  void stop( void );
+  
+  void removeDisconnectedClients( void );
+  void disconnectAllClients();
+  void disconnectAClient( int clientSocket );
+
   /* ********* REGISTRATION ******* */
   std::string getOpsNbr( void );
   std::string getChannelNbr( void );
@@ -52,8 +73,6 @@ class Server {
   void        sendLusersMsg( int clientSocket );
   void        sendMotdMsg( int clientSocket );
   void        checkRegistration( int clientSocket );
-
-  // TODO URGENCE -> Create class Commands.
 
   /* ********* COMMANDS ******* */
 
@@ -141,7 +160,7 @@ class Server {
                          const std::string& nickToKill,
                          const std::string& comment );
 
-  /* ********* METHHODS ******* */
+  /* ********* PRIVATE MEMBER FUNCTIONS ******* */
   void channelMsgToAll( int clientSocket, const std::string& channelName,
                         const std::string& message );
   void channelMsgNotClient( int clientSocket, const std::string& channelName,
@@ -153,36 +172,7 @@ class Server {
   bool existingChannel( std::string param );
   void changeChannelOperator( int clientSocket, Client* toLeave,
                               Channel* chan );
-  //
-  //
-  //
-  //
-  //
-  //
-  // SERVER
 
- public:
-  Server( void );
-  Server( size_t port, const char* password, std::string serverName );
-  Server( Server const& src );
-  ~Server( void );
-  Server&      operator=( Server const& rhs );
-  virtual void print( std::ostream& o ) const;
-
-  void        setPort( size_t& port );
-  size_t      getPort( void ) const;
-  void        setPassword( std::string& password );
-  std::string getPassword( void ) const;
-  Client*     getClientByNickname( const std::string& nickname );
-
- private:
-  void stop( void );
-
-  void removeDisconnectedClients( void );
-  void disconnectAllClients();
-  void disconnectAClient( int clientSocket );
-
-  // void broadcastMsg( std::string& msg, int clientSocket );
   void broadcastQuitToAll( void );
   void broadcastMsgToAll( int clientSocket, const std::string& message );
   void broadcastMsgNotClient( int clientSocket, const std::string& message );
@@ -191,7 +181,7 @@ class Server {
   void handleExistingClient( int clientSocket );
   void handleNewClient( void );
   void createServerSocket( void );
-  void initCommands( void );  // TODO --->>> class Command constructor
+  void initCommands( void );
   bool existingClient( std::string clientName );
 
  public:
@@ -210,6 +200,7 @@ class Server {
 
   mapChannels _channels;
   mapCommands _commands;
+
 };
 
 std::ostream& operator<<( std::ostream& o, Server const& i );

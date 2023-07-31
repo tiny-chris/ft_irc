@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 17:53:50 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ std::string Server::getSupportToken() const {
   token << " HOSTLEN=" << HOSTLEN << " ";
   token << " KICKLEN=" << KICKLEN << " ";
   token << " NICKLEN=" << NICKLEN << " ";
+  token << " USERLEN=" << USERLEN << " ";
   token << " PREFIX=" << PREFIX << " ";
   token << " STATUSMSG=" << STATUSMSG << " ";
   token << " TOPICLEN=" << TOPICLEN << " ";
