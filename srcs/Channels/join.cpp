@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 15:26:18 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:32:24 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 #include "utils.hpp"
-
 
 /**
  * @brief 	JOIN command specific case : 	JOIN 0
