@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:13:43 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/27 18:12:28 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:26:17 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,10 @@ std::string Client::getNickname( void ) const { return _nickname; }
 std::string Client::getUsername( void ) const { return _username; }
 std::string Client::getRealname( void ) const { return _realname; }
 std::string Client::getSource( void ) const { return _source; }
-// std::vector< Channel* >	Client::getClientChannels( void ) const { return
-// _clientChannels; }
 std::vector<std::string> Client::getClientChannels( void ) const {
   return _clientChannels;
 }
-// std::string	Client::getChannelModes ( void ) const { return _channelModes; }
 
-// void		Client::setFd( int& clientFd ) { _fd = clientFd; }//not used as _fd is
-// const
 void Client::setPassStatus( bool const& status ) { _passStatus = status; }
 void Client::setNickStatus( bool const& status ) { _nickStatus = status; }
 void Client::setIfRegistered( bool const& status ) { _isRegistered = status; }
@@ -99,10 +94,10 @@ void Client::setRealname( std::string const& name ) { _realname = name; }
 void Client::setSource( std::string nickname, std::string username ) {
   _source = nickname + "!" + username + "@localhost";
 }
-// // TO COMPLETE
-// bool		Client::setChannelModes( std::string const& mode ) {
-// 	return false;
-// }
+
+/**
+ * @brief       SINGINT ^-C Handling
+ */
 
 void Client::addChannel( std::string channelName ) {
   if( !channelName.empty() ) {

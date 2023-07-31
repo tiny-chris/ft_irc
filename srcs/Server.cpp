@@ -335,7 +335,7 @@ void Server::handleRequest( int clientSocket, std::string request ) {
         replyMsg( clientSocket,
           ERR_UNKNOWNCOMMAND(_serverName, _clients.at( clientSocket ).getRealname(), command ) );
       }
-      else// if ( command.empty() && parameter.empty() )
+      else // if ( command.empty() && parameter.empty() )
         std::cout << MSGINFO << "request is empty\n" << std::endl;
     } break;
   }
