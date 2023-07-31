@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 18:19:57 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/28 17:23:54 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:42:19 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 #include "numericReplies.hpp"
 
 /**
- * @brief       Command that kicks a client off of a Channel
+ * @brief       KICK command
+ * 				KICK <channel> <user> *( "," <user> ) [<comment>]
+ * 				
+ * 				Kicks a client off of a Channel
  *              - Checks the parameters are valid (number, channel name)
  * 				- Check if client has the right to kick on this channel
  * 				- Kicks at most TARGMAXKICK clients of the channel if they are on it
