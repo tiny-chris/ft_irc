@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 12:17:56 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:33:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,25 @@
 #include "utils.hpp"
 
 /**
- * @brief       PART command
- *				syntax:			PART <channel>{,<channel>} [<reason>]
- *
- *	For each channel in the parameter of this command:
- *	- if the channel exists and the client is joined to it --> client leaves
- *	- if not --> consider replies ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL
+ * @brief       Pre-check before leaving a channel: channel exists and client is joined to it
  *
  */
 
- void	Server::handlePart( int clientSocket, std::string param )
+bool	Server::checkChanPrePart( int clientSocket, const std::string& channelName )
 {
-	Client&						client = _clients.at( clientSocket );
-	std::string 				channelList = "", reason = "";
-	std::vector< std::string >	channelNames;
+	Client&	client = _clients.at( clientSocket );
 
-	if ( param.empty() || splitStringInTwo( param, ' ', &channelList, &reason ) == false ) {
-		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client.getSource(), client.getNickname(), "PART" ) );
-		return ;
+	if ( existingChannel( channelName ) == false ) {
+		replyMsg( clientSocket, ERR_NOSUCHCHANNEL( client.getSource(), client.getNickname(), channelName ) );
+		return false ;
 	}
-	if ( !reason.empty() ) {
-		if ( reason.at(0) == ':' )
-			reason = " " + reason;
-		else
-			reason = " :" + reason;
+
+	Channel&	channel = _channels.at( channelName );
+	if ( channel.getChannelMembers().find( client.getNickname() ) == channel.getChannelMembers().end() ) {
+		replyMsg( clientSocket, ERR_NOTONCHANNEL( client.getSource(), client.getNickname(), channelName ) );
+		return false ;
 	}
-	channelNames = splitString( channelList, ',' );
-	for ( size_t i = 0; i < channelNames.size(); ++i ) {
-		std::string	channelName = channelNames[ i ];
-		if ( channelName.size() > CHANNELLEN )
-			channelName = channelName.substr(0, CHANNELLEN);
-		if ( checkChanPrePart( clientSocket, channelName ) == false )
-			continue ;
-		leaveChannel( clientSocket, channelName, reason, "PART" );
-	}
+	return true ;
 }
 
 /**
@@ -97,23 +82,38 @@ void	Server::leaveChannel( int clientSocket, const std::string& channelName, con
 }
 
 /**
- * @brief       Pre-check before leaving a channel: channel exists and client is joined to it
+ * @brief       PART command
+ *				syntax:			PART <channel>{,<channel>} [<reason>]
+ *
+ *	For each channel in the parameter of this command:
+ *	- if the channel exists and the client is joined to it --> client leaves
+ *	- if not --> consider replies ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL
  *
  */
 
-bool	Server::checkChanPrePart( int clientSocket, const std::string& channelName )
+ void	Server::handlePart( int clientSocket, std::string param )
 {
-	Client&	client = _clients.at( clientSocket );
+	Client&						client = _clients.at( clientSocket );
+	std::string 				channelList = "", reason = "";
+	std::vector< std::string >	channelNames;
 
-	if ( existingChannel( channelName ) == false ) {
-		replyMsg( clientSocket, ERR_NOSUCHCHANNEL( client.getSource(), client.getNickname(), channelName ) );
-		return false ;
+	if ( param.empty() || splitStringInTwo( param, ' ', &channelList, &reason ) == false ) {
+		replyMsg( clientSocket, ERR_NEEDMOREPARAMS( client.getSource(), client.getNickname(), "PART" ) );
+		return ;
 	}
-
-	Channel&	channel = _channels.at( channelName );
-	if ( channel.getChannelMembers().find( client.getNickname() ) == channel.getChannelMembers().end() ) {
-		replyMsg( clientSocket, ERR_NOTONCHANNEL( client.getSource(), client.getNickname(), channelName ) );
-		return false ;
+	if ( !reason.empty() ) {
+		if ( reason.at(0) == ':' )
+			reason = " " + reason;
+		else
+			reason = " :" + reason;
 	}
-	return true ;
+	channelNames = splitString( channelList, ',' );
+	for ( size_t i = 0; i < channelNames.size(); ++i ) {
+		std::string	channelName = channelNames[ i ];
+		if ( channelName.size() > CHANNELLEN )
+			channelName = channelName.substr(0, CHANNELLEN);
+		if ( checkChanPrePart( clientSocket, channelName ) == false )
+			continue ;
+		leaveChannel( clientSocket, channelName, reason, "PART" );
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 15:07:17 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 14:41:04 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:34:42 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,39 +16,6 @@
 #include "utils.hpp"
 #include "defines.hpp"
 #include "numericReplies.hpp"
-
-/**
- * @brief       KILL command
- *				syntax:			 KILL <target> <comment>
- *	
- *	Remove a client from the server by removing it from channels and disconnect
- *
- */
-
-void	Server::handleKill( int clientSocket, std::string param )
-{
-	Client				*client = &_clients.at( clientSocket );
-	std::string			nickToKill = "", comment = "";
-
-	splitStringInTwo( param, ' ', &nickToKill, &comment );
-	if ( !checkChanPreKill( clientSocket, param, nickToKill, comment ) ) {
-		return ;
-	}
-
-	int			socketToKill = findClientFd( nickToKill );
-	Client		*clientToKill = &_clients.at( socketToKill );
-	std::string	reason = KILL_REASON( client->getNickname(), comment );
-
-	if ( clientToKill->getClientChannels().size() > 0 ) {
-		std::vector< std::string > copyClientChannels = client->getClientChannels();
-
-		for ( size_t i = 0; i < copyClientChannels.size(); i++ ) {
-			leaveChannel( socketToKill, copyClientChannels[ i ], reason, "QUIT" );
-		}
-	}
-	replyMsg( socketToKill, ERR_KILL( client->getSource(), _serverName, reason ) );
-	disconnectAClient( socketToKill );
-}
 
 /**
  * @brief       Pre-check before killing a client: 
@@ -82,4 +49,37 @@ bool	Server::checkChanPreKill( int clientSocket, const std::string& param, const
 		return false ;
 	}
 	return true ;
+}
+
+/**
+ * @brief       KILL command
+ *				syntax:			 KILL <target> <comment>
+ *	
+ *	Remove a client from the server by removing it from channels and disconnect
+ *
+ */
+
+void	Server::handleKill( int clientSocket, std::string param )
+{
+	Client				*client = &_clients.at( clientSocket );
+	std::string			nickToKill = "", comment = "";
+
+	splitStringInTwo( param, ' ', &nickToKill, &comment );
+	if ( !checkChanPreKill( clientSocket, param, nickToKill, comment ) ) {
+		return ;
+	}
+
+	int			socketToKill = findClientFd( nickToKill );
+	Client		*clientToKill = &_clients.at( socketToKill );
+	std::string	reason = KILL_REASON( client->getNickname(), comment );
+
+	if ( clientToKill->getClientChannels().size() > 0 ) {
+		std::vector< std::string > copyClientChannels = client->getClientChannels();
+
+		for ( size_t i = 0; i < copyClientChannels.size(); i++ ) {
+			leaveChannel( socketToKill, copyClientChannels[ i ], reason, "QUIT" );
+		}
+	}
+	replyMsg( socketToKill, ERR_KILL( client->getSource(), _serverName, reason ) );
+	disconnectAClient( socketToKill );
 }
