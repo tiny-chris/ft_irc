@@ -39,7 +39,7 @@ void	Server::handlePing( int clientSocket, std::string param )
 	}
 	else
 	{
-		replyMsg( clientSocket, "PONG " + tokens[ 0 ] + CRLF  );
+		replyMsg( clientSocket, "PONG " + _serverName + " " + tokens[ 0 ] + CRLF  );
 	}
 	return ;
 }
