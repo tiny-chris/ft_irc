@@ -22,12 +22,12 @@ SRCS		:=	\
 				Server.cpp \
 				Utility.cpp \
 				utils.cpp \
-				Channels/kick.cpp \
-				Channels/join.cpp \
-				Channels/part.cpp \
-				Channels/privmsg.cpp \
-				Channels/topic.cpp \
-				Channels/invite.cpp \
+				Commands/kick.cpp \
+				Commands/join.cpp \
+				Commands/part.cpp \
+				Commands/privmsg.cpp \
+				Commands/topic.cpp \
+				Commands/invite.cpp \
 				Commands/kill.cpp \
 				Commands/mode.cpp \
 				Commands/names.cpp \
