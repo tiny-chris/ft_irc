@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 13:05:13 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 11:40:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:59:38 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void    Server::handleInvite( int clientSocket, std::string param ) {
         replyMsg(clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ));
         return ;
     }
-    if ( !chan->checkChannelOps( nick ) ) { // if the client doesn't have chanops privileges 
+    if ( !chan->checkChannelOps( nick ) && !_clients.at( clientSocket ).getOperatorMode() ) { // if the client doesn't have chanops privileges 
         replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ));
         return ;
     }
