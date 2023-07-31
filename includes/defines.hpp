@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 19:44:21 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,12 +115,13 @@ the server. Networks SHOULD be consistent with this value across different
 servers. The value MUST be specified and MUST be a positive integer. */
 #define USERLEN 15
 
-#define USERMODES         "+i"
-#define CHANNELMODES      "+it"
-#define CHANNELMODESPARAM "+kl"
+
+#define USERMODES         "io"
+#define CHANNELMODES      "it"
+#define CHANNELMODESPARAM "kl"
 #define SERVERNAME        "localhost"
 #define VERSION           "1.69"
-
+#define CASEMAPPING		  "ascii"
 #define TARGMAXKICK  1
 #define TARGMAXMSG   2
 #define TARGMAXNAMES 2

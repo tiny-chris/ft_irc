@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 17:53:50 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 19:53:13 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ std::string Server::getInvisibleUserNbr( void ) {
 
 std::string Server::getSupportToken() const {
   std::stringstream token;
+  token << " CASEMAPPING="<< CASEMAPPING << " ";
   token << " CHANLIMIT=#:" << CHANLIMIT << " ";
   token << " CHANMODE=" << CHANMODES << " ";
   token << " CHANNELLEN=" << CHANNELLEN << " ";
