@@ -56,7 +56,6 @@ class Server {
   /* ********* NICK CMD ******* */
   void handleNick( int clientSocket, std::string param );
   bool isValidNick( std::string param );
-  bool existingNick( std::string param );
   void handleExistingNick(int clientSocket, std::string newNick);
   void updateNickname(int clientSocket, std::string nick, std::string newNick);
   void updateNickInChannels( int clientSocket, std::string nick, std::string newNick );
@@ -108,7 +107,6 @@ class Server {
   void handleInvite( int clientSocket, std::string param );
   void inviteClientToChannel( int clientSocket, std::string clientNick,
                               std::string nameInvitee, Channel* chan );
-  Client* getClientByNickname(const std::string& nickname);
   /* ********* WHO CMD ******* */
   void        handleWho( int clientSocket, std::string param );
   void        handleWhoChannel(int clientSocket, std::string source, std::string nick, std::string target);
@@ -158,10 +156,12 @@ class Server {
   size_t      getPort( void ) const;
   void        setPassword( std::string& password );
   std::string getPassword( void ) const;
+  Client*     getClientByNickname(const std::string& nickname);
 
  private:
   void stop( void );
 
+  bool existingNick( std::string param );
   void removeDisconnectedClients( void );
   void disconnectAllClients();
   void disconnectAClient( int clientSocket );

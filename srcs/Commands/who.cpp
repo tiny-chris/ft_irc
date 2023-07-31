@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 18:42:25 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 11:51:43 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 15:26:04 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,15 @@
 #include "numericReplies.hpp"
 
 /**
- * @brief       WHO commande
- *              WHO <mask>
- * 
- *              This command is used to query a list of users who match
- *              - A channel name, in which case the channel members are listed.
- *              - An exact nickname, in which case a single user is returned.
- *              The WHO reply is always followed by a ENDOFWHO reply
+ * @brief       This function checks if the nickname matches an existing Client
  */
 
-void    Server::handleWho( int clientSocket, std::string param ) {
-    std::vector<std::string> tokens = splitString( param, ' ' );
-    if (tokens.size() < 1) {
-        return ;
+bool        Server::existingClient(std::string clientName) {
+    for (mapClients::iterator it = _clients.begin(); it != _clients.end(); it++) {
+       if (it->second.getNickname() == clientName)
+        return true;
     }
-    std::string source = _clients.at( clientSocket ).getSource();
-    std::string nick = _clients.at( clientSocket ).getNickname();
-    std::string target = tokens[0];
-    bool    isChannel = target.find('#', 0) != std::string::npos;
-    if (isChannel && existingChannel(target)) {
-        handleWhoChannel( clientSocket, source, nick, target);
-    }
-    else if (existingClient( target )) {
-        handleWhoClient( clientSocket, source, nick, target );
-    }
+    return false;
 }
 
 /**
@@ -79,13 +64,28 @@ void    Server::handleWhoClient(int clientSocket, std::string source, std::strin
 }
 
 /**
- * @brief       This function checks if the nickname matches an existing Client
+ * @brief       WHO commande
+ *              WHO <mask>
+ * 
+ *              This command is used to query a list of users who match
+ *              - A channel name, in which case the channel members are listed.
+ *              - An exact nickname, in which case a single user is returned.
+ *              The WHO reply is always followed by a ENDOFWHO reply
  */
 
-bool        Server::existingClient(std::string clientName) {
-    for (mapClients::iterator it = _clients.begin(); it != _clients.end(); it++) {
-       if (it->second.getNickname() == clientName)
-        return true;
+void    Server::handleWho( int clientSocket, std::string param ) {
+    std::vector<std::string> tokens = splitString( param, ' ' );
+    if (tokens.size() < 1) {
+        return ;
     }
-    return false;
+    std::string source = _clients.at( clientSocket ).getSource();
+    std::string nick = _clients.at( clientSocket ).getNickname();
+    std::string target = tokens[0];
+    bool    isChannel = target.find('#', 0) != std::string::npos;
+    if (isChannel && existingChannel(target)) {
+        handleWhoChannel( clientSocket, source, nick, target);
+    }
+    else if (existingClient( target )) {
+        handleWhoClient( clientSocket, source, nick, target );
+    }
 }
