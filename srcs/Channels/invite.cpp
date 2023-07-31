@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 13:05:13 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 11:59:38 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 15:06:39 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,28 @@
 #include "numericReplies.hpp"
 
 /**
+ * @brief       Invites the designted client to the designated channel
+ *              - Checks if the client exists
+ *              - Adds the client to _invitedMember vector
+ *              - Sends an invite reply to the client
+ */
+
+void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan ) {
+    Client *toAdd = getClientByNickname( nameInvitee );
+    if (toAdd == NULL) {
+        std::cout << MSGERROR << " No such Nickname, cannot invite this client" << std::endl;
+        return ;
+    }
+    chan->addInvitedMember(nameInvitee);
+    replyMsg(clientSocket, RPL_INVITING(_clients.at( clientSocket ).getSource(), clientNick, nameInvitee, chan->getChannelName()));
+    replyMsg(toAdd->getFd(), INVITE(clientNick, nameInvitee, chan->getChannelName()));
+}
+
+/**
  * @brief       INVITE command
  *              INVITE <nickname> <channel>
  *             
- *               Invites a client on a Channel
+ *              Invites a client on a Channel
  *              - Checks rights to invite
  *              - Checks on invited client
  *              - Invites client on channel
@@ -58,34 +76,3 @@ void    Server::handleInvite( int clientSocket, std::string param ) {
     inviteClientToChannel( clientSocket, nick, toInvite, chan );
 }
 
-/**
- * @brief       Invites the designted client to the designated channel
- *              - Checks if the client exists
- *              - Adds the client to _invitedMember vector
- *              - Sends an invite reply to the client
- */
-
-void    Server::inviteClientToChannel( int clientSocket, std::string clientNick, std::string nameInvitee, Channel *chan ) {
-    Client *toAdd = getClientByNickname( nameInvitee );
-    if (toAdd == NULL) {
-        std::cout << MSGERROR << " No such Nickname, cannot invite this client" << std::endl;
-        return ;
-    }
-    chan->addInvitedMember(nameInvitee);
-    replyMsg(clientSocket, RPL_INVITING(_clients.at( clientSocket ).getSource(), clientNick, nameInvitee, chan->getChannelName()));
-    replyMsg(toAdd->getFd(), INVITE(clientNick, nameInvitee, chan->getChannelName()));
-}
-
-/**
- * @brief       Function to check if a client exists by nickname
- *              and return a pointer to the client
- */
-
-Client* Server::getClientByNickname(const std::string& nickname) {
-    for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
-        if (it->second.getNickname() == nickname) {
-            return (&it->second);
-        }
-    }
-    return NULL;
-}

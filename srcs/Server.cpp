@@ -114,6 +114,20 @@ size_t Server::getPort( void ) const { return _port; }
 
 void Server::setPassword( std::string& password ) { _password = password; }
 std::string Server::getPassword( void ) const { return _password; }
+/**
+ * @brief       Function to check if a client exists by nickname
+ *              and return a pointer to the client
+ */
+
+Client* Server::getClientByNickname(const std::string& nickname) {
+    for ( mapClients::iterator it = _clients.begin(); it != _clients.end(); it++ ) {
+        if (it->second.getNickname() == nickname) {
+            return (&it->second);
+        }
+    }
+    return NULL;
+}
+
 
 /*  IMPLEMENTATION ---------------------------------- */
 
@@ -127,6 +141,65 @@ void Server::stop( void ) {
   removeDisconnectedClients();
   Utility::closeFd( _epollFd );
   Utility::closeFd( _serverSocket );
+}
+
+int	Server::findClientFd( const std::string& name )
+{
+	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
+		if ( it->second.getNickname() == name )
+			return ( it->second.getFd() );
+	}
+	return -1 ;
+}
+
+
+/**
+ * @brief       Checks if the new nickname has already been assigned
+ *              to another client
+ */
+
+bool  Server::existingNick( std::string param ) {
+  for (mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+    if (it->second.getNickname() == param ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @brief       Checks if the Channel exists on the server
+ */
+
+bool		Server::existingChannel(std::string param) {
+    if (_channels.find(param) != _channels.end()) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @brief       Function that makes another client chanops when the only
+ * 				one chanop is quitting server or is kicked of the channel
+ * 				Channel cannot remain without a chanop
+ */
+
+void        Server::changeChannelOperator(int clientSocket, Client *toLeave, Channel *chan)
+{
+	Client								*toBeChanOp = NULL;
+	for ( mapClientsPtr::iterator it = chan->getChannelMembers().begin(); it != chan->getChannelMembers().end(); it++) {
+		if ( it->second != toLeave ) {
+			toBeChanOp = it->second;
+			break ;
+		}
+	}
+	if (toBeChanOp != NULL)
+	{
+		std::string	toBeChanOpName = toBeChanOp->getNickname();
+		std::string	param = chan->getChannelName() + " +o " + toBeChanOpName;
+		handleMode( clientSocket, param );
+	}
+	return ;
 }
 
 /**

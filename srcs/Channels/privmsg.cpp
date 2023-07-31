@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 17:36:40 by cgaillag          #+#    #+#             */
-/*   Updated: 2023/07/31 12:18:47 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:47:28 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,4 @@ void	Server::handlePrivmsg( int clientSocket, std::string param )
 			replyMsg( clientSocket, ERR_NOSUCHNICK( source, "" ) );
 		}
 	}
-}
-
-int	Server::findClientFd( const std::string& name )
-{
-	for ( mapClients::iterator it = _clients.begin() ; it != _clients.end(); ++it) {
-		if ( it->second.getNickname() == name )
-			return ( it->second.getFd() );
-	}
-	return -1 ;
 }
