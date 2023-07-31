@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 20:02:29 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,7 @@ void Server::handleUserMode( int                       clientSocket,
                                                 client->getNickname() ) );
     return;
   }
-  if( tokens.size()
-      < 2 ) {  // if not mode string entered the current usermodes are displayed
+  if( tokens.size() < 2 ) { 
     modechange = client->getModes();
     replyMsg( clientSocket, RPL_UMODEIS( client->getSource(),
                                          client->getNickname(), modechange ) );
@@ -118,7 +117,7 @@ void Server::handleChannelMode( int clientSocket, std::string& channelName,
               ERR_NOSUCHCHANNEL( source, clientName, channelName ) );
     return;
   }
-  if( tokens.size() < 2 ) {  // no param the modes set are displayed
+  if( tokens.size() < 2 ) {
     modeChange = _channels[channelName].getModes();
     modeArgs = _channels[channelName].getModesArgs();
     replyMsg( clientSocket, RPL_CHANNELMODEIS( source, clientName, channelName,
@@ -137,8 +136,7 @@ void Server::handleChannelMode( int clientSocket, std::string& channelName,
     return;
   }
   chan->updateChannelMode( tokens, modeChange, modeArgs );
-  if( modeChange.size()
-      > 1 ) {  // Displaying channel modes changes to every channel client
+  if( modeChange.size() > 1 ) {
     channelMsgToAll(
       clientSocket, channelName,
       MSG_MODE_CUSTOM( source, channelName, modeChange + " " + modeArgs ) );

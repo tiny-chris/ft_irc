@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 20:01:53 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ std::string Server::getKickReason( std::vector<std::string>& tokens ) {
   std::string reason;
   if( tokens.size() >= 3 && tokens[2].find( ':', 0 ) != std::string::npos ) {
     while( tokens[2].find( ':', 0 )
-           != std::string::npos ) {  // deletes the : of the reason
+           != std::string::npos ) { 
       tokens[2].erase( 0, 1 );
     }
     for( size_t i = 2; i < tokens.size(); i++ ) {
@@ -58,9 +58,8 @@ void Server::kickUser( int clientSocket, Channel* chan, std::string nick,
     replyMsg( clientSocket,
               CHANNEL_DELETED( _clients.at( clientSocket ).getSource(), toKick,
                                channelName ) );
-    _channels.erase( channelName );  // deletes the Channel
-    clientToKick->removeClientChannel(
-      channelName );  // deletes the channel name from clientchannel vector
+    _channels.erase( channelName );
+    clientToKick->removeClientChannel( channelName );
     return;
   }
   if( isLastOperator ) {
@@ -68,12 +67,9 @@ void Server::kickUser( int clientSocket, Channel* chan, std::string nick,
   }
   channelMsgToAll( clientSocket, channelName,
                    DEFAULTKICK( nick, channelName, toKick, reason ) );
-  clientToKick->removeClientChannel(
-    channelName );  // deletes the channel name from clientchannel vector
-  chan->getChannelMembers().erase(
-    toKick );  // removes client from channel members map
-  chan->getChannelOps().erase(
-    toKick );  // removes client from channel operators
+  clientToKick->removeClientChannel( channelName );
+  chan->getChannelMembers().erase( toKick );
+  chan->getChannelOps().erase( toKick );
 }
 
 /**
@@ -88,8 +84,7 @@ void Server::kickSelectedClients( int clientSocket, Channel* chan,
   std::string nick = _clients.at( clientSocket ).getNickname();
 
   for( size_t i = 0; i < toKick.size() && i < TARGMAXKICK; ++i ) {
-    if( !chan->checkChannelMembers(
-          toKick[i] ) ) {  // checks if the client to kick is a chanmember
+    if( !chan->checkChannelMembers( toKick[i] ) ) { 
       replyMsg( clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick[i],
                                                     chan->getChannelName() ) );
       continue;
@@ -117,22 +112,18 @@ void Server::handleKick( int clientSocket, std::string param ) {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK" ) );
     return;
   }
-  std::string channelName = tokens[0].substr(
-    0, CHANNELLEN );  // crops channel name) if its length over CHANNELLEN
-  if( !existingChannel( channelName ) ) {  // checks if the channel exists
+  std::string channelName = tokens[0].substr( 0, CHANNELLEN );
+  if( !existingChannel( channelName ) ) {
     replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName ) );
     return;
   }
   Channel* chan = &_channels[channelName];
-  if( !chan->checkChannelMembers( nick ) ) {  // checks if the client that makes
-                                              // the request is a channel member
+  if( !chan->checkChannelMembers( nick ) ) { 
     replyMsg( clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ) );
     return;
   }
   if( !chan->checkChannelOps( nick )
-      && !_clients.at( clientSocket )
-            .getOperatorMode() ) {  // checks if the client has chanops
-                                    // privileges to kick
+      && !_clients.at( clientSocket ).getOperatorMode() ) { 
     replyMsg( clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ) );
     return;
   }

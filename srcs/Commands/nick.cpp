@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/07/31 20:03:37 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,12 @@ void  Server::handleExistingNick(int clientSocket, std::string newNick)
     std::string source = client->getSource();
 	  std::string nick = client->getNickname();
 
-    if (!client->getIfRegistered()) { // and if our client is not yet registered then an nick collision occurs and the client is killed
+    if (!client->getIfRegistered()) { 
     replyMsg(clientSocket, ERR_NICKCOLLISION(source, nick, newNick));
     replyMsg(clientSocket, KILL_MSG(source, nick));
     disconnectAClient( clientSocket );
     }
-    else {  // but if our client is already registered then a nickname in use error occurs the client keeps its nickname
+    else {  
       replyMsg(clientSocket, ERR_NICKNAMEINUSE( source, nick, newNick ));
     }
 }
@@ -158,7 +158,7 @@ void		Server::handleNick( int clientSocket, std::string param ) {
     replyMsg(clientSocket, ERR_ERRONEUSNICKNAME(source, nick, newNick));
     return;
   }
-  else if (existingNick(newNick)) { // if another client already has its nickname
+  else if (existingNick(newNick)) { 
     handleExistingNick( clientSocket, newNick );
     return ;
   }
