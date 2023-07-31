@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:34:55 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 14:58:48 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 16:14:31 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -477,5 +477,29 @@ void		Channel::handleChannelModeUnset(char modeChar, std::string* modeArgs, std:
         case 'o':
             handleModeUnsetOperator(modeArgs, modeChange, tokens, j);
             break;
+    }
+}
+
+/**
+ * @brief       Function that go through the modeString and its arguments 
+ *              and set or unset the given channel modes
+ */
+
+  void    Channel::updateChannelMode(const std::vector<std::string> & tokens, std::string &modeChange, std::string &modeArgs) {
+    char modePrefix = getModePrefix(tokens[1]); // checking the mode prefix
+    modeChange += modePrefix;
+    std::string modeString = tokens[1].substr(1, tokens[1].size() - 1);
+    size_t j = 2;
+    for (size_t i = 0; i < modeString.size(); i++) { // checking which mode to set or unset depending on the prefix
+        char    modeChar = modeString[i];
+        if (!isValidModeChar(modeChar)) {
+            break;
+        }
+        if (modePrefix == '+') {
+            handleChannelModeSet(modeChar, &modeArgs, &modeChange, tokens, &j);
+        }
+        else if (modePrefix == '-' && modeString.size() >= 1) {
+            handleChannelModeUnset(modeChar, &modeArgs, &modeChange, tokens, &j);
+        }
     }
 }

@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:23:45 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/31 13:44:30 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 15:58:51 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,4 +132,19 @@ std::string	getCurrentDate() {
 	std::stringstream	timeStream;
 	timeStream << time;
 	return timeStream.str();
+}
+
+/**
+ * @brief       Gets the prefix of the modestring
+ */
+
+char	getModePrefix( std::string const& token ) {
+    char sign = 'O';
+    if (token.find('+', 0) != std::string::npos) {
+        return (sign = '+');
+    }
+    if (token.find('-', 0) != std::string::npos) {
+        return (sign = '-');
+    }
+    return (sign);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:16:00 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/27 17:44:04 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 16:14:36 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ class Channel
         mapClientsPtr&	getChannelMembers( void );
         vecString&	getInvitedMembers( void );
 
+        
+        
         bool		checkValidLimit(std::string limit) const;
 
         void		setChannelName( std::string& name );
@@ -80,6 +82,7 @@ class Channel
         void        setTopicSetter( std::string const& topicSetter );
         void        setTopicDate( std::string const& topicDate );
 
+        /* ********* METHHODS ******* */
         void        addChannelOps( Client* client );
         void        removeChannelOp( Client* client );
         void        addChannelMember( Client* client );
@@ -105,6 +108,9 @@ class Channel
         void        handleModeUnsetInviteOnly( std::string* modeChange );
         void        handleModeUnsetTopicRestriction( std::string* modeChange );
         void        handleModeUnsetOperator( std::string* modeArgs, std::string* modeChange, const std::vector<std::string>& tokens, size_t* j );
+        void        updateChannelMode(const std::vector<std::string> & tokens, std::string &modeChange, std::string &modeArgs);
+
+
 
     private:
 

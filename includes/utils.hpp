@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:25:05 by lmelard           #+#    #+#             */
-/*   Updated: 2023/07/31 13:56:28 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:59:11 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,6 @@ std::vector<std::string>	splitString( std::string params, char splitter );
 bool						splitStringInTwo( std::string strToSplit, char delimiter, std::string* str1, std::string* str2);
 
 std::string					getCurrentDate( void );
+char						getModePrefix( std::string const& token );
 
 #endif

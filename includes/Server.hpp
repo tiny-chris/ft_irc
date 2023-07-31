@@ -89,9 +89,7 @@ class Server {
   void handlePrivmsg( int clientSocket, std::string param );
   /* ********* MODE CMD ******* */
   void displayUserModeChanges(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
-  char getModePrefix( std::string const& token );
   void updateUserMode(Client *client, const std::vector<std::string> & tokens, std::string &modechange);
-  void updateChannelMode(Channel *chan, const std::vector<std::string> & tokens, std::string &modeChange, std::string &modeArgs);
   void handleUserMode( int clientSocket, std::vector<std::string>& tokens );
   void handleChannelMode( int clientSocket, std::string& channelName,
                           const std::vector<std::string>& tokens );

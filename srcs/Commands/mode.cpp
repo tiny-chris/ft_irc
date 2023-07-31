@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 16:05:53 by codespace         #+#    #+#             */
-/*   Updated: 2023/07/31 15:32:25 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/07/31 16:02:29 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,6 @@ void    Server::displayUserModeChanges(Client *client, const std::vector<std::st
 }
 
 /**
- * @brief       Gets the prefix of the modestring
- */
-
-char	Server::getModePrefix( std::string const& token ) {
-    char sign = 'O';
-    if (token.find('+', 0) != std::string::npos) {
-        return (sign = '+');
-    }
-    if (token.find('-', 0) != std::string::npos) {
-        return (sign = '-');
-    }
-    return (sign);
-}
-
-/**
  * @brief       Function that go through the modeString  
  *              and set or unset the given user modes
  */
@@ -65,31 +50,6 @@ void    Server::updateUserMode(Client *client, const std::vector<std::string> & 
             client->handleUserModeUnset(modeChar, &modechange);
         }
     }
-}
-
-/**
- * @brief       Function that go through the modeString and its arguments 
- *              and set or unset the given channel modes
- */
-
-void    Server::updateChannelMode(Channel *chan, const std::vector<std::string> & tokens, std::string &modeChange, std::string &modeArgs) {
-    char modePrefix = getModePrefix(tokens[1]); // checking the mode prefix
-    modeChange += modePrefix;
-    std::string modeString = tokens[1].substr(1, tokens[1].size() - 1);
-    size_t j = 2;
-    for (size_t i = 0; i < modeString.size(); i++) { // checking which mode to set or unset depending on the prefix
-        char    modeChar = modeString[i];
-        if (!chan->isValidModeChar(modeChar)) {
-            break;
-        }
-        if (modePrefix == '+') {
-            chan->handleChannelModeSet(modeChar, &modeArgs, &modeChange, tokens, &j);
-        }
-        else if (modePrefix == '-' && modeString.size() >= 1) {
-            chan->handleChannelModeUnset(modeChar, &modeArgs, &modeChange, tokens, &j);
-        }
-    }
-    
 }
 
 /**
@@ -159,7 +119,7 @@ void		Server::handleChannelMode (int clientSocket, std::string& channelName, con
         replyMsg(clientSocket, ERR_CHANOPRIVSNEEDED(source, clientName, channelName));
         return ;
     }
-    updateChannelMode(chan, tokens, modeChange, modeArgs);
+    chan->updateChannelMode(tokens, modeChange, modeArgs);
     if (modeChange.size() > 1) { // Displaying channel modes changes to every channel client
         channelMsgToAll(clientSocket, channelName, MSG_MODE_CUSTOM(source, channelName, modeChange + " " + modeArgs));
     }
