@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 18:45:57 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 20:05:38 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,9 +479,7 @@ void Server::handleExistingClient( int clientSocket ) {
   std::memset( buf, 0, BUFMAXLEN );
   while(true) {
 
-    std::cout << ">>1" << std::endl;
     bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
-    std::cout << ">>2" << std::endl;
 
     if( bytesRead < 0 ) {
       std::string message = "recv: " + std::string( strerror( errno ) );
@@ -490,9 +488,6 @@ void Server::handleExistingClient( int clientSocket ) {
       handleQuit( clientSocket, ":bye bye" );
       return;
     }
-
-    // Turn "^M\n" into "\0" TODO OS compatibility
-    // faire un pour verifier que ca finit bien par un
 
     bufs[clientSocket] += std::string( buf, static_cast<size_t>( bytesRead ) );
 
