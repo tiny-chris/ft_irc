@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 10:33:03 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 12:57:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,9 @@ void Server::handleKill( int clientSocket, std::string param ) {
     return;
   }
 
+  if( comment.at( 0 ) == ':' ) {
+    comment.erase( 0, 1 );
+  }
   int         socketToKill = findClientFd( nickToKill );
   Client*     clientToKill = &_clients.at( socketToKill );
   std::string reason = KILL_REASON( client->getNickname(), comment );

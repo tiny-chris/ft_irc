@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 12:16:41 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 12:32:32 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool  Server::checkTargetPrivmsg( int clientSocket, std::string& target )
     }
     // if client wants to send a message to itself
     if( target == nickname ) {
-      replyMsg( clientSocket, "clients cannot send message to themselves");
+      replyMsg( clientSocket, "clients cannot send message to themselves\n");
       return false;
     }
   }

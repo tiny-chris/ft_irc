@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:30:27 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 13:00:19 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void Server::handleSQuit( int clientSocket, std::string param ) {
       || serverToQuit.empty() || comment.empty() ) {  // if uncomplete command
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nickname, "SQUIT" ) );
     return;
+  }
+  if( comment.at( 0 ) == ':' ) {
+    comment.erase( 0, 1 );
   }
   if( serverToQuit != _serverName ) {  // server does not exists
     replyMsg( clientSocket, ERR_NOSUCHSERVER( source, serverToQuit ) );
