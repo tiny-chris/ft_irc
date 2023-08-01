@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:35:28 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 10:41:34 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ bool Server::checkChanPrePart( int                clientSocket,
  *              chanOp if applied) and removing channel into client object
  *
  *	     Specific cases:
- *	      - if client is last member (chanOp): remove client from channel & 
- *          delete channel
- *	      - if client ifslast chanOp with other members: design another chanOp 
- *          and remove client from channel
+ *	     - if client is last member (chanOp): remove client from channel & 
+ *         delete channel
+ *	     - if client is last chanOp with other members: design another chanOp 
+ *         and remove client from channel
  */
 
 void Server::leaveChannel( int clientSocket, const std::string& channelName,

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:37:45 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 09:59:40 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,9 +342,9 @@ void Server::channelMsgNotClient( int                clientSocket,
 }
 
 /**
- * @brief       Sends message to the client with all specific parameter 
+ * @brief       Sends message to the client with all specific parameters 
  *              (incl. numeric replies) and copy it on the server side if 
- *              copyToServer is true (otherwise, nothing on the server)
+ *              'copyToServer' is true (otherwise, do not copy)
  */
 
 void Server::replyMsg( int clientSocket, std::string reply,

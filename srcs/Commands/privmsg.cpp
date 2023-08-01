@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:14:39 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 12:16:41 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,55 @@
 #include "defines.hpp"
 #include "numericReplies.hpp"
 #include "utils.hpp"
+
+
+bool  Server::checkTargetPrivmsg( int clientSocket, std::string& target )
+{
+  Client*             client = &_clients.at( clientSocket );
+  const std::string&  source = client->getSource();
+  const std::string&  nickname = client->getNickname();
+ 
+  if ( target.empty()) {
+      replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname, "<empty>" ) );
+      return false;
+  }
+  if( target.find( "#" ) != std::string::npos ) {
+    if ( target.find( "#" ) != 0 && target.find( "@#" ) != 0 ) {
+      replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nickname, target ) );
+      return false;
+    }
+    target = target.substr( target.find( "#" ) );
+    if( target.size() > CHANNELLEN ) {
+      target = target.substr( 0, CHANNELLEN );
+    }
+    // if channel does not exist
+    if( !existingChannel( target ) ) {  
+      replyMsg( clientSocket,
+                ERR_NOSUCHCHANNEL( source, nickname, target ) );
+      return false;
+    }
+    Channel channel = _channels.at( target );
+    // if client is on Channel
+    if( !channel.checkChannelMembers( nickname ) ) {
+      replyMsg( clientSocket,
+                  ERR_CANNOTSENDTOCHAN( source, nickname, target ) );
+      return false;
+    }
+  }
+  else {
+    // if client does not exist
+    if( !existingClient( target ) ) {
+      replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname, target ) );
+      return false;
+    }
+    // if client wants to send a message to itself
+    if( target == nickname ) {
+      replyMsg( clientSocket, "clients cannot send message to themselves");
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  * @brief       PRIVMSG command
@@ -50,50 +99,19 @@ void Server::handlePrivmsg( int clientSocket, std::string param ) {
 
   for( size_t i = 0; i < targetNames.size() && i < TARGMAXMSG; ++i ) {
     std::string target = targetNames[i];
-    size_t      sharp = target.find( "#" );
 
-    if( !target.empty() ) {
-      std::string reply = RPL_PRIVMSG( source, nickname, target, textToBeSent );
-
-      // if CHANNEL (#)
-      if( sharp != std::string::npos && ( sharp == 0 || sharp == 1 ) ) {
-        std::string channelName = target.substr( sharp );
-        if( channelName.size() > CHANNELLEN ) {
-          channelName = channelName.substr( 0, CHANNELLEN );
-        }
-        if( !existingChannel( channelName ) ) {  // if channel does not exist
-          replyMsg( clientSocket,
-                    ERR_NOSUCHCHANNEL( source, nickname, channelName ) );
-          continue;
-        }
-
-        Channel channel = _channels.at( channelName );
-        if( channel.checkChannelMembers(
-              nickname ) ) {  // if client is on Channel
-          if( target.find( "@#" )
-              == 0 ) {  // if starts with '@#' --> to chanOps only
-            channelMsgToChanOps( clientSocket, channelName, reply );
-            continue;
-          } else if( target.find( "#" )
-                     == 0 ) {  // if start with '#' --> all members
-            channelMsgNotClient( clientSocket, target, reply );
-            continue;
-          }
-        }
-        // client is not on the channel or channel prefixes is not '#' neither
-        // "@#"
-        replyMsg( clientSocket,
-                  ERR_CANNOTSENDTOCHAN( source, nickname, target ) );
-      }
-      // if CLIENT
-      else if( existingClient( target ) ) {
-        replyMsg( findClientFd( target ), reply );
-      }
-      else {
-        replyMsg( clientSocket, ERR_NOSUCHNICK( source, target ) );
-      }
-    } else {
-      replyMsg( clientSocket, ERR_NOSUCHNICK( source, "" ) );
+    if( checkTargetPrivmsg( clientSocket, target ) == false ) {
+      continue;
+    }
+    std::string reply = RPL_PRIVMSG( source, nickname, target, textToBeSent );
+    if ( target[0] == '#' ) {
+      channelMsgNotClient( clientSocket, target, reply );
+    }
+    else if ( target[0] == '@' ) {
+      channelMsgToChanOps( clientSocket, target, reply );
+    }
+    else {
+      replyMsg( findClientFd( target ), reply );
     }
   }
 }

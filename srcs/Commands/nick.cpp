@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 20:03:37 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 10:36:13 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void  Server::updateNickname(int clientSocket, std::string nick, std::string new
   replyMsg(clientSocket, RPL_NICK(nick, newNick));
   client->setNickStatus( true );
   client->setNickname( newNick );
-  std::cout << MSGINFO << "valid nickname provided!" << std::endl;
+  std::cout << MSGINFO << "valid nickname provided!\n" << std::endl;
 }
 
 /**

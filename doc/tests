@@ -5,3 +5,5 @@ server :
 irssi client :
 irssi
 /connect localhost 6667 password
+
+/connect localhost 6667 12341234

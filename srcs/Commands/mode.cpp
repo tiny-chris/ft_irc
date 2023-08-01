@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 20:02:29 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 10:25:43 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,32 +66,31 @@ void Server::updateUserMode( Client*                         client,
 
 void Server::handleUserMode( int                       clientSocket,
                              std::vector<std::string>& tokens ) {
+  Client*     client = &_clients.at( clientSocket );
+  std::string source = client->getSource();
+  std::string nickname = client->getNickname();
   std::string userName = tokens[0].substr( 0, NICKLEN );
   std::string modechange;
-  Client*     client = &_clients.at( clientSocket );
+
   if( !existingNick( userName ) ) {
-    replyMsg( clientSocket, ERR_NOSUCHNICK( client->getSource(), userName ) );
+    replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname, userName ) );
     return;
   }
-  if( userName != client->getNickname() ) {
-    replyMsg( clientSocket, ERR_USERSDONTMATCH( client->getSource(),
-                                                client->getNickname() ) );
+  if( userName != nickname ) {
+    replyMsg( clientSocket, ERR_USERSDONTMATCH( source, nickname ) );
     return;
   }
   if( tokens.size() < 2 ) { 
     modechange = client->getModes();
-    replyMsg( clientSocket, RPL_UMODEIS( client->getSource(),
-                                         client->getNickname(), modechange ) );
+    replyMsg( clientSocket, RPL_UMODEIS( source, nickname, modechange ) );
     return;
   }
   updateUserMode( client, tokens, modechange );
   if( modechange.size() > 1 ) {
-    replyMsg( clientSocket, MSG_MODE( client->getSource(),
-                                      client->getNickname(), modechange, "" ) );
+    replyMsg( clientSocket, MSG_MODE( source, nickname, modechange, "" ) );
     size_t diff = tokens[1].size() - modechange.size();
     while( diff ) {
-      replyMsg( clientSocket, ERR_UMODEUNKNOWNFLAG( client->getSource(),
-                                                    client->getNickname() ) );
+      replyMsg( clientSocket, ERR_UMODEUNKNOWNFLAG( source, nickname ) );
       diff--;
     }
   }

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:11:02 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 10:33:03 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@
 /**
  * @brief       Pre-check before killing a client:
  *  		      	- uncomplete command
- *			      	- client tries to kill server
+ *			      	- client tries to kill our server (SQUIT and not KILL)
  *			      	- there is no client with the provided target nickname
- *		      		- client is not a Server Operator (of this server)channel 
- *                exists and client is joined to it
+ *		      		- client is not a Server Operator (of this server) channel 
  */
 
 bool Server::checkChanPreKill( int clientSocket, const std::string& param,
@@ -41,7 +40,7 @@ bool Server::checkChanPreKill( int clientSocket, const std::string& param,
     return false;
   }
   if( !existingClient( nickToKill ) ) {
-    replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickToKill ) );
+    replyMsg( clientSocket, ERR_NOSUCHNICK( source, nickname, nickToKill ) );
     return false;
   }
   if( !client->getOperatorMode() ) {

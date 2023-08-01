@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 17:28:40 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 12:03:42 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,8 @@ class Server {
   void leaveChannel( int clientSocket, const std::string& channelName,
                      const std::string& reason, const std::string& cmd );
   bool checkChanPrePart( int clientSocket, const std::string& channelName );
-
+  /* ********* PRIVMSG CMD ******* */
+  bool checkTargetPrivmsg( int clientSocket, std::string& target );
   void handlePrivmsg( int clientSocket, std::string param );
   /* ********* MODE CMD ******* */
   void displayUserModeChanges( Client*                         client,

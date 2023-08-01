@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 18:14:24 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 10:21:30 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 
 // Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande
 // n'est pas actuellement utilisé.
-#define ERR_NOSUCHNICK( source, nickname )                                     \
-  ( std::string( ":" ) + source + " 401 " + nickname                           \
+#define ERR_NOSUCHNICK( source, nickname, target )                             \
+  ( std::string( ":" ) + source + " 401 " + nickname + " " + target            \
     + " :No such nick/channel\r\n" )
 
 // Utilisé pour indiquer que le nom du serveur donné n'existe pas actuellement.

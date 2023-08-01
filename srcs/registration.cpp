@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   registration.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 19:53:13 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 10:34:15 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,6 @@ void Server::checkRegistration( int clientSocket ) {
       std::cout << MSGINFO << "operator mode = "
                 << _clients.at( clientSocket ).getOperatorMode() << std::endl;
     }
-    std::cout << MSGINFO << "welcome message displayed" << std::endl;
+    std::cout << MSGINFO << "welcome message displayed\n" << std::endl;
   }
 }
