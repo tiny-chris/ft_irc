@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 19:19:12 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:53:29 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,11 @@ class Channel;
 
 class Client {
  public:
-  // typedef std::vector< Channel* >	channelPtr;
   Client( void );
   explicit Client( int socket );
   Client( Client const& src );
   ~Client( void );
   Client& operator=( Client const& rhs );
-
-  // Client&			operator=(const Client& other);
 
   int         getFd( void ) const;
   bool        getPassStatus( void ) const;
@@ -44,7 +41,6 @@ class Client {
   std::string getUsername( void ) const;
   std::string getRealname( void ) const;
   std::string getSource( void ) const;
-  // channelPtr		getClientChannels( void ) const;
   std::vector<std::string> getClientChannels( void ) const;
 
   void setPassStatus( bool const& status );
@@ -56,10 +52,8 @@ class Client {
   void setUsername( std::string const& name );
   void setRealname( std::string const& name );
   void setSource( std::string nickname, std::string username );
-  // void			setClientChannels( channelPtr channels ) const;
   void setClientChannels( std::vector<std::string> channels ) const;
 
-  // bool			setChannelModes( std::string const& mode );
   void addChannel( std::string channelName );
   void removeClientChannel( std::string chanName );
 
@@ -82,7 +76,6 @@ class Client {
   std::string _realname;
   std::string _source;
 
-  // channelPtr	_clientChannels;
   std::vector<std::string> _clientChannels;
 };
 

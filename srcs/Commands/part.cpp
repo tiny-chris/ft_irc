@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 18:52:08 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:54:55 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
       return;
     } else {
       changeChannelOperator( clientSocket, client,
-                             channel );  // function in kick.cpp file
+                             channel );
     }
   }
   // client is not chanOps or is one of many chanOps --> remove from Channel

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 17:04:46 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:48:14 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,9 @@ void Server::handleJoin( int clientSocket, std::string param ) {
   std::vector<std::string> tokens = splitString( param, ' ' );
 
   if( checkParamSize( clientSocket, param, tokens ) == false
-      || handleJoinZero( clientSocket, tokens ) == true )
+      || handleJoinZero( clientSocket, tokens ) == true ) {
     return;
+  }
   std::vector<std::string> chanNames = splitString( tokens[0], ',' );
   if( !chanNames.size() ) {
     replyMsg( clientSocket, ERR_BADCHANMASK( client->getSource(), "<empty>" ) );
@@ -198,20 +199,22 @@ void Server::handleJoin( int clientSocket, std::string param ) {
     std::string& channelName = chanNames[i];
     if( checkChanPreJoin( clientSocket, tokens, i ) == false )
       continue;
-    if( !existingChannel( channelName ) )
+    if( !existingChannel( channelName ) ) {
       createChanWithOp( clientSocket, channelName );
+    }
 
     Channel* channel = &_channels[channelName];
     channel->addChannelMember( client );
-    if( channel->getInviteOnlyStatus() == true )
+    if( channel->getInviteOnlyStatus() == true ) {
       channel->removeInvitedMember( nickname );
+    }
     client->addChannel( channelName );
-
     channelMsgToAll( clientSocket, channelName,
                      RPL_JOIN( source, nickname, channelName ) );
-    if( !channel->getTopic().empty() )
+    if( !channel->getTopic().empty() ) {
       replyMsg( clientSocket, RPL_TOPIC( source, nickname, channelName,
                                          _channels[channelName].getTopic() ) );
+    }
     handleNames( clientSocket, channelName );
   }
   return;
