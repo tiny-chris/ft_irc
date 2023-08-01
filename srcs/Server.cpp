@@ -26,6 +26,7 @@
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Utility.hpp"
+#include <fcntl.h>
 
 /* CONSTRUCTORS ***************************************************************/
 
@@ -478,38 +479,38 @@ void Server::handleExistingClient( int clientSocket ) {
   ssize_t            bytesRead = 0;
 
   std::memset( buf, 0, BUFMAXLEN );
-  while(true) {
 
-    bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
+  bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
 
-    if( bytesRead < 0 ) {
-      std::string message = "recv: " + std::string( strerror( errno ) );
-      throw std::runtime_error( message );
-    } else if( bytesRead == 0 ) {
-      handleQuit( clientSocket, ":bye bye" );
-      return;
+  if( bytesRead < 0 ) {
+    if (errno == EAGAIN || errno == EWOULDBLOCK) { // just wait si jamais il y a un EOF ca attend que le client rentre la fin de sa commande
+    // compliant avec ce que demande le script de correction car on ne fait pas appel a un
+    // nouvel appel de recv (c'est pour ca que j'ai supprimé la boucle while true )
+    // ca marche 
     }
-
-    bufs[clientSocket] += std::string( buf, static_cast<size_t>( bytesRead ) );
-
-    if( bufs[clientSocket].size() > MAX_MESSAGE_SIZE ) {
-      std::cout << "Error: Received message is too long.\n\n";
-      bufs[clientSocket].clear();
-      char tempBuf[BUFMAXLEN];
-      while( recv( clientSocket, tempBuf, BUFMAXLEN, MSG_DONTWAIT ) > 0 ) {
-      }
-      return;
+    else {
+    std::string message = "recv: " + std::string( strerror( errno ) );
+    throw std::runtime_error( message );  
     }
+  } else if( bytesRead == 0 ) {
+    handleQuit( clientSocket, ":bye bye" );
+    return;
+  }
 
-    while( bufs[clientSocket].size() >= 2 && bufs[clientSocket].find( CRLF ) != std::string::npos ) {
-      isClear = true;
-      handleRequest( clientSocket, bufs[clientSocket].substr( 0, bufs[clientSocket].find( CRLF ) ) );
-      bufs[clientSocket].erase( 0, bufs[clientSocket].find( CRLF ) + 2 );
-    }
-    if( isClear == true ) {
-      bufs[clientSocket].clear();
-      return;
-    }
+  bufs[clientSocket] += std::string( buf, static_cast<size_t>( bytesRead ) );
+  if( bufs[clientSocket].size() > MAX_MESSAGE_SIZE ) {
+    std::cout << "Error: Received message is too long.\n\n";
+    bufs[clientSocket].clear();
+  }
+
+  while( bufs[clientSocket].size() >= 2 && bufs[clientSocket].find( CRLF ) != std::string::npos ) {
+    isClear = true;
+    handleRequest( clientSocket, bufs[clientSocket].substr( 0, bufs[clientSocket].find( CRLF ) ) );
+    bufs[clientSocket].erase( 0, bufs[clientSocket].find( CRLF ) + 2 );
+  }
+  if( isClear == true ) {
+    bufs[clientSocket].clear();
+    return;
   }
 }
 
@@ -535,6 +536,16 @@ void Server::handleNewClient( void ) {
           "Too many clients connected already" ) );
     Utility::closeFd( clientSocket );
     return;
+  }
+  int flags = fcntl(clientSocket, F_GETFL, 0);
+  if (flags == -1) {
+      throw std::runtime_error( "Error fcntl" );
+  }
+
+  flags |= O_NONBLOCK;
+  int result = fcntl(clientSocket, F_SETFL, flags);
+  if (result == -1) {
+      throw std::runtime_error( "Error fcntl" );
   }
   std::cout << "-----------------------------" << std::endl;
   std::cout << "New connection from " << Utility::ntop( clientAddress ) << "\n";
@@ -596,8 +607,15 @@ void Server::createServerSocket( void ) {
   if( listen( _serverSocket, 10 ) == -1 ) {
     throw std::runtime_error( "Error listening on socket" );
   }
-  if (fcntl( _serverSocket, F_SETFL, O_NONBLOCK ) == -1) {
-      throw std::runtime_error("Error setting socket to non-blocking");
+  int flags = fcntl(_serverSocket, F_GETFL, 0);
+  if (flags == -1) {
+      throw std::runtime_error( "Error fcntl" );
+  }
+
+  flags |= O_NONBLOCK;
+  int result = fcntl(_serverSocket, F_SETFL, flags);
+  if (result == -1) {
+      throw std::runtime_error( "Error fcntl" );
   }
   return;
 }
