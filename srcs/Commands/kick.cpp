@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:42:31 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:31:43 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,13 @@ void Server::kickSelectedClients( int clientSocket, Channel* chan,
   std::string nick = _clients.at( clientSocket ).getNickname();
 
   for( size_t i = 0; i < toKick.size() && i < TARGMAXKICK; ++i ) {
-    if( !chan->checkChannelMembers( toKick[i] ) ) { 
-      replyMsg( clientSocket, ERR_USERNOTINCHANNEL( source, nick, toKick[i],
+    std::string nickToKick = toKick[i];
+    if( !chan->checkChannelMembers( nickToKick ) ) { 
+      replyMsg( clientSocket, ERR_USERNOTINCHANNEL( source, nick, nickToKick,
                                                     chan->getChannelName() ) );
       continue;
     }
-    kickUser( clientSocket, chan, nick, toKick[i], reason );
+    kickUser( clientSocket, chan, nick, nickToKick, reason );
   }
 }
 
@@ -109,11 +110,11 @@ void Server::handleKick( int clientSocket, std::string param ) {
   std::string              nick = _clients.at( clientSocket ).getNickname();
   std::vector<std::string> tokens = splitString( param, ' ' );
 
-  if( param.empty() || tokens.size() < 2 ) {
+  if( param.empty() || tokens.size() < 2 || vecStringsAllEmpty( tokens ) ) {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK" ) );
     return;
   }
-  std::string channelName = tokens[0].substr( 0, CHANNELLEN );
+  std::string channelName = tokens[0];
   if( !existingChannel( channelName ) ) {
     replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName ) );
     return;

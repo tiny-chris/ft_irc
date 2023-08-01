@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 12:03:42 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 16:21:07 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,8 @@ class Server {
   void broadcastMsgToAll( int clientSocket, const std::string& message );
   void broadcastMsgNotClient( int clientSocket, const std::string& message );
   void replyMsg( int clientSocket, std::string reply, bool copyToServer = 1 );
+  void handleCommand( int clientSocket, int key, const std::string& command, 
+                      const std::string& parameters );
   void handleRequest( int clientSocket, std::string request );
   void handleExistingClient( int clientSocket );
   void handleNewClient( void );

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 10:25:43 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:32:47 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,24 @@ void Server::displayUserModeChanges( Client*                         client,
 void Server::updateUserMode( Client*                         client,
                              const std::vector<std::string>& tokens,
                              std::string&                    modechange ) {
+  int clientSocket = client->getFd();
+  std::string source = client->getSource();
+  std::string nickname = client->getNickname();
   char modePrefix = getModePrefix( tokens[1] );
+  if (modePrefix == 'O')
+    std::cout << MSGINFO << "Prefix must be + or -\n" << std::endl;
   modechange += modePrefix;
   std::string modeString = tokens[1].substr( 1, tokens[1].size() - 1 );
   for( size_t i = 0; i < modeString.size(); i++ ) {
     char modeChar = modeString[i];
     if( modePrefix == '+' ) {
-      client->handleUserModeSet( modeChar, &modechange );
+      if (!client->handleUserModeSet( modeChar, &modechange )){
+        replyMsg( clientSocket, ERR_UMODEUNKNOWNFLAG( source, nickname ) );
+      }
     } else if( modePrefix == '-' ) {
-      client->handleUserModeUnset( modeChar, &modechange );
+      if (!client->handleUserModeUnset( modeChar, &modechange )) {
+        replyMsg( clientSocket, ERR_UMODEUNKNOWNFLAG( source, nickname ) );
+      }
     }
   }
 }
@@ -69,7 +78,7 @@ void Server::handleUserMode( int                       clientSocket,
   Client*     client = &_clients.at( clientSocket );
   std::string source = client->getSource();
   std::string nickname = client->getNickname();
-  std::string userName = tokens[0].substr( 0, NICKLEN );
+  std::string userName = tokens[0];
   std::string modechange;
 
   if( !existingNick( userName ) ) {
@@ -88,11 +97,6 @@ void Server::handleUserMode( int                       clientSocket,
   updateUserMode( client, tokens, modechange );
   if( modechange.size() > 1 ) {
     replyMsg( clientSocket, MSG_MODE( source, nickname, modechange, "" ) );
-    size_t diff = tokens[1].size() - modechange.size();
-    while( diff ) {
-      replyMsg( clientSocket, ERR_UMODEUNKNOWNFLAG( source, nickname ) );
-      diff--;
-    }
   }
 }
 
@@ -110,7 +114,6 @@ void Server::handleChannelMode( int clientSocket, std::string& channelName,
   std::string clientName = client->getNickname();
   std::string modeChange, modeArgs;
 
-  channelName = channelName.substr( 0, CHANNELLEN );
   if( !existingChannel( channelName ) ) {
     replyMsg( clientSocket,
               ERR_NOSUCHCHANNEL( source, clientName, channelName ) );
@@ -151,14 +154,14 @@ void Server::handleChannelMode( int clientSocket, std::string& channelName,
  */
 
 void Server::handleMode( int clientSocket, std::string param ) {
-  if( param.empty() ) {
+  std::vector<std::string> tokens = splitString( param, ' ' );
+  if( param.empty() || vecStringsAllEmpty( tokens ) ) {
     replyMsg(
       clientSocket,
       ERR_NEEDMOREPARAMS( _clients.at( clientSocket ).getSource(),
                           _clients.at( clientSocket ).getNickname(), "MODE" ) );
     return;
   }
-  std::vector<std::string> tokens = splitString( param, ' ' );
   bool isChannelMode = tokens[0].find( '#', 0 ) != std::string::npos;
   if( isChannelMode ) {
     handleChannelMode( clientSocket, tokens[0], tokens );

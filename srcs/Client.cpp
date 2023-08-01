@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 19:20:57 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,40 +124,42 @@ void Client::removeClientChannel( std::string chanName ) {
  * @brief       Sets user modes (invisible i, operator o)
  */
 
-void Client::handleUserModeSet( char modeChar, std::string* modechange ) {
+bool Client::handleUserModeSet( char modeChar, std::string* modechange ) {
   switch( modeChar ) {
     case 'i':
       if( !getInvisibleMode() ) {
         setInvisibleMode( true );
         *modechange += "i";
       }
-      break;
+      return true;
     case 'o':
       if( !getOperatorMode() ) {
         setOperatorMode( true );
         *modechange += "o";
       }
-      break;
+      return true;
   }
+  return false;
 }
 
 /**
  * @brief       Unsets user modes (invisible i, operator o)
  */
 
-void Client::handleUserModeUnset( char modeChar, std::string* modechange ) {
+bool Client::handleUserModeUnset( char modeChar, std::string* modechange ) {
   switch( modeChar ) {
     case 'i':
       if( getInvisibleMode() ) {
         setInvisibleMode( false );
         *modechange += "i";
       }
-      break;
+      return true;
     case 'o':
       if( getOperatorMode() ) {
         setOperatorMode( false );
         *modechange += "o";
       }
-      break;
+      return true;
   }
+  return false;
 }

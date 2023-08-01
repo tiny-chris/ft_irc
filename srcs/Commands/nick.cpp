@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 10:36:13 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:29:36 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void		Server::handleNick( int clientSocket, std::string param ) {
   std::string source = client->getSource();
 	std::string nick = client->getNickname();
   std::vector<std::string> tokens = splitString( param, ' ' );
-  if ( param.empty() ) {
+  if ( param.empty() || vecStringsAllEmpty( tokens ) ) {
     replyMsg(clientSocket, ERR_NONICKNAMEGIVEN(source, nick));
     return ;
   }

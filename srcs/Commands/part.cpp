@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 10:41:34 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:52:08 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
                   RPL_PART( client->getSource(), client->getNickname(),
                             channelName, reason ) );
       }
-      else if( cmd == "QUIT" ) {
+      else if( cmd == "QUIT" || cmd == "KILL" ) {
         std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason
                   << std::endl;
       }
@@ -87,8 +87,13 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
                      RPL_PART( client->getSource(), client->getNickname(),
                                channelName, reason ) );
   else if( cmd == "QUIT" ) {
-    channelMsgNotClient(
-      clientSocket, channelName,
+    channelMsgNotClient(clientSocket, channelName,
+      RPL_QUIT( client->getSource(), client->getNickname(), reason ) );
+    std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason
+              << std::endl;
+  }
+  else if( cmd == "KILL" ) {
+    channelMsgToAll( clientSocket, channelName,
       RPL_QUIT( client->getSource(), client->getNickname(), reason ) );
     std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason
               << std::endl;
@@ -112,7 +117,7 @@ void Server::handlePart( int clientSocket, std::string param ) {
   std::string              channelList = "", reason = "";
   std::vector<std::string> channelNames;
 
-  if( param.empty()
+  if( param.empty() || vecStringsAllEmpty( splitString( param, ' ' ) )
       || splitStringInTwo( param, ' ', &channelList, &reason ) == false ) {
     replyMsg(
       clientSocket,
@@ -128,8 +133,6 @@ void Server::handlePart( int clientSocket, std::string param ) {
   channelNames = splitString( channelList, ',' );
   for( size_t i = 0; i < channelNames.size(); ++i ) {
     std::string channelName = channelNames[i];
-    if( channelName.size() > CHANNELLEN )
-      channelName = channelName.substr( 0, CHANNELLEN );
     if( checkChanPrePart( clientSocket, channelName ) == false )
       continue;
     leaveChannel( clientSocket, channelName, reason, "PART" );

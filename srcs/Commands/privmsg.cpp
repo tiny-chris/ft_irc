@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 12:32:32 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:01:23 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ bool  Server::checkTargetPrivmsg( int clientSocket, std::string& target )
       return false;
     }
     target = target.substr( target.find( "#" ) );
-    if( target.size() > CHANNELLEN ) {
-      target = target.substr( 0, CHANNELLEN );
-    }
     // if channel does not exist
     if( !existingChannel( target ) ) {  
       replyMsg( clientSocket,

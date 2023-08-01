@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   who.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 16:59:34 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void Server::handleWho( int clientSocket, std::string param ) {
   bool        isChannel = target.find( '#', 0 ) != std::string::npos;
   if( isChannel && existingChannel( target ) ) {
     handleWhoChannel( clientSocket, source, nick, target );
-  } else if( existingClient( target ) ) {
+  }  else if( existingClient( target ) ) {
     handleWhoClient( clientSocket, source, nick, target );
   }
 }

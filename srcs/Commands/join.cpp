@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:52:53 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:04:46 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool Server::checkParamSize( int clientSocket, const std::string& param,
   const std::string& source = _clients.at( clientSocket ).getSource();
   const std::string& nickname = _clients.at( clientSocket ).getNickname();
 
-  if( param.empty() || tokens.size() == 0 ) {
+  if( param.empty() || tokens.size() == 0 || vecStringsAllEmpty( tokens ) ) {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nickname, "JOIN" ) );
     return false;
   }
@@ -78,6 +78,7 @@ bool Server::isValidChanName( int                clientSocket,
   std::string   chanName = ( channelName.empty() ) ? "<empty>" : channelName;
 
   if( chanName == "<empty>" || channelName.find( CHANTYPES ) != 0
+      || chanName.size() > CHANNELLEN
       || ( channelName.find( CHANTYPES ) == 0 && channelName.length() == 1 )
       || ( channelName.find( CHANTYPES ) == 0
            && !isValidToken( chanName.substr( 1 ) ) ) ) {
@@ -195,8 +196,6 @@ void Server::handleJoin( int clientSocket, std::string param ) {
 
   for( size_t i = 0; i < chanNames.size(); ++i ) {
     std::string& channelName = chanNames[i];
-    if( channelName.size() > CHANNELLEN )
-      channelName = channelName.substr( 0, CHANNELLEN );
     if( checkChanPreJoin( clientSocket, tokens, i ) == false )
       continue;
     if( !existingChannel( channelName ) )

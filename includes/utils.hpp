@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 19:38:50 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ bool isValidToken( std::string name );
 std::string intToString( int number );
 int         StringToInt( std::string str );
 
+bool vecStringsAllEmpty( const std::vector< std::string >& strings );
 std::vector<std::string> splitString( std::string params, char splitter );
 bool splitStringInTwo( std::string strToSplit, char delimiter,
                        std::string* str1, std::string* str2 );

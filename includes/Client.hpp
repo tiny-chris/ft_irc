@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 19:19:12 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ class Client {
   void addChannel( std::string channelName );
   void removeClientChannel( std::string chanName );
 
-  void handleUserModeSet( char modeChar, std::string* modechange );
-  void handleUserModeUnset( char modeChar, std::string* modechange );
+  bool handleUserModeSet( char modeChar, std::string* modechange );
+  bool handleUserModeUnset( char modeChar, std::string* modechange );
 
  private:
   int _fd;

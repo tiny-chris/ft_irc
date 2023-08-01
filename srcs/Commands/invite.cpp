@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 19:59:50 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 17:31:10 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ void Server::handleInvite( int clientSocket, std::string param ) {
   std::string              nick = _clients.at( clientSocket ).getNickname();
   std::vector<std::string> tokens = splitString( param, ' ' );
 
-  if( param.empty() || tokens.size() < 2 ) { 
+  if( param.empty() || tokens.size() < 2 || vecStringsAllEmpty( tokens ) ) { 
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nick, "KICK" ) );
     return;
   }
-  std::string channelName = tokens[1].substr( 0, CHANNELLEN );
+  std::string channelName = tokens[1];
   if( !existingChannel( channelName ) ) { 
     replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName ) );
     return;
@@ -73,7 +73,7 @@ void Server::handleInvite( int clientSocket, std::string param ) {
     replyMsg( clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ) );
     return;
   }
-  std::string toInvite = tokens[0].substr( 0, NICKLEN );
+  std::string toInvite = tokens[0];
   if( chan->checkChannelMembers( toInvite ) ) {
     replyMsg( clientSocket,
               ERR_USERONCHANNEL( source, nick, toInvite, channelName ) );

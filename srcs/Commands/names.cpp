@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:41:35 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:44:19 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ void Server::handleNames( int clientSocket, std::string param ) {
   mapChannels::iterator    chanIt;
   std::vector<std::string> tokens = splitString( param, ',' );
 
-  if( param.empty() || !tokens.size() ) {
+  if( param.empty() || !tokens.size() 
+    || vecStringsAllEmpty( splitString( param, ' ' ) ) ) {
     if( _channels.empty() ) {
       std::cout << MSGINFO << "there is no channel created yet" << std::endl;
       return;

@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 12:57:02 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:50:23 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,16 @@ bool Server::checkChanPreKill( int clientSocket, const std::string& param,
 
 void Server::handleKill( int clientSocket, std::string param ) {
   Client*     client = &_clients.at( clientSocket );
-  std::string nickToKill = "", comment = "";
+  std::string toKill = "", comment = "";
 
-  splitStringInTwo( param, ' ', &nickToKill, &comment );
-  if( !checkChanPreKill( clientSocket, param, nickToKill, comment ) ) {
+  splitStringInTwo( param, ' ', &toKill, &comment );
+  if( !checkChanPreKill( clientSocket, param, toKill, comment ) ) {
     return;
   }
-
   if( comment.at( 0 ) == ':' ) {
     comment.erase( 0, 1 );
   }
-  int         socketToKill = findClientFd( nickToKill );
+  int         socketToKill = findClientFd( toKill );
   Client*     clientToKill = &_clients.at( socketToKill );
   std::string reason = KILL_REASON( client->getNickname(), comment );
 
@@ -78,7 +77,7 @@ void Server::handleKill( int clientSocket, std::string param ) {
     std::vector<std::string> copyClientChannels = client->getClientChannels();
 
     for( size_t i = 0; i < copyClientChannels.size(); i++ ) {
-      leaveChannel( socketToKill, copyClientChannels[i], reason, "QUIT" );
+      leaveChannel( socketToKill, copyClientChannels[i], reason, "KILL" );
     }
   }
   replyMsg( socketToKill,

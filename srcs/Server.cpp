@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:59:40 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:45:57 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,6 +359,69 @@ void Server::replyMsg( int clientSocket, std::string reply,
   return;
 }
 
+void  Server::handleCommand( int clientSocket, int key, const std::string& command, const std::string& parameters ) {
+  switch( key ) {
+  case CAP:
+    std::cout << std::endl;
+    break;
+  case INVITE:
+    handleInvite( clientSocket, parameters );
+    break;
+  case JOIN:
+    handleJoin( clientSocket, parameters );
+    break;
+  case KICK:
+    handleKick( clientSocket, parameters );
+    break;
+  case KILL:
+    handleKill( clientSocket, parameters );
+    break;
+  case MODE:
+    handleMode( clientSocket, parameters );
+    break;
+  case NAMES:
+    handleNames( clientSocket, parameters );
+    break;
+  case NICK:
+    handleNick( clientSocket, parameters );
+    break;
+  case PART:
+    handlePart( clientSocket, parameters );
+    break;
+  case PASS:
+    handlePass( clientSocket, parameters );
+    break;
+  case PING:
+    handlePing( clientSocket, parameters );
+    break;
+  case PRIVMSG:
+    handlePrivmsg( clientSocket, parameters );
+    break;
+  case QUIT:
+    handleQuit( clientSocket, parameters );
+    break;
+  case SQUIT:
+    handleSQuit( clientSocket, parameters );
+    break;
+  case TOPIC:
+    handleTopic( clientSocket, parameters );
+    break;
+  case USER:
+    handleUser( clientSocket, parameters );
+    break;
+  case WHO:
+    handleWho( clientSocket, parameters );
+    break;
+  default: {
+    if( !command.empty() || ( command.empty() && !parameters.empty() ) ) {
+      replyMsg( clientSocket, ERR_UNKNOWNCOMMAND(
+          _serverName, _clients.at( clientSocket ).getNickname(), command ) );
+    } else  // if ( command.empty() && parameter.empty() )
+      std::cout << MSGINFO << "request is empty\n" << std::endl;
+    } break;
+  }
+}
+
 /**
  * @brief       Handle request by identifying command and parameters
  *              step 1: get command & params
@@ -370,7 +433,6 @@ void Server::replyMsg( int clientSocket, std::string reply,
 void Server::handleRequest( int clientSocket, std::string request ) {
   std::string command = "";
   std::string parameters = "";
-  size_t      splitter;
   int         commandKey = 0;
 
   std::cout << "-----client [ ";
@@ -379,13 +441,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
   }
   std::cout << "on socket " << clientSocket << " ]-----\n";
   std::cout << "request: <" << request << ">" << std::endl;
-  splitter = request.find( ' ', 0 );
 
-  if( splitter != std::string::npos ) {
-    command = request.substr( 0, splitter );
-    parameters = request.substr( splitter + 1, std::string::npos );
-  } else
-    command = request;
+  splitStringInTwo( request, ' ', &command, &parameters );
   for( mapCommands::const_iterator it = _commands.begin();
        it != _commands.end(); ++it ) {
     if( command == it->second ) {
@@ -406,68 +463,8 @@ void Server::handleRequest( int clientSocket, std::string request ) {
       return;
     }
   }
-  switch( commandKey ) {
-    case CAP:
-      std::cout << std::endl;
-      break;
-    case PASS:
-      handlePass( clientSocket, parameters );
-      break;
-    case NICK:
-      handleNick( clientSocket, parameters );
-      break;
-    case USER:
-      handleUser( clientSocket, parameters );
-      break;
-    case PING:
-      handlePing( clientSocket, parameters );
-      break;
-    case MODE:
-      handleMode( clientSocket, parameters );
-      break;
-    case JOIN:
-      handleJoin( clientSocket, parameters );
-      break;
-    case PRIVMSG:
-      handlePrivmsg( clientSocket, parameters );
-      break;
-    case KICK:
-      handleKick( clientSocket, parameters );
-      break;
-    case TOPIC:
-      handleTopic( clientSocket, parameters );
-      break;
-    case INVITE:
-      handleInvite( clientSocket, parameters );
-      break;
-    case NAMES:
-      handleNames( clientSocket, parameters );
-      break;
-    case WHO:
-      handleWho( clientSocket, parameters );
-      break;
-    case PART:
-      handlePart( clientSocket, parameters );
-      break;
-    case QUIT:
-      handleQuit( clientSocket, parameters );
-      break;
-    case KILL:
-      handleKill( clientSocket, parameters );
-      break;
-    case SQUIT:  // ' /shutdown '
-      handleSQuit( clientSocket, parameters );
-      break;
-    default: {
-      if( !command.empty() || ( command.empty() && !parameters.empty() ) ) {
-        replyMsg(
-          clientSocket,
-          ERR_UNKNOWNCOMMAND(
-            _serverName, _clients.at( clientSocket ).getRealname(), command ) );
-      } else  // if ( command.empty() && parameter.empty() )
-        std::cout << MSGINFO << "request is empty\n" << std::endl;
-    } break;
-  }
+  handleCommand( clientSocket, commandKey, command, parameters );
+  
 }
 
 /**

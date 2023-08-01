@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 19:44:21 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 18:39:11 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ servers. The value MUST be specified and MUST be a positive integer. */
 #define SERVERNAME        "localhost"
 #define VERSION           "1.69"
 #define CASEMAPPING		  "ascii"
-#define TARGMAXKICK  1
+#define TARGMAXKICK  2
 #define TARGMAXMSG   2
 #define TARGMAXNAMES 2
 

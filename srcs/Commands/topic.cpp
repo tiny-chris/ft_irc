@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 17:59:19 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,38 +107,28 @@ void Server::handleTopicDisplay( int clientSocket, Channel* chan ) {
 void Server::handleTopic( int clientSocket, std::string param ) {
   std::string source = _clients.at( clientSocket ).getSource();
   std::string nick = _clients.at( clientSocket ).getNickname();
-  if( param.empty() ) {
+  std::vector<std::string> tokens = splitString( param, ' ' );
+  if( param.empty() || vecStringsAllEmpty( tokens )) {
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nick, "TOPIC" ) );
     return;
   }
-  std::vector<std::string> tokens = splitString( param, ' ' );
-  std::string              channelName = tokens[0].substr(
-    0, CHANNELLEN );  // cropping the first param (channel name) if its length
-                                   // is over the define CHANNELLEN
-  if( !existingChannel(
-        channelName ) ) {  // if the channel entered doesn't exist no such
-                           // Channel error displayed
+  std::string              channelName = tokens[0];
+  if( !existingChannel( channelName ) ) {
     replyMsg( clientSocket, ERR_NOSUCHCHANNEL( source, nick, channelName ) );
     return;
   }
   Channel* chan = &_channels[channelName];
-  if( !chan->checkChannelMembers(
-        nick ) ) {  // checking if the client that makes the request is a
-                    // channel member
+  if( !chan->checkChannelMembers( nick ) ) {
     replyMsg( clientSocket, ERR_NOTONCHANNEL( source, nick, channelName ) );
     return;
   }
-  if( tokens.size()
-      < 2 ) {  // if <topic> is not given, RPL_TOPIC Or RPL_NOTOPIC returned
+  if( tokens.size() < 2 ) {
     handleTopicDisplay( clientSocket, chan );
     return;
   }
   if( chan->getTopicRestrictionStatus() == true
       && !chan->checkChannelOps( nick )
-      && !_clients.at( clientSocket ).getOperatorMode() ) {  // error if the
-                                                             // client doesn't
-                                                             // have chanops
-                                                             // privileges
+      && !_clients.at( clientSocket ).getOperatorMode() ) {
     replyMsg( clientSocket, ERR_CHANOPRIVSNEEDED( source, nick, channelName ) );
     return;
   }

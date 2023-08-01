@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 09:27:48 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 15:58:57 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ std::vector<std::string> splitString( std::string params, char splitter ) {
 }
 
 /**
- * @brief       Split a string into two and store each substring into str1 and
- *              str2 Delimiter is a specific mentionned 'char'
+ * @brief       Splits a string into two and store each substring into str1 
+ *              and str2 Delimiter is a specific mentionned 'char'
  */
 
 bool splitStringInTwo( std::string strToSplit, char delimiter,
@@ -71,6 +71,20 @@ bool splitStringInTwo( std::string strToSplit, char delimiter,
   } else {
     *str1 = strToSplit;
     *str2 = "";
+  }
+  return true;
+}
+
+/**
+ * @brief       Checks if all string from a vector<std::string> are empty
+ */
+
+bool vecStringsAllEmpty( const std::vector<std::string>& strings ) {
+  std::vector<std::string>::const_iterator it;
+  for ( it = strings.begin(); it != strings.end(); ++it ) {
+    if ( !it->empty() ) {
+        return false;
+    }
   }
   return true;
 }
