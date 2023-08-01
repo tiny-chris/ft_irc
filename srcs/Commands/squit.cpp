@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   squit.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:30:27 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,9 @@
 
 /**
  * @brief       QUIT command
- * 				syntax: SQUIT <server> <comment>
+ * 				      syntax: SQUIT <server> <comment>
  *
- * 				The client closes the server - must be a serverOp
- *
+ * 				      The client closes the server - must be a serverOp
  */
 
 void Server::handleSQuit( int clientSocket, std::string param ) {
@@ -32,7 +31,7 @@ void Server::handleSQuit( int clientSocket, std::string param ) {
 
   if( param.empty()
       || splitStringInTwo( param, ' ', &serverToQuit, &comment ) == false
-      || serverToQuit.empty() || comment.empty() ) {  // uncomplete command
+      || serverToQuit.empty() || comment.empty() ) {  // if uncomplete command
     replyMsg( clientSocket, ERR_NEEDMOREPARAMS( source, nickname, "SQUIT" ) );
     return;
   }
@@ -40,8 +39,7 @@ void Server::handleSQuit( int clientSocket, std::string param ) {
     replyMsg( clientSocket, ERR_NOSUCHSERVER( source, serverToQuit ) );
     return;
   }
-  if( !client->getOperatorMode() ) {  // client is not a serverOp (of this
-                                      // server)
+  if( !client->getOperatorMode() ) {  // client is not serverOp (this server)
     replyMsg( clientSocket, ERR_NOPRIVILEGES( source ) );
     return;
   }

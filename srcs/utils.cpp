@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:27:48 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ std::vector<std::string> splitString( std::string params, char splitter ) {
 
 /**
  * @brief       Split a string into two and store each substring into str1 and
- * str2 Delimiter is a specific mentionned 'char'
+ *              str2 Delimiter is a specific mentionned 'char'
  */
 
 bool splitStringInTwo( std::string strToSplit, char delimiter,
@@ -77,16 +77,8 @@ bool splitStringInTwo( std::string strToSplit, char delimiter,
 
 /**
  * @brief       Check if the user name provided meets the requirements
- *              user  ::=  <sequence of any characters except NUL, CR, LF, and
- * SPACE>
- *
- *
- * Software SHOULD use the UTF-8 character encoding to encode and decode
- * messages, with fallbacks as described in the Character Encodings
- * implementation considerations appendix.
- *
- *  REVOIR INCEPTION pour le utf...
- *
+ *              user  ::=  <sequence of any characters except NUL, CR, LF, 
+ *              and SPACE>
  */
 
 bool isValidUser( std::string name ) {

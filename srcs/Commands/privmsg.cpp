@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:14:39 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 /**
  * @brief       PRIVMSG command
- *				syntax:			PRIVMSG <target> <message>
+ *			      	syntax: PRIVMSG <target> <message>
  *
  *	Send a message to the target (client or channel)
  *	- Check for a channel target: channel exists, client is joined to it
@@ -43,8 +43,9 @@ void Server::handlePrivmsg( int clientSocket, std::string param ) {
     return;
   }
 
-  if( textToBeSent.at( 0 ) == ':' )
+  if( textToBeSent.at( 0 ) == ':' ) {
     textToBeSent.erase( 0, 1 );
+  }
   std::vector<std::string> targetNames = splitString( targetList, ',' );
 
   for( size_t i = 0; i < targetNames.size() && i < TARGMAXMSG; ++i ) {
@@ -57,8 +58,9 @@ void Server::handlePrivmsg( int clientSocket, std::string param ) {
       // if CHANNEL (#)
       if( sharp != std::string::npos && ( sharp == 0 || sharp == 1 ) ) {
         std::string channelName = target.substr( sharp );
-        if( channelName.size() > CHANNELLEN )
+        if( channelName.size() > CHANNELLEN ) {
           channelName = channelName.substr( 0, CHANNELLEN );
+        }
         if( !existingChannel( channelName ) ) {  // if channel does not exist
           replyMsg( clientSocket,
                     ERR_NOSUCHCHANNEL( source, nickname, channelName ) );
@@ -84,10 +86,12 @@ void Server::handlePrivmsg( int clientSocket, std::string param ) {
                   ERR_CANNOTSENDTOCHAN( source, nickname, target ) );
       }
       // if CLIENT
-      else if( existingClient( target ) )
+      else if( existingClient( target ) ) {
         replyMsg( findClientFd( target ), reply );
-      else
+      }
+      else {
         replyMsg( clientSocket, ERR_NOSUCHNICK( source, target ) );
+      }
     } else {
       replyMsg( clientSocket, ERR_NOSUCHNICK( source, "" ) );
     }

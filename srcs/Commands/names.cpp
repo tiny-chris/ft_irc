@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 20:02:57 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 09:41:35 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 #include "utils.hpp"
 
 /**
- * @brief	Display member nicknames on one channel by using RPL_NAMEREPLY +
- *RPL_ENDOFNAMES
- *
- *			/!\ if a user is invisible --> do not show
- *				unless requesting client is also joined to that channel
+ * @brief       Displays member nicknames on one channel by using RPL_NAMEREPLY 
+ *              and RPL_ENDOFNAMES
+ * 
+ *    		      /!\ if a user is invisible --> do not show
+ *				      unless requesting client is also joined to that channel
  */
 
 void Server::displayNames( int clientSocket, Channel& channel ) {
@@ -55,15 +55,14 @@ void Server::displayNames( int clientSocket, Channel& channel ) {
 }
 
 /**
- * @brief	NAMES command
- * 			syntax:			NAMES <channel>{,<channel>}
- *
- * To view the nicknames joined to a channel and their channel membership prefix
- * (@) There can be one or more channels (limited by TARGMAXNAMES), separated by
- * a comma
- * --> evaluated one by one
- * If there is no 'channel' --> display all channels' name (one channel by one)
- *
+ * @brief       NAMES command
+ *              syntax:	NAMES <channel>{,<channel>}
+ * 
+ *        To view the nicknames joined to a channel and their channel membership 
+ *        prefix (@ for chanOp or nothing for normal client)
+ *        There can be one or more channels (limited by TARGMAXNAMES), separated 
+ *        by a comma --> evaluated one by one
+ *        If is only 'NAMES' --> display all channels (one by one)
  */
 
 void Server::handleNames( int clientSocket, std::string param ) {

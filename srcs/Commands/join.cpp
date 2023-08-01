@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:52:53 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 /**
  * @brief 	JOIN command specific case : 	JOIN 0
  *
- *			This case means client leaves all channels it was joined on
- *			<--> equivalent to PART <all client channels>
+ *			    This case means client leaves all channels it was joined on
+ *			    <--> equivalent to PART <all client channels>
  *
  */
+
 bool Server::handleJoinZero( int                             clientSocket,
                              const std::vector<std::string>& tokens ) {
   Client* client = &_clients.at( clientSocket );
@@ -45,6 +46,7 @@ bool Server::handleJoinZero( int                             clientSocket,
  * @brief 	Check JOIN param size: there must be 1 or 2 parameters
  *
  */
+
 bool Server::checkParamSize( int clientSocket, const std::string& param,
                              const std::vector<std::string>& tokens ) {
   const std::string& source = _clients.at( clientSocket ).getSource();
@@ -63,11 +65,11 @@ bool Server::checkParamSize( int clientSocket, const std::string& param,
 }
 
 /**
- * @brief	Check if channel name is valid
+ * @brief       Check if channel name is valid
  *
- *			Specific case when there is no channel name (only spaces)
- *			Check each channel --> if there is at least one channel
- *			Valid characters: prefix '#', then alphanum and "-", "_", or "."
+ *              Specific case when there is no channel name (only spaces)
+ *              Check each channel --> if there is at least one channel
+ *              Valid characters: prefix '#', then alphanum and "-", "_", "."
  */
 
 bool Server::isValidChanName( int                clientSocket,
@@ -86,17 +88,16 @@ bool Server::isValidChanName( int                clientSocket,
 }
 
 /**
- * @brief	Check channel format, content & criteria
- *
- *	- check if the channel name is valid (start with a '#' and has valid
- *characters)
- *	- check if the client is already on too many channels
- *	- check if the client has already joined this channel
- *	- check if the channel is available upon invitation
- *	- check if client is banned from this channel --> not handled (not
- *compulsory)
- *	- check if the channel required password
- *	- check if channel is full
+ * @brief       Checks channel format, content & criteria
+ *              - check if the channel name is valid (start with a '#' and has 
+ *                valid characters)
+ *              - check if the client is already on too many channels
+ *              - check if the client has already joined this channel
+ *              - check if the channel is available upon invitation
+ *              - check if client is banned from this channel --> not handled 
+ *                (not compulsory)
+ *              - check if the channel required password
+ *              - check if channel is full
  */
 
 bool Server::checkChanPreJoin( int                             clientSocket,
@@ -153,8 +154,7 @@ bool Server::checkChanPreJoin( int                             clientSocket,
 }
 
 /**
- * @brief	Create a channel and put client as chanOp (chan creator)
- *
+ * @brief       Create a channel and put client as chanOp (chan creator)
  */
 
 void Server::createChanWithOp( int                clientSocket,
@@ -169,15 +169,15 @@ void Server::createChanWithOp( int                clientSocket,
 }
 
 /**
- * @brief	JOIN command
- *			syntax:	JOIN <channel>{,<channel>} [<key>{,<key>}]
- *
- *			If channel does not exist: create it, then client joins it and
- *			become chanOp
- *			If channel already exists: join channel as regular member
- *			Perform checks on channel format, mode and possibility to join it
- *
+ * @brief       JOIN command
+ *              syntax:	JOIN <channel>{,<channel>} [<key>{,<key>}]
+ * 
+ *              Perform checks on channel format, mode & possibility to join
+ *              If channel does not exist: create it, then client joins it 
+ *              and become chanOp
+ *              If channel already exists: join channel as regular member
  */
+
 void Server::handleJoin( int clientSocket, std::string param ) {
   Client*                  client = &_clients.at( clientSocket );
   const std::string&       source = client->getSource();

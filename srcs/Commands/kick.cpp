@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 20:01:53 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 09:42:31 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 /**
  * @brief       Gets the reason why the client was kicked
- * 				If no reason indicated, default reason displayed.
+ * 				      If no reason indicated, default reason displayed.
  */
 
 std::string Server::getKickReason( std::vector<std::string>& tokens ) {
@@ -43,8 +43,8 @@ std::string Server::getKickReason( std::vector<std::string>& tokens ) {
 
 /**
  * @brief       Kicks one user of the channel and deletes it from all map
- * 				Exception if he the last operator among other clients
- * 				Displays a message to all members left on the channel
+ * 				      Exception if he the last operator among other clients
+ * 			      	Displays a message to all members left on the channel
  */
 
 void Server::kickUser( int clientSocket, Channel* chan, std::string nick,
@@ -74,7 +74,7 @@ void Server::kickUser( int clientSocket, Channel* chan, std::string nick,
 
 /**
  * @brief       Iterate on the vector of client to kick and calls kick User
- * 				for each one of them
+ * 				      for each one of them
  */
 
 void Server::kickSelectedClients( int clientSocket, Channel* chan,
@@ -95,12 +95,13 @@ void Server::kickSelectedClients( int clientSocket, Channel* chan,
 
 /**
  * @brief       KICK command
- * 				KICK <channel> <user> *( "," <user> ) [<comment>]
+ * 				      syntax: KICK <channel> <user> *( "," <user> ) [<comment>]
  *
- * 				Kicks a client off of a Channel
+ * 				      Kicks a client off of a Channel
  *              - Checks the parameters are valid (number, channel name)
- * 				- Check if client has the right to kick on this channel
- * 				- Kicks at most TARGMAXKICK clients of the channel if they are on it
+ * 				      - Check if client has the right to kick on this channel
+ * 				      - Kicks at most TARGMAXKICK clients of the channel if they are 
+ *                on it
  */
 
 void Server::handleKick( int clientSocket, std::string param ) {

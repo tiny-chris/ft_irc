@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kill.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:11:02 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,11 @@
 
 /**
  * @brief       Pre-check before killing a client:
- *  			- uncomplete command
- *				- client tries to kill server
- *				- there is no client with the provided target nickname
- *				- client is not a Server Operator (of this server)channel exists and
- *client is joined to it
- *
+ *  		      	- uncomplete command
+ *			      	- client tries to kill server
+ *			      	- there is no client with the provided target nickname
+ *		      		- client is not a Server Operator (of this server)channel 
+ *                exists and client is joined to it
  */
 
 bool Server::checkChanPreKill( int clientSocket, const std::string& param,
@@ -54,10 +53,10 @@ bool Server::checkChanPreKill( int clientSocket, const std::string& param,
 
 /**
  * @brief       KILL command
- *				syntax:			 KILL <target> <comment>
+ *				      syntax: KILL <target> <comment>
  *
- *	Remove a client from the server by removing it from channels and disconnect
- *
+ *	            Remove a client from the server by removing it from channels 
+ *              and disconnect
  */
 
 void Server::handleKill( int clientSocket, std::string param ) {

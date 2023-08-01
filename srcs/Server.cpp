@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/07/31 18:01:06 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/01 09:37:45 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ size_t Server::getPort( void ) const { return _port; }
 
 void Server::setPassword( std::string& password ) { _password = password; }
 std::string Server::getPassword( void ) const { return _password; }
+
 /**
  * @brief       Function to check if a client exists by nickname
  *              and return a pointer to the client
@@ -138,6 +139,10 @@ void Server::stop( void ) {
   Utility::closeFd( _epollFd );
   Utility::closeFd( _serverSocket );
 }
+
+/**
+ * @brief       Gets the client fd (socket) when a client exists
+ */
 
 int Server::findClientFd( const std::string& name ) {
   for( mapClients::iterator it = _clients.begin(); it != _clients.end();
@@ -176,8 +181,8 @@ bool Server::existingChannel( std::string param ) {
 
 /**
  * @brief       Function that makes another client chanops when the only
- * 				one chanop is quitting server or is kicked of the channel
- * 				Channel cannot remain without a chanop
+ * 				      one chanop is quitting server or is kicked of the channel
+ * 				      Channel cannot remain without a chanop
  */
 
 void Server::changeChannelOperator( int clientSocket, Client* toLeave,
@@ -245,6 +250,7 @@ void Server::disconnectAClient( int clientSocket ) {
  * @brief       Broadcasts a message that says that the server shut down to all
  *              connected clients
  */
+
 void Server::broadcastQuitToAll( void ) {
   for( mapClients::iterator it = _clients.begin(); it != _clients.end(); ++it )
     replyMsg(
@@ -256,6 +262,7 @@ void Server::broadcastQuitToAll( void ) {
  * @brief       Broadcasts a message to all connected clients including the
  *              sender
  */
+
 void Server::broadcastMsgToAll( int clientSocket, const std::string& message ) {
   broadcastMsgNotClient( clientSocket, message );
   replyMsg( clientSocket, message, 0 );
@@ -265,6 +272,7 @@ void Server::broadcastMsgToAll( int clientSocket, const std::string& message ) {
  * @brief       Broadcasts a message to all connected clients except the
  *              sender
  */
+
 void Server::broadcastMsgNotClient( int                clientSocket,
                                     const std::string& message ) {
   mapClients::const_iterator it;
@@ -282,6 +290,7 @@ void Server::broadcastMsgNotClient( int                clientSocket,
 /**
  * @brief       Channel message to all members
  */
+
 void Server::channelMsgToAll( int clientSocket, const std::string& channelName,
                               const std::string& message ) {
   channelMsgNotClient( clientSocket, channelName, message );
@@ -291,6 +300,7 @@ void Server::channelMsgToAll( int clientSocket, const std::string& channelName,
 /**
  * @brief       Channel message to chanops only
  */
+
 void Server::channelMsgToChanOps( int                clientSocket,
                                   const std::string& channelName,
                                   const std::string& message ) {
@@ -312,6 +322,7 @@ void Server::channelMsgToChanOps( int                clientSocket,
 /**
  * @brief       Channel message to all members except client
  */
+
 void Server::channelMsgNotClient( int                clientSocket,
                                   const std::string& channelName,
                                   const std::string& message ) {
@@ -331,11 +342,11 @@ void Server::channelMsgNotClient( int                clientSocket,
 }
 
 /**
- * @brief       Send message to the client with all specific parameter (incl.
- * numeric replies) and copy it on the server side if flag is 1 (otherwise, do
- * nothing on the server)
- *
+ * @brief       Sends message to the client with all specific parameter 
+ *              (incl. numeric replies) and copy it on the server side if 
+ *              copyToServer is true (otherwise, nothing on the server)
  */
+
 void Server::replyMsg( int clientSocket, std::string reply,
                        bool copyToServer ) {
   if( copyToServer == true ) {
@@ -350,12 +361,10 @@ void Server::replyMsg( int clientSocket, std::string reply,
 
 /**
  * @brief       Handle request by identifying command and parameters
- *              ACTION 1   - get command & params
- *              ACTION 2   - check the case when the client is disconnected and
- * return ACTION 3   - check if 'command' is part of the _commands and get the
- *              command key
- *              ACTION 4   - if 'command' is in _commands (authentifiers PASS,
- * NICK, USER first) ACTION 5   - handle command
+ *              step 1: get command & params
+ *              step 2: if 'command' is in _commands, get the command key
+ *              step 3: check 'command' (authentifiers PASS, NICK, USER first) 
+ *              step 4: handle command
  */
 
 void Server::handleRequest( int clientSocket, std::string request ) {

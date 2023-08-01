@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*       lmelard <lmelard@student.42.fr>          +#+#+#+#+#+   +#+           */
-/*       cgaillag <cgaillag@student.42.fr>             #+#    #+#             */
-/*       cvidon <cvidon@student.42.fr>                ###   ########.fr       */
+/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by 2.fr>             #+#    #+#             */
+/*   Updated: 2023/08/01 09:35:28 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 
 /**
  * @brief       Pre-check before leaving a channel: channel exists and client is
- * joined to it
- *
+ *              joined to it
  */
 
 bool Server::checkChanPrePart( int                clientSocket,
@@ -46,14 +45,13 @@ bool Server::checkChanPrePart( int                clientSocket,
 
 /**
  * @brief       Leave channel: removing client from the channel (as member, as
- *chanOp if applied) and removing channel into client object
+ *              chanOp if applied) and removing channel into client object
  *
- *	Specific cases:
- *	- if client is last member (chanOp): remove client from channel & delete
- *channel
- *	- if client ifslast chanOp with other members: design another chanOp and
- *remove client from channel
- *
+ *	     Specific cases:
+ *	      - if client is last member (chanOp): remove client from channel & 
+ *          delete channel
+ *	      - if client ifslast chanOp with other members: design another chanOp 
+ *          and remove client from channel
  */
 
 void Server::leaveChannel( int clientSocket, const std::string& channelName,
@@ -64,13 +62,15 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
   if( channel->checkChannelOps( client->getNickname() ) == true
       && channel->getChannelOps().size() == 1 ) {
     if( channel->getChannelMembers().size() == 1 ) {
-      if( cmd == "PART" )
+      if( cmd == "PART" ) {
         replyMsg( clientSocket,
                   RPL_PART( client->getSource(), client->getNickname(),
                             channelName, reason ) );
-      else if( cmd == "QUIT" )
+      }
+      else if( cmd == "QUIT" ) {
         std::cout << MSGINFO << client->getNickname() << " has Quit: " << reason
                   << std::endl;
+      }
       channel->removeChannelOp( client );
       channel->removeChannelMember( client );
       _channels.erase( channelName );
@@ -81,8 +81,8 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
                              channel );  // function in kick.cpp file
     }
   }
-  if( cmd == "PART" )  // client is not chanOps or is one of many chanOps -->
-                       // remove client from Channel
+  // client is not chanOps or is one of many chanOps --> remove from Channel
+  if( cmd == "PART" )  
     channelMsgToAll( clientSocket, channelName,
                      RPL_PART( client->getSource(), client->getNickname(),
                                channelName, reason ) );
@@ -100,12 +100,11 @@ void Server::leaveChannel( int clientSocket, const std::string& channelName,
 
 /**
  * @brief       PART command
- *				syntax:			PART <channel>{,<channel>} [<reason>]
+ *				      syntax:	PART <channel>{,<channel>} [<reason>]
  *
- *	For each channel in the parameter of this command:
- *	- if the channel exists and the client is joined to it --> client leaves
- *	- if not --> consider replies ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL
- *
+ *	      For each channel in the parameter of this command:
+ *	      - if channel exists and client is joined to it --> client leaves
+ *	      - if not --> consider replies ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL
  */
 
 void Server::handlePart( int clientSocket, std::string param ) {
