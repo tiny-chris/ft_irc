@@ -45,8 +45,11 @@
 // Password maximun length (incl. '\r\n', CR-LN) --> TO BE CONFIRMED
 #define PASSMAXLEN 100
 
-// Buffer maximun length (incl. '\r\n', CR-LN)
-#define BUFMAXLEN 512
+// Buffer maximun length
+#define BUFMAXLEN 500
+
+// Message size maximun length + ('\r\n', CR-LN)
+#define MAX_MESSAGE_SIZE 512
 
 // Max number of clients connected (such as max fds 'openable')
 #define MAXCONNECTION 128
