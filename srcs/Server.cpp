@@ -6,7 +6,7 @@
 /*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 20:05:38 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/01 21:02:24 by cgaillag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <fcntl.h>
 
 #include "defines.hpp"
 #include "numericReplies.hpp"
@@ -492,7 +493,7 @@ void Server::handleExistingClient( int clientSocket ) {
     bufs[clientSocket] += std::string( buf, static_cast<size_t>( bytesRead ) );
 
     if( bufs[clientSocket].size() > MAX_MESSAGE_SIZE ) {
-      std::cout << "Error: Received message is too long.\n";
+      std::cout << "Error: Received message is too long.\n\n";
       bufs[clientSocket].clear();
       char tempBuf[BUFMAXLEN];
       while( recv( clientSocket, tempBuf, BUFMAXLEN, MSG_DONTWAIT ) > 0 ) {
@@ -594,6 +595,9 @@ void Server::createServerSocket( void ) {
   }
   if( listen( _serverSocket, 10 ) == -1 ) {
     throw std::runtime_error( "Error listening on socket" );
+  }
+  if (fcntl( _serverSocket, F_SETFL, O_NONBLOCK ) == -1) {
+      throw std::runtime_error("Error setting socket to non-blocking");
   }
   return;
 }
