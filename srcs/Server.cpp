@@ -6,7 +6,7 @@
 /*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/02 10:55:15 by lmelard          ###   ########.fr       */
+/*   Updated: 2023/08/02 10:57:41 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -473,7 +473,6 @@ void Server::handleRequest( int clientSocket, std::string request ) {
  */
 
 void Server::handleExistingClient( int clientSocket ) {
-  // static std::string bufs[MAXCONNECTION];
   char               buf[BUFMAXLEN];
   bool               isClear = false;
   ssize_t            bytesRead = 0;
