@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 16:21:07 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/02 10:24:45 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ class Server {
                       const std::string& parameters );
   void handleRequest( int clientSocket, std::string request );
   void handleExistingClient( int clientSocket );
+  void nonBlockingSocket( int &socket );
   void handleNewClient( void );
   void createServerSocket( void );
   void initCommands( void );

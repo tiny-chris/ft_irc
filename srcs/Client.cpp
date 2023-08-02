@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 19:20:57 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/02 10:36:28 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ Client::Client( int socket )
     _username( "" ),
     _realname( "" ),
     _source( "" ),
-    _clientChannels() {}
+    _clientChannels(),
+    _buf("") {}
 
 Client::Client( Client const& src ) : _fd( src.getFd() ) {
   *this = src;
@@ -51,6 +52,7 @@ Client& Client::operator=( Client const& rhs ) {
     _realname = rhs.getRealname();
     _source = rhs.getSource();
     _clientChannels = rhs.getClientChannels();
+    _buf = rhs.getBuf();
   }
   return ( *this );
 }
@@ -80,6 +82,7 @@ std::string              Client::getSource( void ) const { return _source; }
 std::vector<std::string> Client::getClientChannels( void ) const {
   return _clientChannels;
 }
+std::string              Client::getBuf( void ) const { return _buf; }
 
 /* ----------------------  SETTERS ------------------------- */
 
@@ -94,6 +97,7 @@ void Client::setRealname( std::string const& name ) { _realname = name; }
 void Client::setSource( std::string nickname, std::string username ) {
   _source = nickname + "!" + username + "@localhost";
 }
+void Client::setBuf( std::string const& buf ) { _buf = buf; }
 
 /* ---------------------- METHODS ------------------------- */
 

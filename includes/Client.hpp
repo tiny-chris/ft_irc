@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 19:53:29 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/02 10:36:11 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Client {
   std::string getRealname( void ) const;
   std::string getSource( void ) const;
   std::vector<std::string> getClientChannels( void ) const;
+  std::string getBuf( void ) const;
 
   void setPassStatus( bool const& status );
   void setNickStatus( bool const& status );
@@ -53,7 +54,8 @@ class Client {
   void setRealname( std::string const& name );
   void setSource( std::string nickname, std::string username );
   void setClientChannels( std::vector<std::string> channels ) const;
-
+  void setBuf( std::string const& buf );
+  
   void addChannel( std::string channelName );
   void removeClientChannel( std::string chanName );
 
@@ -77,6 +79,8 @@ class Client {
   std::string _source;
 
   std::vector<std::string> _clientChannels;
+  std::string _buf;
+  
 };
 
 #endif /* __CLIENT_HPP__ */

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgaillag <cgaillag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmelard <lmelard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by 2.fr>             #+#    #+#             */
-/*   Updated: 2023/08/01 21:02:24 by cgaillag         ###   ########.fr       */
+/*   Updated: 2023/08/02 10:55:15 by lmelard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -473,20 +473,19 @@ void Server::handleRequest( int clientSocket, std::string request ) {
  */
 
 void Server::handleExistingClient( int clientSocket ) {
-  static std::string bufs[MAXCONNECTION];
+  // static std::string bufs[MAXCONNECTION];
   char               buf[BUFMAXLEN];
   bool               isClear = false;
   ssize_t            bytesRead = 0;
+  Client* client = &_clients.at(clientSocket);
 
   std::memset( buf, 0, BUFMAXLEN );
 
   bytesRead = recv( clientSocket, buf, sizeof( buf ), 0 );
 
   if( bytesRead < 0 ) {
-    if (errno == EAGAIN || errno == EWOULDBLOCK) { // just wait si jamais il y a un EOF ca attend que le client rentre la fin de sa commande
-    // compliant avec ce que demande le script de correction car on ne fait pas appel a un
-    // nouvel appel de recv (c'est pour ca que j'ai supprimé la boucle while true )
-    // ca marche 
+    if (errno == EAGAIN || errno == EWOULDBLOCK) { 
+      return ;
     }
     else {
     std::string message = "recv: " + std::string( strerror( errno ) );
@@ -496,21 +495,39 @@ void Server::handleExistingClient( int clientSocket ) {
     handleQuit( clientSocket, ":bye bye" );
     return;
   }
+  client->setBuf(client->getBuf() + std::string( buf, static_cast<size_t>( bytesRead ) ) );
 
-  bufs[clientSocket] += std::string( buf, static_cast<size_t>( bytesRead ) );
-  if( bufs[clientSocket].size() > MAX_MESSAGE_SIZE ) {
+  if( client->getBuf().size() > MAX_MESSAGE_SIZE ) {
     std::cout << "Error: Received message is too long.\n\n";
-    bufs[clientSocket].clear();
+    client->setBuf("");
   }
 
-  while( bufs[clientSocket].size() >= 2 && bufs[clientSocket].find( CRLF ) != std::string::npos ) {
+  while( client->getBuf().size() >= 2 && client->getBuf().find( CRLF ) != std::string::npos ) {
     isClear = true;
-    handleRequest( clientSocket, bufs[clientSocket].substr( 0, bufs[clientSocket].find( CRLF ) ) );
-    bufs[clientSocket].erase( 0, bufs[clientSocket].find( CRLF ) + 2 );
+    std::string oldBuf = client->getBuf();
+    handleRequest( clientSocket, oldBuf.substr(0, oldBuf.find(CRLF)));
+    client->setBuf(oldBuf.erase(0, oldBuf.find(CRLF) + 2));
   }
   if( isClear == true ) {
-    bufs[clientSocket].clear();
+    client->setBuf("");
     return;
+  }
+}
+
+/**
+ * @brief       Makes an fd non blocking
+ */
+
+void  Server::nonBlockingSocket( int& socket ) {
+  int flags = fcntl(socket, F_GETFL, 0);
+  if (flags == -1) {
+      throw std::runtime_error( "Error fcntl" );
+  }
+
+  flags |= O_NONBLOCK;
+  int result = fcntl(socket, F_SETFL, flags);
+  if (result == -1) {
+      throw std::runtime_error( "Error fcntl" );
   }
 }
 
@@ -537,16 +554,7 @@ void Server::handleNewClient( void ) {
     Utility::closeFd( clientSocket );
     return;
   }
-  int flags = fcntl(clientSocket, F_GETFL, 0);
-  if (flags == -1) {
-      throw std::runtime_error( "Error fcntl" );
-  }
-
-  flags |= O_NONBLOCK;
-  int result = fcntl(clientSocket, F_SETFL, flags);
-  if (result == -1) {
-      throw std::runtime_error( "Error fcntl" );
-  }
+  nonBlockingSocket( clientSocket );
   std::cout << "-----------------------------" << std::endl;
   std::cout << "New connection from " << Utility::ntop( clientAddress ) << "\n";
   struct epoll_event event;
@@ -607,16 +615,7 @@ void Server::createServerSocket( void ) {
   if( listen( _serverSocket, 10 ) == -1 ) {
     throw std::runtime_error( "Error listening on socket" );
   }
-  int flags = fcntl(_serverSocket, F_GETFL, 0);
-  if (flags == -1) {
-      throw std::runtime_error( "Error fcntl" );
-  }
-
-  flags |= O_NONBLOCK;
-  int result = fcntl(_serverSocket, F_SETFL, flags);
-  if (result == -1) {
-      throw std::runtime_error( "Error fcntl" );
-  }
+  nonBlockingSocket( _serverSocket );
   return;
 }
 
